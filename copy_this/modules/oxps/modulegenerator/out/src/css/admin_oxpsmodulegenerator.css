@@ -1,0 +1,66 @@
+/* OXID Module Skeleton Generator - Admin Styles */
+
+div.box {
+    border: none;
+    height: 100% !important;
+    padding: 0;
+}
+
+div#oxpsmodulegenerator div.export {
+    width: 99%;
+    padding: 0;
+}
+
+div#oxpsmodulegenerator div.export span {
+    margin: 0 10px;
+}
+
+table.oxpsmodulegenerator-wrapper {
+    border: 1px solid #000000;
+    border-top: none;
+    width: 99%;
+}
+
+table.oxpsmodulegenerator-wrapper td.edittext {
+    padding: 5px 10px;
+}
+
+table.oxpsmodulegenerator-wrapper td.edittext-label {
+    width: 180px;
+}
+
+div#oxpsmodulegenerator input[type="text"],
+div#oxpsmodulegenerator select,
+div#oxpsmodulegenerator textarea {
+    border: 1px solid #808080;
+}
+
+div#oxpsmodulegenerator input[type="text"],
+div#oxpsmodulegenerator select {
+    height: 20px;
+}
+
+div#oxpsmodulegenerator input[type="text"],
+div#oxpsmodulegenerator textarea {
+    width: 200px;
+}
+
+div#oxpsmodulegenerator textarea.wider {
+    width: 360px;
+}
+
+div#oxpsmodulegenerator textarea[rows="3"] {
+    height: 64px;
+}
+
+div#oxpsmodulegenerator textarea[rows="1"] {
+    height: 36px;
+}
+
+div#oxpsmodulegenerator span.req {
+    color: red;
+}
+
+div#oxpsmodulegenerator input[type="submit"] {
+    padding: 6px 20px;
+}

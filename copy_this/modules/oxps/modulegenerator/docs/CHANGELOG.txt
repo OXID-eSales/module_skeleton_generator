@@ -1,0 +1,9 @@
+OXID Module Skeleton Generator changelog
+========================================
+
+v0.5.0
+------
+ * First standalone release of the OXID Module Skeleton Generator
+ * Formatted for OXID PSR coding standards and refactored
+ * Covered with PHPUnit tests
+ * Styles, translations and documentation adjusted

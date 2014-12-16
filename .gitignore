@@ -1,0 +1,8 @@
+# IDE stuff to ignore
+.idea/
+
+# Tests output to ignore
+certification/
+coverage/
+metrics.txt
+metrics.xml

@@ -166,6 +166,93 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
         $this->assertTrue($aViewData['blError']);
     }
 
+    public function testRender_formWasSubmitted_collectProperFormInitialValuesFromParsedRequest()
+    {
+        // Config mock (request data)
+        modConfig::setRequestParameter('modulegenerator_module_name', 'badModuleName ');
+        modConfig::setRequestParameter(
+            'modulegenerator_extend_classes',
+            'oxarticle' . PHP_EOL . 'oxarticle' . PHP_EOL . 'oxlist' . PHP_EOL . 'oxarticle' . PHP_EOL . 'asdasd'
+        );
+        modConfig::setRequestParameter(
+            'modulegenerator_controllers',
+            ' Page' . PHP_EOL . PHP_EOL . ' ' . PHP_EOL . 'view'
+        );
+        modConfig::setRequestParameter('modulegenerator_models', 'Item' . PHP_EOL . 'Thing_Two');
+        modConfig::setRequestParameter('modulegenerator_lists', 'Item' . PHP_EOL . 'ThingTwo' . PHP_EOL . 'ItemList');
+        modConfig::setRequestParameter('modulegenerator_widgets', 'Bar' . PHP_EOL . '1Trash');
+        modConfig::setRequestParameter(
+            'modulegenerator_blocks',
+            'block@' . PHP_EOL . '@page.tpl' . PHP_EOL . 'block@page.tpl'
+        );
+        modConfig::setRequestParameter(
+            'modulegenerator_settings',
+            array(
+                array(
+                    'name'  => 'MyString',
+                    'type'  => 'str',
+                    'value' => 'Hello, word!',
+                ),
+                array(
+                    'name'  => '',
+                    'type'  => 'str',
+                    'value' => '',
+                ),
+                array(
+                    'name'  => 'MyNumber',
+                    'type'  => 'num',
+                    'value' => '888.8',
+                )
+            )
+        );
+        modConfig::setRequestParameter('modulegenerator_init_version', '0.0.1 beta');
+        modConfig::setRequestParameter('modulegenerator_render_tasks', '1');
+        modConfig::setRequestParameter('modulegenerator_render_samples', '1');
+
+        $this->SUT->expects($this->once())->method('_Admin_oxpsModuleGenerator_init_parent');
+        $this->SUT->expects($this->once())->method('_Admin_oxpsModuleGenerator_render_parent')->will(
+            $this->returnValue('admin_oxpsmodulegenerator.tpl')
+        );
+        $this->SUT->init();
+        $this->SUT->render();
+
+        $aViewData = $this->SUT->getViewData();
+        $this->assertArrayHasKey('oValues', $aViewData);
+        $this->assertEquals(
+            (object) array(
+                'name'        => 'badModuleName',
+                'extend'      => 'oxarticle' . PHP_EOL . 'oxlist',
+                'controllers' => 'Page',
+                'models'      => 'Item',
+                'lists'       => 'Item',
+                'widgets'     => 'Bar',
+                'blocks'      => 'block@page.tpl',
+                'settings'    => array(
+                    array(
+                        'name'  => 'MyString',
+                        'type'  => 'str',
+                        'value' => 'Hello, word!'
+                    ),
+                    array(
+                        'name'  => '',
+                        'type'  => 'str',
+                        'value' => ''
+                    ),
+                    array(
+                        'name'  => 'MyNumber',
+                        'type'  => 'num',
+                        'value' => '888.8'
+                    ),
+                ),
+                'version'     => '0.0.1 beta',
+                'tests'       => false,
+                'tasks'       => true,
+                'samples'     => true,
+            ),
+            $aViewData['oValues']
+        );
+    }
+
 
     public function testGetModule()
     {

@@ -29,7 +29,8 @@
                                     <span class="req"> *</span>
                                 </td>
                                 <td class="edittext">
-                                    <input type="text" name="modulegenerator_module_name" value="" maxlength="20"/>
+                                    <input type="text" name="modulegenerator_module_name" value="[{$oValues->name}]"
+                                           maxlength="20"/>
                                     [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_MODULE_NAME_HINT"}]
                                 </td>
                             </tr>
@@ -41,7 +42,8 @@
                                     [{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_OVERRIDE_CLASSES"}]
                                 </td>
                                 <td class="edittext">
-                                    <textarea name="modulegenerator_extend_classes" cols="20" rows="3"></textarea>
+                                    <textarea name="modulegenerator_extend_classes" cols="20"
+                                              rows="3">[{$oValues->extend}]</textarea>
                                     [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_OVERRIDE_CLASSES_HINT"}]
                                 </td>
                             </tr>
@@ -50,7 +52,8 @@
                                     [{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_CONTROLLERS"}]
                                 </td>
                                 <td class="edittext">
-                                    <textarea name="modulegenerator_controllers" cols="20" rows="1"></textarea>
+                                    <textarea name="modulegenerator_controllers" cols="20"
+                                              rows="1">[{$oValues->controllers}]</textarea>
                                     [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_CONTROLLERS_HINT"}]
                                 </td>
                             </tr>
@@ -59,7 +62,8 @@
                                     [{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_MODELS"}]
                                 </td>
                                 <td class="edittext">
-                                    <textarea name="modulegenerator_models" cols="20" rows="1"></textarea>
+                                    <textarea name="modulegenerator_models" cols="20"
+                                              rows="1">[{$oValues->models}]</textarea>
                                     [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_MODELS_HINT"}]
                                 </td>
                             </tr>
@@ -68,7 +72,8 @@
                                     [{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_LISTS"}]
                                 </td>
                                 <td class="edittext">
-                                    <textarea name="modulegenerator_lists" cols="20" rows="1"></textarea>
+                                    <textarea name="modulegenerator_lists" cols="20"
+                                              rows="1">[{$oValues->lists}]</textarea>
                                     [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_LISTS_HINT"}]
                                 </td>
                             </tr>
@@ -77,7 +82,8 @@
                                     [{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_WIDGETS"}]
                                 </td>
                                 <td class="edittext">
-                                    <textarea name="modulegenerator_widgets" cols="20" rows="1"></textarea>
+                                    <textarea name="modulegenerator_widgets" cols="20"
+                                              rows="1">[{$oValues->widgets}]</textarea>
                                     [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_WIDGETS_HINT"}]
                                 </td>
                             </tr>
@@ -87,7 +93,7 @@
                                 </td>
                                 <td class="edittext">
                                     <textarea class="wider" name="modulegenerator_blocks" cols="20"
-                                              rows="2"></textarea>
+                                              rows="2">[{$oValues->blocks}]</textarea>
                                     [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_BLOCKS_HINT"}]
                                 </td>
                             </tr>
@@ -113,24 +119,36 @@
                                     <tbody>
                                     [{section name=settings start=0 loop=3}]
                                         [{assign var='i' value=$smarty.section.settings.index}]
+                                        [{assign var='aSetting' value=$oValues->settings.$i}]
+                                        [{assign var='sType' value=$aSetting.type}]
+                                        [{if not $sType}]
+                                            [{assign var='sType' value='str'}]
+                                        [{/if}]
                                         <tr>
                                             <td>
                                                 <input type="text" name="modulegenerator_settings[[{$i}]][name]"
-                                                       value="" maxlength="12"/>
+                                                       value="[{$aSetting.name}]" maxlength="12"/>
                                             </td>
                                             <td>
                                                 <select name="modulegenerator_settings[[{$i}]][type]">
-                                                    <option value="bool">Checkbox</option>
-                                                    <option value="str" selected="selected">String</option>
-                                                    <option value="num">Number</option>
-                                                    <option value="arr">Array</option>
-                                                    <option value="aarr">Assoc Array</option>
-                                                    <option value="select">Dropdown</option>
+                                                    [{* todo (nice2have) get possible options as array from view *}]
+                                                    <option value="bool"
+                                                            [{if $sType eq 'bool'}]selected[{/if}]>Checkbox</option>
+                                                    <option value="str"
+                                                            [{if $sType eq 'str'}]selected[{/if}]>String</option>
+                                                    <option value="num"
+                                                            [{if $sType eq 'num'}]selected[{/if}]>Number</option>
+                                                    <option value="arr"
+                                                            [{if $sType eq 'arr'}]selected[{/if}]>Array</option>
+                                                    <option value="aarr"
+                                                            [{if $sType eq 'aarr'}]selected[{/if}]>Assoc Array</option>
+                                                    <option value="select"
+                                                            [{if $sType eq 'select'}]selected[{/if}]>Dropdown</option>
                                                 </select>
                                             </td>
                                             <td>
                                                 <textarea name="modulegenerator_settings[[{$i}]][value]" cols="10"
-                                                          rows="1"></textarea>
+                                                          rows="1">[{$aSetting.value}]</textarea>
                                             </td>
                                         </tr>
                                         [{/section}]
@@ -147,7 +165,7 @@
                                     <span class="req"> *</span>
                                 </td>
                                 <td class="edittext">
-                                    <input type="text" name="modulegenerator_init_version" value="1.0.0"
+                                    <input type="text" name="modulegenerator_init_version" value="[{$oValues->version}]"
                                            maxlength="12"/>
                                 </td>
                             </tr>
@@ -170,7 +188,8 @@
                                     [{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_CHECKOUT_UNIT_TESTS"}]
                                 </td>
                                 <td class="edittext">
-                                    <input type="checkbox" name="modulegenerator_fetch_unit_tests" value="1"/>
+                                    <input type="checkbox" name="modulegenerator_fetch_unit_tests" value="1"
+                                           [{if $oValues->tests}]checked="checked"[{/if}]/>
                                     [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_CHECKOUT_UNIT_TESTS_HINT"}]
                                 </td>
                             </tr>
@@ -182,7 +201,8 @@
                                     [{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_RENDER_TASKS"}]
                                 </td>
                                 <td class="edittext">
-                                    <input type="checkbox" name="modulegenerator_render_tasks" value="1"/>
+                                    <input type="checkbox" name="modulegenerator_render_tasks" value="1"
+                                           [{if $oValues->tasks}]checked="checked"[{/if}]/>
                                     [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_RENDER_TASKS_HINT"}]
                                 </td>
                             </tr>
@@ -191,7 +211,8 @@
                                     [{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_RENDER_SAMPLES"}]
                                 </td>
                                 <td class="edittext">
-                                    <input type="checkbox" name="modulegenerator_render_samples" value="1"/>
+                                    <input type="checkbox" name="modulegenerator_render_samples" value="1"
+                                           [{if $oValues->samples}]checked="checked"[{/if}]/>
                                     [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_RENDER_SAMPLES_HINT"}]
                                 </td>
                             </tr>

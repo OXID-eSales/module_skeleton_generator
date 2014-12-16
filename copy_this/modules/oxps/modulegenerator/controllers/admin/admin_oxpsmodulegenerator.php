@@ -27,6 +27,8 @@
 /**
  * Class Admin_oxpsModuleGenerator.
  * Module Generator GUI controller.
+ *
+ * @todo (nice2have) Class got too long -> move some methods to validation helper or some other class.
  */
 class Admin_oxpsModuleGenerator extends oxAdminView
 {
@@ -78,6 +80,9 @@ class Admin_oxpsModuleGenerator extends oxAdminView
         if (!$this->_isVendorConfigured()) {
             $this->_setMessage('OXPS_MODULEGENERATOR_ADMIN_MODULE_ERROR_NO_VENDOR');
         }
+
+        // Add clean module generation options and form values to view data
+        $this->_addViewData(array('oValues' => (object) $this->_getFormValues()));
 
         // Parent render call
         return $this->_Admin_oxpsModuleGenerator_render_parent();
@@ -207,6 +212,109 @@ class Admin_oxpsModuleGenerator extends oxAdminView
         );
 
         return $this->_filterListModels($aGenerationOptions);
+    }
+
+    /**
+     * Get initial form values for a case when the form was submitted.
+     *
+     * @return array
+     */
+    protected function _getFormValues()
+    {
+        /** @var oxpsModuleGeneratorValidator $oValidator */
+        $oValidator = oxRegistry::get('oxpsModuleGeneratorValidator');
+
+        $aOptions = (array) $this->_getGenerationOptions();
+
+        return array(
+            'name'        => $this->_getTextParam('modulegenerator_module_name'),
+            'extend'      => $this->_toString(array_keys($oValidator->getArrayValue($aOptions, 'aExtendClasses', 'array'))),
+            'controllers' => $this->_toString($oValidator->getArrayValue($aOptions, 'aNewControllers', 'array')),
+            'models'      => $this->_toString($oValidator->getArrayValue($aOptions, 'aNewModels', 'array')),
+            'lists'       => $this->_getListModelsFieldValue($oValidator->getArrayValue($aOptions, 'aNewLists', 'array')),
+            'widgets'     => $this->_toString($oValidator->getArrayValue($aOptions, 'aNewWidgets', 'array')),
+            'blocks'      => $this->_getBlocksFieldValue($oValidator->getArrayValue($aOptions, 'aNewBlocks', 'array')),
+            'settings'    => $oValidator->getArrayValue($aOptions, 'aModuleSettings', 'array'),
+            'version'     => $this->_getFormVersionFieldValue($oValidator->getArrayValue($aOptions, 'sInitialVersion')),
+            'tests'       => $oValidator->getArrayValue($aOptions, 'blFetchUnitTests', 'boolean'),
+            'tasks'       => $oValidator->getArrayValue($aOptions, 'blRenderTasks', 'boolean'),
+            'samples'     => $oValidator->getArrayValue($aOptions, 'blRenderSamples', 'boolean'),
+        );
+    }
+
+    /**
+     * Convert array to a multi-line string.
+     *
+     * @param array $aData
+     *
+     * @return string
+     */
+    protected function _toString(array $aData)
+    {
+        return trim((string) implode(PHP_EOL, $aData));
+    }
+
+    /**
+     * Get initial value for list models field.
+     * Removes "List" suffixes from names.
+     *
+     * @param array $aRequestListModels
+     *
+     * @return string
+     */
+    protected function _getListModelsFieldValue(array $aRequestListModels)
+    {
+        /** @var oxStrMb|oxStrRegular $oStr */
+        $oStr = oxStr::getStr();
+
+        $aLists = array();
+
+        foreach ($aRequestListModels as $sListClassName) {
+            $aLists[] = $oStr->substr($sListClassName, 0, ($oStr->strlen($sListClassName) - 4));
+        }
+
+        return $this->_toString($aLists);
+    }
+
+    /**
+     * Get initial value for module blocks field.
+     *
+     * @param array $aRequestBlocks
+     *
+     * @return string
+     */
+    protected function _getBlocksFieldValue(array $aRequestBlocks)
+    {
+        /** @var oxpsModuleGeneratorValidator $oValidator */
+        $oValidator = oxRegistry::get('oxpsModuleGeneratorValidator');
+
+        $aBlocks = array();
+
+        foreach ($aRequestBlocks as $oBlock) {
+            $aBlock = (array) $oBlock;
+            $aBlocks[] = $oValidator->getArrayValue($aBlock, 'block') . '@' .
+                         $oValidator->getArrayValue($aBlock, 'template');
+        }
+
+        return $this->_toString($aBlocks);
+    }
+
+    /**
+     * Get initial value for module version field.
+     *
+     * @param string $sRequestVersion
+     *
+     * @return string
+     */
+    protected function _getFormVersionFieldValue($sRequestVersion)
+    {
+        $sModuleVersion = trim((string) $sRequestVersion);
+
+        if (empty($sModuleVersion)) {
+            $sModuleVersion = '1.0.0';
+        }
+
+        return $sModuleVersion;
     }
 
     /**

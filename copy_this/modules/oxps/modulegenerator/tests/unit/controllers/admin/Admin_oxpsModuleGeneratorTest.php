@@ -501,7 +501,7 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     public function testGenerateModule_extendedClassesAreInvalid_generateModuleSkeletonWithNoFaultyExtendedClasses()
     {
         // Config mock
-        modConfig::setRequestParameter('modulegenerator_module_name', 'Extended');
+        modConfig::setRequestParameter('modulegenerator_module_name', 'ExtendedInvalid');
         modConfig::setRequestParameter('modulegenerator_extend_classes', 'oxNonExistingBox');
 
         $this->SUT->init();
@@ -514,11 +514,11 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
         $this->assertFalse($aViewData['blError']);
 
         // Check module structure
-        $this->assertFileExists($this->_getTestPath('modules/test/extended/metadata.php'));
-        $this->assertFileNotExists($this->_getTestPath('modules/test/extended/core/testextendedoxnonexistingbox.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/extendedinvalid/metadata.php'));
+        $this->assertFileNotExists($this->_getTestPath('modules/test/extendedinvalid/core/testextendedoxnonexistingbox.php'));
 
         // Check metadata content
-        include($this->_getTestPath('modules/test/extended/metadata.php'));
+        include($this->_getTestPath('modules/test/extendedinvalid/metadata.php'));
         $this->assertTrue(isset($aModule));
         if (isset($aModule)) {
             $this->assertArrayHasKey('extend', $aModule);
@@ -577,7 +577,7 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     public function testGenerateModule_sameControllersSetMultipleTimes_generateModuleSkeletonWithUniqueControllersClasses()
     {
         // Config mock
-        modConfig::setRequestParameter('modulegenerator_module_name', 'Ctrl1');
+        modConfig::setRequestParameter('modulegenerator_module_name', 'Ctrl2');
         modConfig::setRequestParameter('modulegenerator_extend_classes', '');
         modConfig::setRequestParameter('modulegenerator_controllers', 'Page' . PHP_EOL . 'Page' . PHP_EOL . 'View');
 
@@ -591,30 +591,30 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
         $this->assertFalse($aViewData['blError']);
 
         // Check module structure
-        $this->assertFileExists($this->_getTestPath('modules/test/ctrl1/metadata.php'));
-        $this->assertFileExists($this->_getTestPath('modules/test/ctrl1/controllers/testctrl1page.php'));
-        $this->assertFileExists($this->_getTestPath('modules/test/ctrl1/controllers/testctrl1view.php'));
-        $this->assertFileExists($this->_getTestPath('modules/test/ctrl1/views/pages/testctrl1page.tpl'));
-        $this->assertFileExists($this->_getTestPath('modules/test/ctrl1/views/pages/testctrl1view.tpl'));
+        $this->assertFileExists($this->_getTestPath('modules/test/ctrl2/metadata.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/ctrl2/controllers/testctrl2page.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/ctrl2/controllers/testctrl2view.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/ctrl2/views/pages/testctrl2page.tpl'));
+        $this->assertFileExists($this->_getTestPath('modules/test/ctrl2/views/pages/testctrl2view.tpl'));
 
         // Check metadata content
-        include($this->_getTestPath('modules/test/ctrl1/metadata.php'));
+        include($this->_getTestPath('modules/test/ctrl2/metadata.php'));
         $this->assertTrue(isset($aModule));
         if (isset($aModule)) {
             $this->assertArrayHasKey('files', $aModule);
             $this->assertArrayHasKey('templates', $aModule);
             $this->assertSame(
                 array(
-                    'testctrl1module' => 'test/ctrl1/core/testctrl1module.php',
-                    'testctrl1page'   => 'test/ctrl1/controllers/testctrl1page.php',
-                    'testctrl1view'   => 'test/ctrl1/controllers/testctrl1view.php',
+                    'testctrl2module' => 'test/ctrl2/core/testctrl2module.php',
+                    'testctrl2page'   => 'test/ctrl2/controllers/testctrl2page.php',
+                    'testctrl2view'   => 'test/ctrl2/controllers/testctrl2view.php',
                 ),
                 $aModule['files']
             );
             $this->assertSame(
                 array(
-                    'testctrl1page.tpl' => 'test/ctrl1/views/pages/testctrl1page.tpl',
-                    'testctrl1view.tpl' => 'test/ctrl1/views/pages/testctrl1view.tpl',
+                    'testctrl2page.tpl' => 'test/ctrl2/views/pages/testctrl2page.tpl',
+                    'testctrl2view.tpl' => 'test/ctrl2/views/pages/testctrl2view.tpl',
                 ),
                 $aModule['templates']
             );
@@ -624,7 +624,7 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     public function testGenerateModule_invalidControllerName_generateModuleSkeletonWithNoControllersClasses()
     {
         // Config mock
-        modConfig::setRequestParameter('modulegenerator_module_name', 'Ctrl1');
+        modConfig::setRequestParameter('modulegenerator_module_name', 'Ctrl3');
         modConfig::setRequestParameter('modulegenerator_extend_classes', '');
         modConfig::setRequestParameter('modulegenerator_controllers', ' some_class');
 
@@ -638,17 +638,17 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
         $this->assertFalse($aViewData['blError']);
 
         // Check module structure
-        $this->assertFileExists($this->_getTestPath('modules/test/ctrl1/metadata.php'));
-        $this->assertFileNotExists($this->_getTestPath('modules/test/ctrl1/controllers/testctrl1some_class.php'));
-        $this->assertFileNotExists($this->_getTestPath('modules/test/ctrl1/views/pages/testctrl1some_class.tpl'));
+        $this->assertFileExists($this->_getTestPath('modules/test/ctrl3/metadata.php'));
+        $this->assertFileNotExists($this->_getTestPath('modules/test/ctrl3/controllers/testctrl3some_class.php'));
+        $this->assertFileNotExists($this->_getTestPath('modules/test/ctrl3/views/pages/testctrl3some_class.tpl'));
 
         // Check metadata content
-        include($this->_getTestPath('modules/test/ctrl1/metadata.php'));
+        include($this->_getTestPath('modules/test/ctrl3/metadata.php'));
         $this->assertTrue(isset($aModule));
         if (isset($aModule)) {
             $this->assertArrayHasKey('files', $aModule);
             $this->assertArrayHasKey('templates', $aModule);
-            $this->assertSame(array('testctrl1module' => 'test/ctrl1/core/testctrl1module.php'), $aModule['files']);
+            $this->assertSame(array('testctrl3module' => 'test/ctrl3/core/testctrl3module.php'), $aModule['files']);
             $this->assertSame(array(), $aModule['templates']);
         }
     }
@@ -699,7 +699,7 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     public function testGenerateModule_listModelSetWithNoItemModel_generateModuleSkeletonWithNoListModel()
     {
         // Config mock
-        modConfig::setRequestParameter('modulegenerator_module_name', 'Special');
+        modConfig::setRequestParameter('modulegenerator_module_name', 'Special2');
         modConfig::setRequestParameter('modulegenerator_extend_classes', '');
         modConfig::setRequestParameter('modulegenerator_controllers', '');
         modConfig::setRequestParameter('modulegenerator_models', '');
@@ -715,17 +715,17 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
         $this->assertFalse($aViewData['blError']);
 
         // Check module structure
-        $this->assertFileExists($this->_getTestPath('modules/test/special/metadata.php'));
-        $this->assertFileNotExists($this->_getTestPath('modules/test/special/models/testspecialoffer.php'));
-        $this->assertFileNotExists($this->_getTestPath('modules/test/special/models/testspecialofferlist.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/special2/metadata.php'));
+        $this->assertFileNotExists($this->_getTestPath('modules/test/special2/models/testspecial2offer.php'));
+        $this->assertFileNotExists($this->_getTestPath('modules/test/special2/models/testspecial2offerlist.php'));
 
         // Check metadata content
-        include($this->_getTestPath('modules/test/special/metadata.php'));
+        include($this->_getTestPath('modules/test/special2/metadata.php'));
         $this->assertTrue(isset($aModule));
         if (isset($aModule)) {
             $this->assertArrayHasKey('files', $aModule);
             $this->assertSame(
-                array('testspecialmodule' => 'test/special/core/testspecialmodule.php'),
+                array('testspecial2module' => 'test/special2/core/testspecial2module.php'),
                 $aModule['files']
             );
         }
@@ -734,7 +734,7 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     public function testGenerateModule_listAndSameItemModelSet_generateModuleSkeletonWithListAndItemModels()
     {
         // Config mock
-        modConfig::setRequestParameter('modulegenerator_module_name', 'Special');
+        modConfig::setRequestParameter('modulegenerator_module_name', 'Special3');
         modConfig::setRequestParameter('modulegenerator_extend_classes', '');
         modConfig::setRequestParameter('modulegenerator_controllers', '');
         modConfig::setRequestParameter('modulegenerator_models', 'Offer');
@@ -750,29 +750,29 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
         $this->assertFalse($aViewData['blError']);
 
         // Check module structure
-        $this->assertFileExists($this->_getTestPath('modules/test/special/metadata.php'));
-        $this->assertFileExists($this->_getTestPath('modules/test/special/models/testspecialoffer.php'));
-        $this->assertFileExists($this->_getTestPath('modules/test/special/models/testspecialofferlist.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/special3/metadata.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/special3/models/testspecial3offer.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/special3/models/testspecial3offerlist.php'));
 
         // Check metadata content
-        include($this->_getTestPath('modules/test/special/metadata.php'));
+        include($this->_getTestPath('modules/test/special3/metadata.php'));
         $this->assertTrue(isset($aModule));
         if (isset($aModule)) {
             $this->assertArrayHasKey('files', $aModule);
             $this->assertSame(
                 array(
-                    'testspecialmodule'    => 'test/special/core/testspecialmodule.php',
-                    'testspecialoffer'     => 'test/special/models/testspecialoffer.php',
-                    'testspecialofferlist' => 'test/special/models/testspecialofferlist.php',
+                    'testspecial3module'    => 'test/special3/core/testspecial3module.php',
+                    'testspecial3offer'     => 'test/special3/models/testspecial3offer.php',
+                    'testspecial3offerlist' => 'test/special3/models/testspecial3offerlist.php',
                 ),
                 $aModule['files']
             );
         }
 
         // Check list model class
-        $this->assertFalse(class_exists('testSpecialOfferList'));
-        include($this->_getTestPath('modules/test/special/models/testspecialofferlist.php'));
-        $this->assertTrue(class_exists('testSpecialOfferList'));
+        $this->assertFalse(class_exists('testSpecial3OfferList'));
+        include($this->_getTestPath('modules/test/special3/models/testspecial3offerlist.php'));
+        $this->assertTrue(class_exists('testSpecial3OfferList'));
     }
 
     public function testGenerateModule_widgetsSet_generateModuleSkeletonWithWidgetsClasses()
@@ -871,7 +871,7 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     public function testGenerateModule_blocksDefinitionIsInvalid_generateModuleSkeletonWithNoBlocks()
     {
         // Config mock
-        modConfig::setRequestParameter('modulegenerator_module_name', 'Block');
+        modConfig::setRequestParameter('modulegenerator_module_name', 'Block2');
         modConfig::setRequestParameter('modulegenerator_extend_classes', '');
         modConfig::setRequestParameter('modulegenerator_controllers', '');
         modConfig::setRequestParameter('modulegenerator_models', '');
@@ -889,11 +889,11 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
         $this->assertFalse($aViewData['blError']);
 
         // Check module structure
-        $this->assertFileExists($this->_getTestPath('modules/test/block/metadata.php'));
-        $this->assertFileNotExists($this->_getTestPath('modules/test/block/views/blocks/testblock_.tpl'));
+        $this->assertFileExists($this->_getTestPath('modules/test/block2/metadata.php'));
+        $this->assertFileNotExists($this->_getTestPath('modules/test/block2/views/blocks/testblock2_.tpl'));
 
         // Check metadata content
-        include($this->_getTestPath('modules/test/block/metadata.php'));
+        include($this->_getTestPath('modules/test/block2/metadata.php'));
         $this->assertTrue(isset($aModule));
         if (isset($aModule)) {
             $this->assertArrayHasKey('blocks', $aModule);
@@ -993,7 +993,7 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     public function testGenerateModule_settingsAreInvalid_generateModuleSkeletonWithNoSettings()
     {
         // Config mock
-        modConfig::setRequestParameter('modulegenerator_module_name', 'Conf');
+        modConfig::setRequestParameter('modulegenerator_module_name', 'Conf2');
         modConfig::setRequestParameter('modulegenerator_extend_classes', '');
         modConfig::setRequestParameter('modulegenerator_controllers', '');
         modConfig::setRequestParameter('modulegenerator_models', '');
@@ -1031,11 +1031,11 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
         $this->assertFalse($aViewData['blError']);
 
         // Check module structure
-        $this->assertFileExists($this->_getTestPath('modules/test/conf/metadata.php'));
-        $this->assertFileExists($this->_getTestPath('modules/test/conf/views/admin/en/testconf_admin_en_lang.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/conf2/metadata.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/conf2/views/admin/en/testconf2_admin_en_lang.php'));
 
         // Check metadata content
-        include($this->_getTestPath('modules/test/conf/metadata.php'));
+        include($this->_getTestPath('modules/test/conf2/metadata.php'));
         $this->assertTrue(isset($aModule));
         if (isset($aModule)) {
             $this->assertArrayHasKey('settings', $aModule);
@@ -1043,13 +1043,13 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
         }
 
         // Check backend translation file
-        include($this->_getTestPath('modules/test/conf/views/admin/en/testconf_admin_en_lang.php'));
+        include($this->_getTestPath('modules/test/conf2/views/admin/en/testconf2_admin_en_lang.php'));
         $this->assertTrue(isset($aLang));
         if (isset($aLang)) {
-            $this->assertArrayNotHasKey('SHOP_MODULE_GROUP_testConfSettings', $aLang);
-            $this->assertArrayNotHasKey('SHOP_MODULE_testConf', $aLang);
-            $this->assertArrayNotHasKey('SHOP_MODULE_testConfone', $aLang);
-            $this->assertArrayNotHasKey('SHOP_MODULE_testConfMyArray', $aLang);
+            $this->assertArrayNotHasKey('SHOP_MODULE_GROUP_testConf2Settings', $aLang);
+            $this->assertArrayNotHasKey('SHOP_MODULE_testConf2', $aLang);
+            $this->assertArrayNotHasKey('SHOP_MODULE_testConf2one', $aLang);
+            $this->assertArrayNotHasKey('SHOP_MODULE_testConf2MyArray', $aLang);
         }
     }
 

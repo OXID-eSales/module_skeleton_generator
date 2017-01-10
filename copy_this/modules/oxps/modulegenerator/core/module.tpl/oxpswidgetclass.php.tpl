@@ -8,10 +8,12 @@
     [{assign var='sClassName' value=$oModule->getFileNameSuffix($sFilePath)}]
 [{/if}]
 
+use \OxidEsales\Eshop\Application\Component\Widget\WidgetController;
+
 /**
  * Class [{$sClassNamePrefix}][{$sClassName}].
  */
-class [{$sClassNamePrefix}][{$sClassName}] extends oxWidget
+class [{$sClassNamePrefix}][{$sClassName}] extends WidgetController
 {
 
     /**
@@ -61,6 +63,6 @@ class [{$sClassNamePrefix}][{$sClassName}] extends oxWidget
 [{if $oModule->renderTasks()}]
         // TODO: You can make it false of implement some logic when to cache it and when not.
 [{/if}]
-        return true;
+        return false;
     }
 }

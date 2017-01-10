@@ -21,7 +21,7 @@
  * @package       modulegenerator
  * @author        OXID Professional services
  * @link          http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2014
+ * @copyright (C) OXID eSales AG 2003-2017
  */
 
 /**
@@ -40,7 +40,7 @@ $aModule = array(
         'en' => 'Folders structure, empty classes and metadata generation for new OXID eShop modules.',
     ),
     'thumbnail'   => 'out/pictures/oxpsmodulegenerator.png',
-    'version'     => '0.5.0',
+    'version'     => '0.6.0',
     'author'      => 'OXID Professional Services',
     'url'         => 'http://www.oxid-esales.com',
     'email'       => 'info@oxid-esales.com',

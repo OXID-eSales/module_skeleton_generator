@@ -8,10 +8,12 @@
     [{assign var='sClassName' value=$oModule->getFileNameSuffix($sFilePath)}]
 [{/if}]
 
+use \OxidEsales\Eshop\Core\Controller\BaseController;
+
 /**
  * Class [{$sClassNamePrefix}][{$sClassName}].
  */
-class [{$sClassNamePrefix}][{$sClassName}] extends oxUBase
+class [{$sClassNamePrefix}][{$sClassName}] extends BaseController
 {
 
     /**

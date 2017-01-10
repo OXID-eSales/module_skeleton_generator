@@ -8,7 +8,7 @@
 [{$oModule->getVendorPrefix()}]
 
 ==Shop Version==
-5.2.x/4.9.x
+6.x
 
 ==Version==
 [{$oModule->getInitialVersion()}]

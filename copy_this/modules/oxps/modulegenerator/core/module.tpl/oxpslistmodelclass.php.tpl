@@ -14,11 +14,15 @@
 [{assign var='sFullClassName' value=$sClassNamePrefix|cat:$sClassName}]
 [{assign var='sFullObjectName' value=$sClassNamePrefix|cat:$sListObjectsClassName}]
 
+use \OxidEsales\Eshop\Core\Model\ListModel;
+
 /**
  * Class [{$sFullClassName}].
  * [{$sFullObjectName}] list model.
+ *
+ * @see [{$sFullObjectName}]
  */
-class [{$sFullClassName}] extends oxList
+class [{$sFullClassName}] extends ListModel
 {
 
     /**

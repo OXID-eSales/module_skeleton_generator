@@ -1,6 +1,9 @@
 <?php
 [{$oModule->renderFileComment()}]
 
+use \OxidEsales\Eshop\Core\Module;
+use \OxidEsales\Eshop\Core\Registry;
+
 [{assign var='sModuleClassName' value=$oModule->getModuleClassName()|cat:'Module'}]
 /**
  * Class [{$sModuleClassName}]
@@ -8,28 +11,28 @@
  *
  * @codeCoverageIgnore
  */
-class [{$sModuleClassName}] extends oxModule
+class [{$sModuleClassName}] extends Module
 {
 
     /**
      * Class constructor.
      * Sets current module main data and loads the rest module info.
      */
-    function __construct()
+    public function __construct()
     {
         $sModuleId = '[{$oModule->getModuleId(false)}]';
 
         $this->setModuleData(
             array(
-                 'id'          => $sModuleId,
-                 'title'       => '[{$oModule->getTitle()}]',
-                 'description' => '[{$oModule->getTitle()}] Module',
+                'id'          => $sModuleId,
+                'title'       => '[{$oModule->getTitle()}]',
+                'description' => '[{$oModule->getTitle()}] Module',
             )
         );
 
         $this->load($sModuleId);
 
-        oxRegistry::set('[{$sModuleClassName}]', $this);
+        Registry::set('[{$sModuleClassName}]', $this);
     }
 
 
@@ -46,7 +49,7 @@ class [{$sModuleClassName}] extends oxModule
      */
     public static function onDeactivate()
     {
-        self::_dbEvent('uninstall.sql', 'Error deactivating module: ');
+        return self::_dbEvent('uninstall.sql', 'Error deactivating module: ');
     }
 
     /**
@@ -87,7 +90,7 @@ class [{$sModuleClassName}] extends oxModule
             $sCode = '[{$oModule->getVendorPrefix(true)}]_[{$oModule->getModuleFolderName(true)}]_' . $sCode;
         }
 
-        return oxRegistry::getLang()->translateString($sCode, oxRegistry::getLang()->getBaseLanguage(), false);
+        return Registry::getLang()->translateString($sCode, Registry::getLang()->getBaseLanguage(), false);
     }
 
     /**
@@ -102,11 +105,11 @@ class [{$sModuleClassName}] extends oxModule
     {
         $sValue = '';
 
-        /** @var oxContent|oxI18n $oContent */
-        $oContent = oxNew('oxContent');
+        /** @var \OxidEsales\Eshop\Application\Model\Content|\OxidEsales\Eshop\Core\Model\MultiLanguageModel $oContent */
+        $oContent = oxNew(\OxidEsales\Eshop\Application\Model\Content::class);
         $oContent->loadByIdent(trim((string) $sIdentifier));
 
-        if ($oContent->oxcontents__oxcontent instanceof oxField) {
+        if ($oContent->getFieldData('oxcontent')) {
             $sValue = (string) $oContent->oxcontents__oxcontent->getRawValue();
             $sValue = (empty($blNoHtml) ? $sValue : nl2br(strip_tags($sValue)));
         }
@@ -128,7 +131,7 @@ class [{$sModuleClassName}] extends oxModule
             $sModuleSettingName = '[{$oModule->getModuleClassName()}]' . (string) $sModuleSettingName;
         }
 
-        return oxRegistry::getConfig()->getConfigParam((string) $sModuleSettingName);
+        return Registry::getConfig()->getConfigParam((string) $sModuleSettingName);
     }
 
     /**
@@ -138,7 +141,7 @@ class [{$sModuleClassName}] extends oxModule
      */
     public function getPath()
     {
-        return oxRegistry::getConfig()->getModulesDir() . '[{$oModule->getVendorPrefix()}]/[{$oModule->getModuleFolderName()}]/';
+        return Registry::getConfig()->getModulesDir() . '[{$oModule->getVendorPrefix()}]/[{$oModule->getModuleFolderName()}]/';
     }
 
 
@@ -148,34 +151,31 @@ class [{$sModuleClassName}] extends oxModule
      *
      * @param string $sSqlFile      SQL file located in module docs folder (usually install.sql or uninstall.sql).
      * @param string $sFailureError An error message to show on failure.
+     *
+     * @return bool
+     * @throws Exception
      */
     protected static function _dbEvent($sSqlFile, $sFailureError = 'Operation failed: ')
     {
+        /** @var \OxidEsales\Eshop\Core\DbMetaDataHandler $oDbHandler */
+        $oDbHandler = oxNew('\OxidEsales\Eshop\Core\DbMetaDataHandler');
+
         try {
-            $oDb  = oxDb::getDb();
             $sSql = file_get_contents(dirname(__FILE__) . '/../docs/' . (string) $sSqlFile);
             $aSql = (array) explode(';', $sSql);
-
-            foreach ($aSql as $sQuery) {
-                if (!empty($sQuery)) {
-                    $oDb->execute($sQuery);
-                }
-            }
+            $oDbHandler->executeSql($aSql);
         } catch (Exception $ex) {
             error_log($sFailureError . $ex->getMessage());
         }
+
+        self::clearTmp();
 
 [{if $oModule->renderSamples()}]
 [{if $oModule->renderTasks()}]
         // TODO: Use following lines to update database views if You need that.
 [{/if}]
-        /** @var oxDbMetaDataHandler $oDbHandler */
-        //$oDbHandler = oxNew('oxDbMetaDataHandler');
         //$oDbHandler->updateViews();
 [{/if}]
-
-        self::clearTmp();
-
         return true;
     }
     
@@ -188,7 +188,7 @@ class [{$sModuleClassName}] extends oxModule
      */
     protected static function _getFolderToClear($sClearFolderPath = '')
     {
-        $sTempFolderPath = (string) oxRegistry::getConfig()->getConfigParam('sCompileDir');
+        $sTempFolderPath = (string) Registry::getConfig()->getConfigParam('sCompileDir');
 
         if (!empty($sClearFolderPath) and (strpos($sClearFolderPath, $sTempFolderPath) !== false)) {
             $sFolderPath = $sClearFolderPath;

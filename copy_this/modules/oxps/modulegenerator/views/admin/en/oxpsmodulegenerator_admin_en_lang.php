@@ -27,23 +27,20 @@
 $sLangName = 'English';
 
 $aLang = array(
-    'charset'                                     => 'UTF-8',
-    'oxpsmodulegenerator'                         => 'Module Generator',
-    'oxpsmodulegeneratormodule'                   => 'Wizard',
-    'OXPS_MODULEGENERATOR_ADMIN_TITLE'            => 'Module Skeleton Generator',
+    'charset'                                                  => 'UTF-8',
+    'oxpsmodulegenerator'                                      => 'Module Generator',
+    'oxpsmodulegeneratormodule'                                => 'Wizard',
+    'OXPS_MODULEGENERATOR_ADMIN_TITLE'                         => 'Module Skeleton Generator',
 
     // Settings
-    'SHOP_MODULE_GROUP_oxpsModuleGeneratorVendor' => 'Vendor and Copyright Settings',
-    'SHOP_MODULE_oxpsModuleGeneratorVendorPrefix' => 'Vendor prefix used for module generation. It should contain two to four lowercase latin letters, e.g. "abc"',
-    'SHOP_MODULE_oxpsModuleGeneratorModuleAuthor' => 'Module authors\' name. Company or developer full name.',
-    'SHOP_MODULE_oxpsModuleGeneratorAuthorLink'   => 'Module authors\' website URL.',
-    'SHOP_MODULE_oxpsModuleGeneratorAuthorMail'   => 'Module authors\' contact email.',
-    'SHOP_MODULE_oxpsModuleGeneratorCopyright'    => 'Module copyright part that goes before current year. For example: "My Company, 2001-"',
-    'SHOP_MODULE_oxpsModuleGeneratorComment'      => 'File comment text used in PHP files. Start each line with an asterisk: `*`.<br/>' .
-                                                     'Normally it should contain legal notices and short license info.',
-
-    'SHOP_MODULE_GROUP_oxpsModuleGeneratorTests'               => 'Generated Modules Tests Settings',
-    'SHOP_MODULE_oxpsModuleGeneratorTestsGitUrl'               => 'URL of a remote GIT repository to clone tests folder from for generated modules.',
+    'SHOP_MODULE_GROUP_oxpsModuleGeneratorVendor'              => 'Vendor and Copyright Settings',
+    'SHOP_MODULE_oxpsModuleGeneratorVendorPrefix'              => 'Vendor prefix used for module generation. It should contain two to four lowercase latin letters, e.g. "abc"',
+    'SHOP_MODULE_oxpsModuleGeneratorModuleAuthor'              => 'Module authors\' name. Company or developer full name.',
+    'SHOP_MODULE_oxpsModuleGeneratorAuthorLink'                => 'Module authors\' website URL.',
+    'SHOP_MODULE_oxpsModuleGeneratorAuthorMail'                => 'Module authors\' contact email.',
+    'SHOP_MODULE_oxpsModuleGeneratorCopyright'                 => 'Module copyright part that goes before current year. For example: "My Company, 2001-"',
+    'SHOP_MODULE_oxpsModuleGeneratorComment'                   => 'File comment text used in PHP files. Start each line with an asterisk: `*`.<br/>' .
+                                                                  'Normally it should contain legal notices and short license info.',
 
     // Module generation form
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_NAME'                   => 'Module name',
@@ -73,8 +70,8 @@ $aLang = array(
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_INIT_VERSION'           => 'Initial module version',
     'OXPS_MODULEGENERATOR_ADMIN_HAS_ADMINISTRATION'            => 'Has admin interface',
     'OXPS_MODULEGENERATOR_ADMIN_HAS_ADMINISTRATION_HINT'       => 'Select this option if module requires administration interface.',
-    'OXPS_MODULEGENERATOR_ADMIN_CHECKOUT_UNIT_TESTS'           => 'Ckeckout Unit tests',
-    'OXPS_MODULEGENERATOR_ADMIN_CHECKOUT_UNIT_TESTS_HINT'      => 'Clone latest version of generic tests folder from GIT. NOTE: Your environment should be configured to access configured GIT repository!',
+    'OXPS_MODULEGENERATOR_ADMIN_CHECKOUT_UNIT_TESTS'           => 'Generate Unit tests',
+    'OXPS_MODULEGENERATOR_ADMIN_CHECKOUT_UNIT_TESTS_HINT'      => 'Create empty test class for each generated module class with configured relations and proper naming.',
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_GENERATE'               => 'Create New Module',
 
     // Module generation form errors and messages

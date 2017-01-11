@@ -24,18 +24,21 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
+use \OxidEsales\Eshop\Core\Module;
+use \OxidEsales\Eshop\Core\Registry;
+
 /**
  * Class oxpsModuleGeneratorModule.
  * Handles module setup, provides additional tools and module related helpers.
  */
-class oxpsModuleGeneratorModule extends oxModule
+class oxpsModuleGeneratorModule extends Module
 {
 
     /**
      * Class constructor.
      * Sets current module main data and loads the rest module info.
      */
-    function __construct()
+    public function __construct()
     {
         $sModuleId = 'oxpsmodulegenerator';
 
@@ -49,7 +52,7 @@ class oxpsModuleGeneratorModule extends oxModule
 
         $this->load($sModuleId);
 
-        oxRegistry::set('oxpsModuleGeneratorModule', $this);
+        Registry::set('oxpsModuleGeneratorModule', $this);
     }
 
 
@@ -109,7 +112,7 @@ class oxpsModuleGeneratorModule extends oxModule
             $sCode = 'OXPS_MODULEGENERATOR_' . $sCode;
         }
 
-        return oxRegistry::getLang()->translateString($sCode, oxRegistry::getLang()->getBaseLanguage(), false);
+        return Registry::getLang()->translateString($sCode, Registry::getLang()->getBaseLanguage(), false);
     }
 
     /**
@@ -124,11 +127,11 @@ class oxpsModuleGeneratorModule extends oxModule
     {
         $sValue = '';
 
-        /** @var oxContent|oxI18n $oContent */
-        $oContent = oxNew('oxContent');
+        /** @var \OxidEsales\Eshop\Application\Model\Content|\OxidEsales\Eshop\Core\Model\MultiLanguageModel $oContent */
+        $oContent = oxNew(\OxidEsales\Eshop\Application\Model\Content::class);
         $oContent->loadByIdent(trim((string) $sIdentifier));
 
-        if ($oContent->oxcontents__oxcontent instanceof oxField) {
+        if ($oContent->getFieldData('oxcontent')) {
             $sValue = (string) $oContent->oxcontents__oxcontent->getRawValue();
             $sValue = (empty($blNoHtml) ? $sValue : nl2br(strip_tags($sValue)));
         }
@@ -150,7 +153,7 @@ class oxpsModuleGeneratorModule extends oxModule
             $sModuleSettingName = 'oxpsModuleGenerator' . (string) $sModuleSettingName;
         }
 
-        return oxRegistry::getConfig()->getConfigParam((string) $sModuleSettingName);
+        return Registry::getConfig()->getConfigParam((string) $sModuleSettingName);
     }
 
     /**
@@ -160,7 +163,7 @@ class oxpsModuleGeneratorModule extends oxModule
      */
     public function getPath()
     {
-        return oxRegistry::getConfig()->getModulesDir() . 'oxps/modulegenerator/';
+        return Registry::getConfig()->getModulesDir() . 'oxps/modulegenerator/';
     }
 
 
@@ -173,7 +176,7 @@ class oxpsModuleGeneratorModule extends oxModule
      */
     protected static function _getFolderToClear($sClearFolderPath = '')
     {
-        $sTempFolderPath = (string) oxRegistry::getConfig()->getConfigParam('sCompileDir');
+        $sTempFolderPath = (string) Registry::getConfig()->getConfigParam('sCompileDir');
 
         if (!empty($sClearFolderPath) and (strpos($sClearFolderPath, $sTempFolderPath) !== false)) {
             $sFolderPath = $sClearFolderPath;

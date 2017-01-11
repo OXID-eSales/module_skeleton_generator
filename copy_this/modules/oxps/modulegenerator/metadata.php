@@ -96,12 +96,6 @@ $aModule = array(
             'type'  => 'arr',
             'value' => array()
         ),
-        array(
-            'group' => 'oxpsModuleGeneratorTests',
-            'name'  => 'oxpsModuleGeneratorTestsGitUrl',
-            'type'  => 'str',
-            'value' => '',
-        ),
     ),
     'events'      => array(
         'onActivate'   => 'oxpsModuleGeneratorModule::onActivate',

@@ -27,23 +27,20 @@
 $sLangName = 'Deutsch';
 
 $aLang = array(
-    'charset'                                     => 'UTF-8',
-    'oxpsmodulegenerator'                         => 'Modul Generator',
-    'oxpsmodulegeneratormodule'                   => 'Wizard',
-    'OXPS_MODULEGENERATOR_ADMIN_TITLE'            => 'Modul Skeleton Generator',
+    'charset'                                                  => 'UTF-8',
+    'oxpsmodulegenerator'                                      => 'Modul Generator',
+    'oxpsmodulegeneratormodule'                                => 'Wizard',
+    'OXPS_MODULEGENERATOR_ADMIN_TITLE'                         => 'Modul Skeleton Generator',
 
     // Settings
-    'SHOP_MODULE_GROUP_oxpsModuleGeneratorVendor' => 'Hersteller und Copyright Einstellungen',
-    'SHOP_MODULE_oxpsModuleGeneratorVendorPrefix' => 'Hersteller-Präfix für das neue Modul. Es sollte ab zwei bis vier Klein lateinische Buchstaben enthalten, z.B. "abc"',
-    'SHOP_MODULE_oxpsModuleGeneratorModuleAuthor' => 'Name von Unternehmen oder Entwickler',
-    'SHOP_MODULE_oxpsModuleGeneratorAuthorLink'   => 'Website URL des Modulauthors',
-    'SHOP_MODULE_oxpsModuleGeneratorAuthorMail'   => 'E-Mail-Adresse des Modulauthors',
-    'SHOP_MODULE_oxpsModuleGeneratorCopyright'    => 'Copyright bis zum aktuellen Jahr. z.B. "My Company, 2001-"',
-    'SHOP_MODULE_oxpsModuleGeneratorComment'      => 'Kommentar-Text für PHP Dateien. Jede Zeile beginnt mit *<br/>' .
-                                                     'Normalerweise sollte es Hinweise und Kurz Lizenz Info stehen',
-
-    'SHOP_MODULE_GROUP_oxpsModuleGeneratorTests'               => 'Module Tests Einstellungen',
-    'SHOP_MODULE_oxpsModuleGeneratorTestsGitUrl'               => 'URL eines entfernten GIT-Repository für Tests-Ordner für generierte Module zu klonen',
+    'SHOP_MODULE_GROUP_oxpsModuleGeneratorVendor'              => 'Hersteller und Copyright Einstellungen',
+    'SHOP_MODULE_oxpsModuleGeneratorVendorPrefix'              => 'Hersteller-Präfix für das neue Modul. Es sollte ab zwei bis vier Klein lateinische Buchstaben enthalten, z.B. "abc"',
+    'SHOP_MODULE_oxpsModuleGeneratorModuleAuthor'              => 'Name von Unternehmen oder Entwickler',
+    'SHOP_MODULE_oxpsModuleGeneratorAuthorLink'                => 'Website URL des Modulauthors',
+    'SHOP_MODULE_oxpsModuleGeneratorAuthorMail'                => 'E-Mail-Adresse des Modulauthors',
+    'SHOP_MODULE_oxpsModuleGeneratorCopyright'                 => 'Copyright bis zum aktuellen Jahr. z.B. "My Company, 2001-"',
+    'SHOP_MODULE_oxpsModuleGeneratorComment'                   => 'Kommentar-Text für PHP Dateien. Jede Zeile beginnt mit *<br/>' .
+                                                                  'Normalerweise sollte es Hinweise und Kurz Lizenz Info stehen',
 
     // Module generation form
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_NAME'                   => 'Modul Name',
@@ -73,8 +70,8 @@ $aLang = array(
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_INIT_VERSION'           => 'Initiale Modulversion',
     'OXPS_MODULEGENERATOR_ADMIN_HAS_ADMINISTRATION'            => 'Adminoberfläche erstellen',
     'OXPS_MODULEGENERATOR_ADMIN_HAS_ADMINISTRATION_HINT'       => 'Gibt an ob das Modul eine Adminoberfläche benötigt.',
-    'OXPS_MODULEGENERATOR_ADMIN_CHECKOUT_UNIT_TESTS'           => 'Ckeckout Unit tests',
-    'OXPS_MODULEGENERATOR_ADMIN_CHECKOUT_UNIT_TESTS_HINT'      => 'Klone den neuesten Generic-Test-Ordner aus dem GIT. Anmerkung: Die Umgebung sollte entsprechend konfiguriert sein!',
+    'OXPS_MODULEGENERATOR_ADMIN_CHECKOUT_UNIT_TESTS'           => 'Generieren Sie Unit-Tests',
+    'OXPS_MODULEGENERATOR_ADMIN_CHECKOUT_UNIT_TESTS_HINT'      => '[TR - Create empty test class for each generated module class with configured relations and proper naming.]',
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_GENERATE'               => 'Neues Modul anlegen',
 
     // Module generation form errors and messages

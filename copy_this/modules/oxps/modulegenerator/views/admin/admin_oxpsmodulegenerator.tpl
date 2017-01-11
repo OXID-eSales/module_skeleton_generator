@@ -117,7 +117,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    [{section name=settings start=0 loop=3}]
+                                    [{section name=settings start=0 loop=5}]
                                         [{assign var='i' value=$smarty.section.settings.index}]
                                         [{assign var='aSetting' value=$oValues->settings.$i}]
                                         [{assign var='sType' value=$aSetting.type}]

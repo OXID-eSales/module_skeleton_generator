@@ -395,7 +395,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
 
         // Clone PHP Unit tests libraries if the option is checked and configured
         if ($this->getArrayValue($aGenerationOptions, 'blFetchUnitTests')) {
-            $oHelper->fillTestsFolder($oRenderHelper, $sModuleGeneratorPath, $sModulePath, $aClassesToExtend, $aNewClasses);
+            $oHelper->fillTestsFolder($oRenderHelper, $sModuleGeneratorPath, $aClassesToExtend, $aNewClasses);
         }
 
         return true;

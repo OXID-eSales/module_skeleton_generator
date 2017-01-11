@@ -201,26 +201,22 @@ class oxpsModuleGeneratorHelper extends oxSuperCfg
     }
 
     /**
-     * Clone and copy tests folder into generated module,
-     * create pre-configured unit test class for each generated module class.
+     * Create pre-configured unit test class for each generated module class.
      *
      * @param oxpsModuleGeneratorRender $oRenderHelper
      * @param string                    $sModuleGeneratorPath
-     * @param string                    $sModulePath
      * @param array                     $aClassesToExtend
      * @param array                     $aNewClasses
      */
-    public function fillTestsFolder(oxpsModuleGeneratorRender $oRenderHelper, $sModuleGeneratorPath, $sModulePath,
+    public function fillTestsFolder(oxpsModuleGeneratorRender $oRenderHelper, $sModuleGeneratorPath,
                                     array $aClassesToExtend, array $aNewClasses)
     {
-        if ($this->_cloneUnitTests($sModulePath)) {
-            $aAllFiles = array_merge($aClassesToExtend, $aNewClasses);
-            $sTemplate = sprintf('%score/module.tpl/oxpstestclass.php.tpl', $sModuleGeneratorPath);
-            $aNewFiles = (array) $this->_copyNewClasses($aAllFiles, $sTemplate, 'tests/unit/modules/', true);
+        $aAllFiles = array_merge($aClassesToExtend, $aNewClasses);
+        $sTemplate = sprintf('%score/module.tpl/oxpstestclass.php.tpl', $sModuleGeneratorPath);
+        $aNewFiles = (array) $this->_copyNewClasses($aAllFiles, $sTemplate, 'tests/Unit/modules/', true);
 
-            if (!empty($aNewFiles)) {
-                $oRenderHelper->renderWithSmartyAndRename(array_keys($aNewFiles), $aNewFiles);
-            }
+        if (!empty($aNewFiles)) {
+            $oRenderHelper->renderWithSmartyAndRename(array_keys($aNewFiles), $aNewFiles);
         }
     }
 
@@ -421,52 +417,5 @@ class oxpsModuleGeneratorHelper extends oxSuperCfg
         $oReflection = new ReflectionClass(new $sClassName());
 
         return $oReflection->getName();
-    }
-
-    /**
-     * Clone tests library (Generic Test Folder) to temp location,
-     * then copy tests library into the module and do a cleanup.
-     *
-     * @param string $sModulePath Full path to a module.
-     *
-     * @return bool
-     */
-    protected function _cloneUnitTests($sModulePath)
-    {
-        /** @var oxpsModuleGeneratorModule $oModule */
-        $oModule = oxRegistry::get('oxpsModuleGeneratorModule');
-        $sGitUrl = (string) $oModule->getSetting('TestsGitUrl');
-
-        if (empty($sGitUrl)) {
-            return false;
-        }
-
-        $sTmpDir = sys_get_temp_dir() . '/tests' . date('YmdHis') . mt_rand(10000, 99999) . '/';
-        $aCommands = array(
-            sprintf('git clone %s %s', $sGitUrl, $sTmpDir),
-            sprintf('cp -R %stests/* %stests/', $sTmpDir, $sModulePath),
-            sprintf('chmod 0777 -R %stests', $sModulePath),
-            sprintf('dos2unix %stests/*.sh', $sModulePath),
-            sprintf('rm -rf %s', $sTmpDir),
-        );
-
-        foreach ($aCommands as $sCommand) {
-            $this->_shellExec($sCommand);
-        }
-
-        return $this->getFileSystemHelper()->isDir($sModulePath . 'tests/unit/');
-    }
-
-    /**
-     * An alias for PHP function `shell_exec`.
-     * Errors are suspended.
-     *
-     * @codeCoverageIgnore
-     *
-     * @param string $sCommand
-     */
-    protected function _shellExec($sCommand)
-    {
-        @shell_exec((string) $sCommand);
     }
 }

@@ -131,7 +131,7 @@ class oxpsModuleGeneratorModule extends Module
         $oContent = oxNew(\OxidEsales\Eshop\Application\Model\Content::class);
         $oContent->loadByIdent(trim((string) $sIdentifier));
 
-        if ($oContent->getFieldData('oxcontent')) {
+        if (!empty($oContent->oxcontents__oxcontent)) {
             $sValue = (string) $oContent->oxcontents__oxcontent->getRawValue();
             $sValue = (empty($blNoHtml) ? $sValue : nl2br(strip_tags($sValue)));
         }

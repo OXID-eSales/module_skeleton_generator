@@ -24,17 +24,20 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
+use \OxidEsales\Eshop\Core\Base;
+use \OxidEsales\Eshop\Core\Registry;
+
 /**
  * Class oxpsModuleGeneratorRender
  * Smarty templates (module files) rendering helper for new copied module files.
  */
-class oxpsModuleGeneratorRender extends oxSuperCfg
+class oxpsModuleGeneratorRender extends Base
 {
 
     /**
      * A module instance to generate stuff for.
      *
-     * @var oxModule
+     * @var null|oxpsModuleGeneratorOxModule
      */
     protected $_oModule = null;
 
@@ -42,7 +45,7 @@ class oxpsModuleGeneratorRender extends oxSuperCfg
     /**
      * Alias for `setModule`.
      *
-     * @param oxModule|oxpsModuleGeneratorOxModule $oModule
+     * @param oxpsModuleGeneratorOxModule $oModule
      */
     public function init(oxpsModuleGeneratorOxModule $oModule)
     {
@@ -52,7 +55,7 @@ class oxpsModuleGeneratorRender extends oxSuperCfg
     /**
      * Set module instance to generate stuff for.
      *
-     * @param oxModule|oxpsModuleGeneratorOxModule $oModule
+     * @param oxpsModuleGeneratorOxModule $oModule
      */
     public function setModule(oxpsModuleGeneratorOxModule $oModule)
     {
@@ -62,7 +65,7 @@ class oxpsModuleGeneratorRender extends oxSuperCfg
     /**
      * Get module instance to generate stuff for.
      *
-     * @return oxModule|oxpsModuleGeneratorOxModule.
+     * @return oxpsModuleGeneratorOxModule.
      */
     public function getModule()
     {
@@ -102,14 +105,15 @@ class oxpsModuleGeneratorRender extends oxSuperCfg
         $sModulePath = $oModule->getFullPath();
 
         /** @var oxpsModuleGeneratorValidator $oValidator */
-        $oValidator = oxRegistry::get('oxpsModuleGeneratorValidator');
+        $oValidator = Registry::get('oxpsModuleGeneratorValidator');
 
         /** @var oxpsModuleGeneratorFileSystem $oFileSystemHelper */
-        $oFileSystemHelper = oxRegistry::get('oxpsModuleGeneratorFileSystem');
+        $oFileSystemHelper = Registry::get('oxpsModuleGeneratorFileSystem');
 
         // Initialize Smarty and process template files
+
         /** @var Smarty $oSmarty */
-        $oSmarty = oxRegistry::get("oxUtilsView")->getSmarty();
+        $oSmarty = Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->getSmarty();
         $oSmarty->assign('oModule', $oModule);
 
         foreach ($aClasses as $sFileName => $sFilePath) {
@@ -147,7 +151,7 @@ class oxpsModuleGeneratorRender extends oxSuperCfg
         $sCommentTemplate = $sBaseModulePath . 'modulegenerator/core/module.tpl/oxpscomment.inc.php.tpl';
 
         /** @var Smarty $oSmarty */
-        $oSmarty = oxRegistry::get("oxUtilsView")->getSmarty();
+        $oSmarty = Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->getSmarty();
         $oSmarty->assign('oModule', $this->getModule());
 
         if (!empty($sSubPackage)) {
@@ -171,7 +175,7 @@ class oxpsModuleGeneratorRender extends oxSuperCfg
         $sModuleId = $this->getModule()->getModuleId();
 
         $aFilesToProcess = array(
-            $sModuleId . '_de_lang.php'       => 'translations/de/oxpsmodule_lang.php.tpl',
+            $sModuleId . '_de_lang.php'       => 'translations/de/oxpsmodule_lang.php.tpl', // TODO DDR: CamelCase -V-
             $sModuleId . '_en_lang.php'       => 'translations/en/oxpsmodule_lang.php.tpl',
             $sModuleId . 'Module.php'         => 'Core/oxpsModule.php.tpl',
             'docs/install.sql',

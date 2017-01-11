@@ -24,24 +24,27 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
+use \OxidEsales\Eshop\Core\Base;
+use \OxidEsales\Eshop\Core\Registry;
+
 /**
  * Class oxpsModuleGeneratorHelper.
  * Implement helpers and additional methods for module generation.
  */
-class oxpsModuleGeneratorHelper extends oxSuperCfg
+class oxpsModuleGeneratorHelper extends Base
 {
 
     /**
      * A module instance to generate stuff for.
      *
-     * @var oxModule
+     * @var null|oxpsModuleGeneratorOxModule
      */
     protected $_oModule = null;
 
     /**
      * File system helper instance.
      *
-     * @var null
+     * @var null|oxpsModuleGeneratorFileSystem
      */
     protected $_oFileSystemHelper = null;
 
@@ -59,7 +62,7 @@ class oxpsModuleGeneratorHelper extends oxSuperCfg
     /**
      * Set module instance to generate stuff for.
      *
-     * @param oxModule|oxpsModuleGeneratorOxModule $oModule
+     * @param oxpsModuleGeneratorOxModule $oModule
      */
     public function setModule(oxpsModuleGeneratorOxModule $oModule)
     {
@@ -69,7 +72,7 @@ class oxpsModuleGeneratorHelper extends oxSuperCfg
     /**
      * Get module instance to generate stuff for.
      *
-     * @return oxModule|oxpsModuleGeneratorOxModule.
+     * @return oxpsModuleGeneratorOxModule.
      */
     public function getModule()
     {
@@ -84,7 +87,7 @@ class oxpsModuleGeneratorHelper extends oxSuperCfg
     public function getFileSystemHelper()
     {
         if (is_null($this->_oFileSystemHelper)) {
-            $this->_oFileSystemHelper = oxRegistry::get('oxpsModuleGeneratorFileSystem');
+            $this->_oFileSystemHelper = Registry::get('oxpsModuleGeneratorFileSystem');
         }
 
         return $this->_oFileSystemHelper;
@@ -161,7 +164,7 @@ class oxpsModuleGeneratorHelper extends oxSuperCfg
     public function createNewClassesAndTemplates($sModuleGeneratorPath)
     {
         /** @var oxpsModuleGeneratorValidator $oValidator */
-        $oValidator = oxRegistry::get('oxpsModuleGeneratorValidator');
+        $oValidator = Registry::get('oxpsModuleGeneratorValidator');
 
         $aClassesToCreate = (array) $this->getModule()->getClassesToCreate();
         $aCreatedClasses = array();
@@ -212,7 +215,7 @@ class oxpsModuleGeneratorHelper extends oxSuperCfg
                                     array $aClassesToExtend, array $aNewClasses)
     {
         $aAllFiles = array_merge($aClassesToExtend, $aNewClasses);
-        $sTemplate = sprintf('%score/module.tpl/oxpstestclass.php.tpl', $sModuleGeneratorPath);
+        $sTemplate = sprintf('%score/module.tpl/oxpstestclass.php.tpl', $sModuleGeneratorPath); // TODO DDR: CamelCase all
         $aNewFiles = (array) $this->_copyNewClasses($aAllFiles, $sTemplate, 'tests/Unit/modules/', true);
 
         if (!empty($aNewFiles)) {
@@ -254,7 +257,7 @@ class oxpsModuleGeneratorHelper extends oxSuperCfg
         $aNewFiles = array();
 
         if (!empty($sClassTemplate) and !empty($sClassPath)) {
-            $sTemplatePath = sprintf('%score/module.tpl/%s', $sModuleGeneratorPath, $sClassTemplate);
+            $sTemplatePath = sprintf('%score/module.tpl/%s', $sModuleGeneratorPath, $sClassTemplate); // TODO DDR: CamelCase all
             $aNewFiles = $this->_copyNewClasses($aClasses, $sTemplatePath, $sClassPath);
         }
 

@@ -24,13 +24,16 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
+use \OxidEsales\Eshop\Core\Registry;
+use \OxidEsales\Eshop\Core\Str;
+
 /**
- * Class oxpsModuleGeneratorOxModule overloads oxModule
- * Extends oxModule class to add extra fields and tools for modules generation.
+ * Class oxpsModuleGeneratorOxModule overloads \OxidEsales\Eshop\Core\Module
+ * Extends \OxidEsales\Eshop\Core\Module class to add extra fields and tools for modules generation.
  * The class becomes a container for all information required to generate  module.
  * NOTE: This class is very long, but it cannot be split since consists mostly of getters and setters.
  *
- * @see oxModule
+ * @see \OxidEsales\Eshop\Core\Module
  */
 class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
 {
@@ -61,8 +64,6 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      * Set module vendor prefix. It is also a vendor directory name.
      *
      * @param string $sVendorPrefix
-     *
-     * @return string
      */
     public function setVendorPrefix($sVendorPrefix)
     {
@@ -79,7 +80,11 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
     public function getVendorPrefix($blUppercase = false)
     {
         if (!empty($blUppercase)) {
-            return oxStr::getStr()->strtoupper($this->_sVendorPrefix);
+
+            /** @var \OxidEsales\Eshop\Core\StrMb|\OxidEsales\Eshop\Core\StrRegular $oStr */
+            $oStr = Str::getStr();
+
+            return $oStr->strtoupper($this->_sVendorPrefix);
         }
 
         return $this->_sVendorPrefix;
@@ -119,7 +124,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
     public function getValidator()
     {
         if (is_null($this->_oValidator)) {
-            $this->_oValidator = oxRegistry::get('oxpsModuleGeneratorValidator');
+            $this->_oValidator = Registry::get('oxpsModuleGeneratorValidator');
         }
 
         return $this->_oValidator;
@@ -135,8 +140,6 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     public function getModuleId($blCamelCase = true)
     {
-        /** @var oxpsModuleGeneratorOxModule|oxModule $this */
-
         return empty($blCamelCase) ? $this->getId() : $this->getInfo('oxpsmodulegenerator_class');
     }
 
@@ -149,12 +152,14 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     public function getModuleFolderName($blUppercase = false)
     {
-        /** @var oxpsModuleGeneratorOxModule|oxModule $this */
-
         $sFolderName = $this->getInfo('oxpsmodulegenerator_folder');
 
         if ($blUppercase and !is_null($sFolderName)) {
-            $sFolderName = oxStr::getStr()->strtoupper($sFolderName);
+
+            /** @var \OxidEsales\Eshop\Core\StrMb|\OxidEsales\Eshop\Core\StrRegular $oStr */
+            $oStr = Str::getStr();
+
+            $sFolderName = $oStr->strtoupper($sFolderName);
         }
 
         return $sFolderName;
@@ -177,8 +182,6 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     public function getClassesToExtend()
     {
-        /** @var oxpsModuleGeneratorOxModule|oxModule $this */
-
         return (array) $this->getInfo('oxpsmodulegenerator_extend_classes');
     }
 
@@ -197,8 +200,6 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     public function getClassesToCreate($sObjectType = null, $sObjectsParam = null)
     {
-        /** @var oxpsModuleGeneratorOxModule|oxModule $this */
-
         $mData = array(
             'widgets'     => array(
                 'aClasses'       => (array) $this->getInfo('oxpsmodulegenerator_widgets'),
@@ -247,8 +248,6 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     public function getBlocks()
     {
-        /** @var oxpsModuleGeneratorOxModule|oxModule $this */
-
         return (array) $this->getInfo('oxpsmodulegenerator_blocks');
     }
 
@@ -259,8 +258,6 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     public function getSettings()
     {
-        /** @var oxpsModuleGeneratorOxModule|oxModule $this */
-
         return (array) $this->getInfo('oxpsmodulegenerator_module_settings');
     }
 
@@ -283,8 +280,6 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     public function getInitialVersion()
     {
-        /** @var oxpsModuleGeneratorOxModule|oxModule $this */
-
         return (string) $this->getInfo('oxpsmodulegenerator_module_init_version');
     }
 
@@ -295,8 +290,6 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     public function renderTasks()
     {
-        /** @var oxpsModuleGeneratorOxModule|oxModule $this */
-
         return (bool) $this->getInfo('oxpsmodulegenerator_render_tasks');
     }
 
@@ -307,8 +300,6 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     public function renderSamples()
     {
-        /** @var oxpsModuleGeneratorOxModule|oxModule $this */
-
         return (bool) $this->getInfo('oxpsmodulegenerator_render_samples');
     }
 
@@ -319,9 +310,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     public function getVendorPath()
     {
-        /** @var oxpsModuleGeneratorOxModule|oxModule $this */
-
-        return $this->getConfig()->getModulesDir() . $this->getVendorPrefix() . '/';
+        return Registry::getConfig()->getModulesDir() . $this->getVendorPrefix() . '/';
     }
 
     /**
@@ -361,18 +350,18 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
     {
         // Initialize helpers
         /** @var oxpsModuleGeneratorHelper $oHelper */
-        $oHelper = oxRegistry::get('oxpsModuleGeneratorHelper');
+        $oHelper = Registry::get('oxpsModuleGeneratorHelper');
         $oHelper->init($this);
 
         /** @var oxpsModuleGeneratorRender $oRenderHelper */
-        $oRenderHelper = oxRegistry::get('oxpsModuleGeneratorRender');
+        $oRenderHelper = Registry::get('oxpsModuleGeneratorRender');
         $oRenderHelper->init($this);
 
         // Set module data - initializes it with new module info
         $this->_setNewModuleData($sModuleName, $aGenerationOptions);
 
         // Get new module and module generation template full paths
-        $sModuleGeneratorPath = oxRegistry::get('oxpsModuleGeneratorModule')->getPath();
+        $sModuleGeneratorPath = Registry::get('oxpsModuleGeneratorModule')->getPath();
         $sModulePath = $this->getFullPath();
 
         // Copy the module from a folder structure with templates to a new module path
@@ -381,7 +370,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
 
         // Create classes to overload (extend)
         $aClassesToExtend = (array) $oHelper->createClassesToExtend(
-            $sModuleGeneratorPath . 'core/module.tpl/oxpsextendclass.php.tpl'
+            $sModuleGeneratorPath . 'core/module.tpl/oxpsextendclass.php.tpl' // TODO DDR: CamelCase here and above
         );
 
         // Create new module classes and templates
@@ -448,7 +437,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
     public function renderFileComment($sSubPackage = '')
     {
         /** @var oxpsModuleGeneratorRender $oRenderHelper */
-        $oRenderHelper = oxRegistry::get('oxpsModuleGeneratorRender');
+        $oRenderHelper = Registry::get('oxpsModuleGeneratorRender');
         $oRenderHelper->init($this);
 
         return $oRenderHelper->renderFileComment($sSubPackage);
@@ -492,10 +481,11 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     protected function _setNewModuleData($sModuleName, array $aOptions = array())
     {
-        /** @var oxpsModuleGeneratorOxModule|oxModule $this */
         /** @var oxpsModuleGeneratorSettings $oSettingsParser */
-        $oSettingsParser = oxRegistry::get('oxpsModuleGeneratorSettings');
-        $oStr = oxStr::getStr();
+        $oSettingsParser = Registry::get('oxpsModuleGeneratorSettings');
+
+        /** @var \OxidEsales\Eshop\Core\StrMb|\OxidEsales\Eshop\Core\StrRegular $oStr */
+        $oStr = Str::getStr();
         $sVendorPrefix = $this->getVendorPrefix();
         $sVarPrefix = $oStr->strtoupper($sVendorPrefix);
         $sModuleFolder = $sModuleName;
@@ -539,7 +529,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
     protected function _moduleExists($sModuleName)
     {
         /** @var oxpsModuleGeneratorFileSystem $oFileSystemHelper */
-        $oFileSystemHelper = oxRegistry::get('oxpsModuleGeneratorFileSystem');
+        $oFileSystemHelper = Registry::get('oxpsModuleGeneratorFileSystem');
 
         return $oFileSystemHelper->isDir($this->getVendorPath() . $sModuleName);
     }

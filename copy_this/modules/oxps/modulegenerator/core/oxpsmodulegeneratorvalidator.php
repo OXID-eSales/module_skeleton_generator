@@ -24,11 +24,13 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
+use \OxidEsales\Eshop\Core\Base;
+
 /**
  * Class oxpsModuleGeneratorValidator.
  * Validation helpers used in module generation processes and data access helpers.
  */
-class oxpsModuleGeneratorValidator extends oxSuperCfg
+class oxpsModuleGeneratorValidator extends Base
 {
 
     /**
@@ -88,7 +90,7 @@ class oxpsModuleGeneratorValidator extends oxSuperCfg
      * @param mixed  $mArrayKey
      * @param string $sType
      *
-     * @return bool
+     * @return mixed
      */
     public function getArrayValue(array $aDataArray, $mArrayKey, $sType = 'string')
     {

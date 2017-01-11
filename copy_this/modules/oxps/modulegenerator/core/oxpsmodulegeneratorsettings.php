@@ -24,11 +24,15 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
+use \OxidEsales\Eshop\Core\Base;
+use \OxidEsales\Eshop\Core\Registry;
+use \OxidEsales\Eshop\Core\Str;
+
 /**
  * Class oxpsModuleGeneratorSettings
  * Generated module settings parsing and validation helper.
  */
-class oxpsModuleGeneratorSettings extends oxSuperCfg
+class oxpsModuleGeneratorSettings extends Base
 {
 
     /**
@@ -41,7 +45,7 @@ class oxpsModuleGeneratorSettings extends oxSuperCfg
     public function getModuleSettings(array $aModuleSettings)
     {
         /** @var oxpsModuleGeneratorValidator $oValidator */
-        $oValidator = oxRegistry::get('oxpsModuleGeneratorValidator');
+        $oValidator = Registry::get('oxpsModuleGeneratorValidator');
 
         $aCleanSettings = array();
 
@@ -122,7 +126,10 @@ class oxpsModuleGeneratorSettings extends oxSuperCfg
      */
     protected function _getBooleanSettingValue($sInitialValue)
     {
-        return (empty($sInitialValue) or oxStr::getStr()->strtolower($sInitialValue) == 'false')
+        /** @var \OxidEsales\Eshop\Core\StrMb|\OxidEsales\Eshop\Core\StrRegular $oStr */
+        $oStr = Str::getStr();
+
+        return (empty($sInitialValue) or $oStr->strtolower($sInitialValue) == 'false')
             ? 'false'
             : 'true';
     }

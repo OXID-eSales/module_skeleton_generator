@@ -24,6 +24,8 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
+use \OxidEsales\Eshop\Application\Controller\Admin\AdminController;
+use \OxidEsales\Eshop\Core\Registry;
 use \OxidEsales\Eshop\Core\Str;
 
 /**
@@ -32,7 +34,7 @@ use \OxidEsales\Eshop\Core\Str;
  *
  * @todo (nice2have) Class got too long -> move some methods to validation helper or some other class.
  */
-class Admin_oxpsModuleGenerator extends oxAdminView
+class Admin_oxpsModuleGenerator extends AdminController
 {
 
     /**
@@ -114,7 +116,7 @@ class Admin_oxpsModuleGenerator extends oxAdminView
      */
     public function getVendorPrefix()
     {
-        return (string) oxRegistry::get('oxpsModuleGeneratorModule')->getSetting('VendorPrefix');
+        return (string) Registry::get('oxpsModuleGeneratorModule')->getSetting('VendorPrefix');
     }
 
     /**
@@ -125,7 +127,7 @@ class Admin_oxpsModuleGenerator extends oxAdminView
     public function getAuthorData()
     {
         /** @var oxpsModuleGeneratorModule $oModuleGeneratorModule */
-        $oModuleGeneratorModule = oxRegistry::get('oxpsModuleGeneratorModule');
+        $oModuleGeneratorModule = Registry::get('oxpsModuleGeneratorModule');
 
         return array(
             'name' => (string) $oModuleGeneratorModule->getSetting('ModuleAuthor'),
@@ -149,7 +151,7 @@ class Admin_oxpsModuleGenerator extends oxAdminView
         $aGenerationOptions = $this->_getGenerationOptions();
 
         /** @var oxpsModuleGeneratorValidator $oValidator */
-        $oValidator = oxRegistry::get('oxpsModuleGeneratorValidator');
+        $oValidator = Registry::get('oxpsModuleGeneratorValidator');
 
         if (!$oValidator->validateVendorPrefix($this->getVendorPrefix())) {
 
@@ -199,7 +201,8 @@ class Admin_oxpsModuleGenerator extends oxAdminView
      */
     protected function _getGenerationOptions()
     {
-        $oConfig = $this->getConfig();
+        /** @var \OxidEsales\Eshop\Core\Request $oRequest */
+        $oRequest = Registry::get(\OxidEsales\Eshop\Core\Request::class);
 
         $aGenerationOptions = array(
             'aExtendClasses'   => $this->_validateAndLinkClasses($this->_getTextParam('modulegenerator_extend_classes')),
@@ -212,11 +215,11 @@ class Admin_oxpsModuleGenerator extends oxAdminView
                 $this->getVendorPrefix(),
                 $this->_getTextParam('modulegenerator_module_name')
             ),
-            'aModuleSettings'  => (array) $oConfig->getRequestParameter('modulegenerator_settings'),
-            'sInitialVersion'  => (string) $oConfig->getRequestParameter('modulegenerator_init_version'),
-            'blFetchUnitTests' => (bool) $oConfig->getRequestParameter('modulegenerator_fetch_unit_tests'),
-            'blRenderTasks'    => (bool) $oConfig->getRequestParameter('modulegenerator_render_tasks'),
-            'blRenderSamples'  => (bool) $oConfig->getRequestParameter('modulegenerator_render_samples'),
+            'aModuleSettings'  => (array) $oRequest->getRequestParameter('modulegenerator_settings'),
+            'sInitialVersion'  => (string) $oRequest->getRequestParameter('modulegenerator_init_version'),
+            'blFetchUnitTests' => (bool) $oRequest->getRequestParameter('modulegenerator_fetch_unit_tests'),
+            'blRenderTasks'    => (bool) $oRequest->getRequestParameter('modulegenerator_render_tasks'),
+            'blRenderSamples'  => (bool) $oRequest->getRequestParameter('modulegenerator_render_samples'),
         );
 
         return $this->_filterListModels($aGenerationOptions);
@@ -230,7 +233,7 @@ class Admin_oxpsModuleGenerator extends oxAdminView
     protected function _getFormValues()
     {
         /** @var oxpsModuleGeneratorValidator $oValidator */
-        $oValidator = oxRegistry::get('oxpsModuleGeneratorValidator');
+        $oValidator = Registry::get('oxpsModuleGeneratorValidator');
 
         $aOptions = (array) $this->_getGenerationOptions();
 
@@ -272,8 +275,8 @@ class Admin_oxpsModuleGenerator extends oxAdminView
      */
     protected function _getListModelsFieldValue(array $aRequestListModels)
     {
-        /** @var oxStrMb|oxStrRegular $oStr */
-        $oStr = oxStr::getStr();
+        /** @var \OxidEsales\Eshop\Core\StrMb|\OxidEsales\Eshop\Core\StrRegular $oStr */
+        $oStr = Str::getStr();
 
         $aLists = array();
 
@@ -294,7 +297,7 @@ class Admin_oxpsModuleGenerator extends oxAdminView
     protected function _getBlocksFieldValue(array $aRequestBlocks)
     {
         /** @var oxpsModuleGeneratorValidator $oValidator */
-        $oValidator = oxRegistry::get('oxpsModuleGeneratorValidator');
+        $oValidator = Registry::get('oxpsModuleGeneratorValidator');
 
         $aBlocks = array();
 
@@ -334,7 +337,10 @@ class Admin_oxpsModuleGenerator extends oxAdminView
      */
     protected function _getTextParam($sKey)
     {
-        return trim((string) oxRegistry::getConfig()->getRequestParameter($sKey));
+        /** @var \OxidEsales\Eshop\Core\Request $oRequest */
+        $oRequest = Registry::get(\OxidEsales\Eshop\Core\Request::class);
+
+        return trim((string) $oRequest->getRequestParameter($sKey));
     }
 
     /**
@@ -360,10 +366,10 @@ class Admin_oxpsModuleGenerator extends oxAdminView
     protected function _validateAndLinkClasses($sClasses)
     {
         /** @var oxpsModuleGeneratorFileSystem $oFileSystemHelper */
-        $oFileSystemHelper = oxRegistry::get('oxpsModuleGeneratorFileSystem');
+        $oFileSystemHelper = Registry::get('oxpsModuleGeneratorFileSystem');
         $aClasses = $this->_parseMultiLineInput($sClasses, 'not_empty');
         $aValidLinkedClasses = array();
-        $oConfig = $this->getConfig();
+        $oConfig = Registry::getConfig();
         $sBasePath = $oConfig->getConfigParam('sShopDir');
 
         foreach ($aClasses as $sClassName) {
@@ -449,7 +455,7 @@ class Admin_oxpsModuleGenerator extends oxAdminView
     protected function _parseBlockDefinition($sBlockDefinition, $sModuleId)
     {
         /** @var oxpsModuleGeneratorValidator $oValidator */
-        $oValidator = oxRegistry::get('oxpsModuleGeneratorValidator');
+        $oValidator = Registry::get('oxpsModuleGeneratorValidator');
 
         $sBlockDefinition = trim((string) $sBlockDefinition);
         $aBlockDefinition = !empty($sBlockDefinition) ? explode("@", $sBlockDefinition) : array();
@@ -516,7 +522,7 @@ class Admin_oxpsModuleGenerator extends oxAdminView
 
             case 'camel_case':
                 /** @var oxpsModuleGeneratorValidator $oValidator */
-                $oValidator = oxRegistry::get('oxpsModuleGeneratorValidator');
+                $oValidator = Registry::get('oxpsModuleGeneratorValidator');
                 $blIsValid = (bool) $oValidator->validateCamelCaseName($sValue);
                 break;
         }
@@ -536,7 +542,7 @@ class Admin_oxpsModuleGenerator extends oxAdminView
     protected function _filterListModels(array $aData)
     {
         /** @var oxpsModuleGeneratorValidator $oValidator */
-        $oValidator = oxRegistry::get('oxpsModuleGeneratorValidator');
+        $oValidator = Registry::get('oxpsModuleGeneratorValidator');
 
         $aLists = (array) $oValidator->getArrayValue($aData, 'aNewLists', 'array');
         $aModels = (array) $oValidator->getArrayValue($aData, 'aNewModels', 'array');

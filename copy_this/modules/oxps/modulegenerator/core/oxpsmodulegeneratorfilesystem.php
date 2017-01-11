@@ -24,11 +24,13 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
+use \OxidEsales\Eshop\Core\Base;
+
 /**
  * Class oxpsModuleGeneratorFileSystem.
  * A helper class for files and folders verification, creation and management methods.
  */
-class oxpsModuleGeneratorFileSystem extends oxSuperCfg
+class oxpsModuleGeneratorFileSystem extends Base
 {
 
     /**
@@ -73,6 +75,7 @@ class oxpsModuleGeneratorFileSystem extends oxSuperCfg
      *
      * @param string $sFileFullPath
      * @param string $sFileContent
+     * @param bool   $blIfDoesNotExist
      */
     public function createFile($sFileFullPath, $sFileContent, $blIfDoesNotExist = false)
     {

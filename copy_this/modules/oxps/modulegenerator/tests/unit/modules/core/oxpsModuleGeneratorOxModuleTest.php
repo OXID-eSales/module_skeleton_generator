@@ -118,7 +118,7 @@ class oxpsModuleGeneratorOxModuleTest extends OxidTestCase
     {
         $this->SUT->setModuleData(array('id' => 'oxpstestmodule'));
 
-        $this->assertSame('oxpstestmodule', $this->SUT->getModuleId());
+        $this->assertSame('oxpstestmodule', $this->SUT->getModuleId(false));
     }
 
     public function testGetModuleId_argumentIsTrueNoAdditionalDataSet_returnNull()
@@ -600,7 +600,7 @@ class oxpsModuleGeneratorOxModuleTest extends OxidTestCase
 
         $this->assertSame('oxps', $this->SUT->getVendorPrefix());
         $this->assertSame(array(), $this->SUT->getAuthorData());
-        $this->assertSame('oxpsmymodule', $this->SUT->getModuleId());
+        $this->assertSame('oxpsmymodule', $this->SUT->getModuleId(false));
         $this->assertSame('mymodule', $this->SUT->getModuleFolderName());
         $this->assertSame('oxpsMyModule', $this->SUT->getModuleClassName());
         $this->assertSame('OXPS My Module', $this->SUT->getTitle());

@@ -17,7 +17,7 @@ class [{$sModuleClassName}] extends oxModule
      */
     function __construct()
     {
-        $sModuleId = '[{$oModule->getModuleId()}]';
+        $sModuleId = '[{$oModule->getModuleId(false)}]';
 
         $this->setModuleData(
             array(

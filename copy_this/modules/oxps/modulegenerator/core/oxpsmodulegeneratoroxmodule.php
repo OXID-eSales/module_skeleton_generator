@@ -21,7 +21,7 @@
  * @package       modulegenerator
  * @author        OXID Professional services
  * @link          http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2014
+ * @copyright (C) OXID eSales AG 2003-2017
  */
 
 /**
@@ -133,7 +133,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      *
      * @return string|null
      */
-    public function getModuleId($blCamelCase = false)
+    public function getModuleId($blCamelCase = true)
     {
         /** @var oxpsModuleGeneratorOxModule|oxModule $this */
 
@@ -143,7 +143,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
     /**
      * Get module folder name.
      *
-     * @param boolean $blUppercase If True - returns uppercase name, if False - lowercase.
+     * @param boolean $blUppercase If True - returns uppercase name, if False - CamelCase.
      *
      * @return string|null
      */
@@ -498,7 +498,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         $oStr = oxStr::getStr();
         $sVendorPrefix = $this->getVendorPrefix();
         $sVarPrefix = $oStr->strtoupper($sVendorPrefix);
-        $sModuleFolder = $oStr->strtolower($sModuleName);
+        $sModuleFolder = $sModuleName;
         $sModuleClass = $sVendorPrefix . $sModuleName;
         $sModuleId = $oStr->strtolower($sModuleClass);
         $sReadableName = $this->camelCaseToHumanReadable($sModuleName);
@@ -541,6 +541,6 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         /** @var oxpsModuleGeneratorFileSystem $oFileSystemHelper */
         $oFileSystemHelper = oxRegistry::get('oxpsModuleGeneratorFileSystem');
 
-        return $oFileSystemHelper->isDir($this->getVendorPath() . oxStr::getStr()->strtolower($sModuleName));
+        return $oFileSystemHelper->isDir($this->getVendorPath() . $sModuleName);
     }
 }

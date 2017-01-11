@@ -2,7 +2,7 @@
 [{$oModule->renderFileComment()}]
 
 [{assign var='sVendorDir' value=$oModule->getVendorPrefix()}]
-[{assign var='sModuleId' value=$oModule->getModuleId()}]
+[{assign var='sModuleId' value=$oModule->getModuleId(false)}]
 [{assign var='sModuleCamelCaseId' value=$oModule->getModuleId(true)}]
 [{assign var='sModuleFolderName' value=$oModule->getModuleFolderName()}]
 [{assign var='aNewClasses' value=$oModule->getClassesToCreate()}]
@@ -43,39 +43,39 @@ $aModule = array(
     'extend'      => array(
 [{if $aExtendClasses}]
 [{foreach from=$aExtendClasses key='sExtendClass' item='mApplicationPath'}]
-        '[{$sExtendClass}]' => '[{$sVendorDir}]/[{$sModuleFolderName}]/[{$mApplicationPath}][{$sModuleId}][{$sExtendClass}]',
+        '[{$sExtendClass}]' => '[{$sVendorDir}]/[{$sModuleFolderName}]/[{$mApplicationPath}][{$sModuleCamelCaseId}][{$sExtendClass}]',
 [{/foreach}]
 [{/if}]
-        [{if $oModule->renderSamples()}]//'[ParentClassName]' => '[{$sVendorDir}]/[{$sModuleFolderName}]/[appropriate_folder]/[{$sModuleId}][parent_class_name]',
+        [{if $oModule->renderSamples()}]//'[ParentClassName]' => '[{$sVendorDir}]/[{$sModuleFolderName}]/[appropriate_folder]/[{$sModuleCamelCaseId}][parent_class_name]',
 [{/if}]
     ),
     'files'       => array(
-        '[{$sModuleId}]module' => '[{$sVendorDir}]/[{$sModuleFolderName}]/core/[{$sModuleId}]module.php',
+        '[{$sModuleCamelCaseId}]Module' => '[{$sVendorDir}]/[{$sModuleFolderName}]/Core/[{$sModuleCamelCaseId}]Module.php',
 [{if $aNewClasses}]
 [{foreach from=$aNewClasses key='sObjectType' item='aClassesData'}]
 [{assign var='aClasses' value=$aClassesData.aClasses}]
 [{foreach from=$aClasses key='sClassKey' item='sClassName'}]
-        '[{$sModuleId}][{$sClassName|lower}]' => '[{$sVendorDir}]/[{$sModuleFolderName}]/[{$aClassesData.sInModulePath}][{$sModuleId}][{$sClassName|lower}].php',
+        '[{$sModuleCamelCaseId}][{$sClassName}]' => '[{$sVendorDir}]/[{$sModuleFolderName}]/[{$aClassesData.sInModulePath}][{$sModuleCamelCaseId}][{$sClassName}].php',
 [{/foreach}]
 [{/foreach}]
 [{/if}]
 [{if $oModule->renderSamples()}]
-        //'[your_class_name]' => '[{$sVendorDir}]/[{$sModuleFolderName}]/[appropriate_folder]/[{$sModuleId}][your_class_name].php',
+        //'[your_class_name]' => '[{$sVendorDir}]/[{$sModuleFolderName}]/[appropriate_folder]/[{$sModuleCamelCaseId}][your_class_name].php',
 [{/if}]
 ),
     'templates'   => array(
 [{if $aControllersClasses}]
 [{foreach from=$aControllersClasses item='sControllerClassName'}]
-        '[{$sModuleId}][{$sControllerClassName|lower}].tpl' => '[{$sVendorDir}]/[{$sModuleFolderName}]/views/pages/[{$sModuleId}][{$sControllerClassName|lower}].tpl',
+        '[{$sModuleCamelCaseId}][{$sControllerClassName}].tpl' => '[{$sVendorDir}]/[{$sModuleFolderName}]/views/pages/[{$sModuleCamelCaseId}][{$sControllerClassName}].tpl',
 [{/foreach}]
 [{/if}]
 [{if $aWidgetsClasses}]
 [{foreach from=$aWidgetsClasses item='sWidgetClassName'}]
-        '[{$sModuleId}][{$sWidgetClassName|lower}].tpl' => '[{$sVendorDir}]/[{$sModuleFolderName}]/views/widgets/[{$sModuleId}][{$sWidgetClassName|lower}].tpl',
+        '[{$sModuleCamelCaseId}][{$sWidgetClassName}].tpl' => '[{$sVendorDir}]/[{$sModuleFolderName}]/views/widgets/[{$sModuleCamelCaseId}][{$sWidgetClassName}].tpl',
 [{/foreach}]
 [{/if}]
 [{if $oModule->renderSamples()}]
-        //'[your_template].tpl' => '[{$sVendorDir}]/[{$sModuleFolderName}]/views/pages/[theme_folder_path]/[{$sModuleId}][your_template].tpl',
+        //'[your_template].tpl' => '[{$sVendorDir}]/[{$sModuleFolderName}]/views/pages/[theme_folder_path]/[{$sModuleCamelCaseId}][your_template].tpl',
 [{/if}]
 ),
     'blocks'      => array(
@@ -91,7 +91,7 @@ $aModule = array(
         [{if $oModule->renderSamples()}]/*array(
             'template' => '[theme_folder]/[theme_template].tpl',
             'block' => '[{$sModuleId}]_[your_block_name]',
-            'file' => 'views/blocks/[{$sModuleId}][your_block_name].tpl',
+            'file' => 'views/blocks/[{$sModuleCamelCaseId}][your_block_name].tpl',
         ),*/
 [{/if}]
 [{/if}]

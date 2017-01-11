@@ -21,7 +21,7 @@
  * @package       modulegenerator
  * @author        OXID Professional services
  * @link          http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2014
+ * @copyright (C) OXID eSales AG 2003-2017
  */
 
 /**

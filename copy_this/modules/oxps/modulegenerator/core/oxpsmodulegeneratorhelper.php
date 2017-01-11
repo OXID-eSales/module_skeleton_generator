@@ -21,7 +21,7 @@
  * @package       modulegenerator
  * @author        OXID Professional services
  * @link          http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2014
+ * @copyright (C) OXID eSales AG 2003-2017
  */
 
 /**
@@ -121,7 +121,7 @@ class oxpsModuleGeneratorHelper extends oxSuperCfg
      *
      * @return array Internal paths of created classes inside a module.
      */
-    public function createClassesToExtend($sClassExtendTemplatePath) // TODO DDR: Fix "extend" from here
+    public function createClassesToExtend($sClassExtendTemplatePath)
     {
         $oFileSystemHelper = $this->getFileSystemHelper();
         $oModule = $this->getModule();
@@ -139,7 +139,7 @@ class oxpsModuleGeneratorHelper extends oxSuperCfg
         foreach ($aClassesToExtend as $sClassName => $mApplicationPath) {
             $sInModulePath = $this->_getPathInsideModule($sModulePath, $mApplicationPath);
             $sDestinationPath = $sModulePath . $sInModulePath;
-            $sClassFileName = $sModuleId . oxStr::getStr()->strtolower($sClassName) . '.php';
+            $sClassFileName = $sModuleId . $sClassName . '.php';
             $sClassFilePath = $sDestinationPath . $sClassFileName;
 
             $oFileSystemHelper->copyFile($sClassExtendTemplatePath, $sClassFilePath);
@@ -356,11 +356,11 @@ class oxpsModuleGeneratorHelper extends oxSuperCfg
         $sModulePath = $oModule->getFullPath();
 
         if (empty($blTestClasses)) {
-            $sClassFileName = sprintf('%s%s.php', $sModuleId, oxStr::getStr()->strtolower($sClass));
+            $sClassFileName = sprintf('%s%s.php', $sModuleId, $sClass);
             $sClassFilePath = $sModulePath . $sInModulePath . $sClassFileName;
             $sProcessedFileKey = $sInModulePath . $sClassFileName;
         } else {
-            $sClassFileName = sprintf('%s%sTest.php', $sModuleId, oxStr::getStr()->strtolower($sClass));
+            $sClassFileName = sprintf('%s%sTest.php', $sModuleId, $sClass);
             $sClassDirPath = $sModulePath . $sInModulePath . dirname($mKey) . DIRECTORY_SEPARATOR;
             $this->getFileSystemHelper()->createFolder($sClassDirPath);
             $sClassFilePath = $sClassDirPath . $sClassFileName;
@@ -395,7 +395,7 @@ class oxpsModuleGeneratorHelper extends oxSuperCfg
         $sDemoContentFormat = $this->_getTemplateContentFormat($blBlocks);
 
         foreach ($aClasses as $sClass) {
-            $sTemplateFileName = sprintf('%s%s.tpl', $sModuleId, oxStr::getStr()->strtolower($sClass));
+            $sTemplateFileName = sprintf('%s%s.tpl', $sModuleId, $sClass);
             $sTemplateFilePath = $sDestinationPath . $sTemplateFileName;
             $sTemplateContent = sprintf($sDemoContentFormat, $sClass, $sTemplateFilePath, $sClassPrefix . $sClass);
 
@@ -418,7 +418,7 @@ class oxpsModuleGeneratorHelper extends oxSuperCfg
             return $sClassName;
         }
 
-        $oReflection = new ReflectionClass(new $sClassName()); // TODO DDR: Compatibility check?
+        $oReflection = new ReflectionClass(new $sClassName());
 
         return $oReflection->getName();
     }

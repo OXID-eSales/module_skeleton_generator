@@ -33,7 +33,7 @@ class [{$sClassNamePrefix}][{$sClassName}] extends WidgetController
      *
      * @var string
      */
-    protected $_sThisTemplate = '[{$oModule->getModuleId()}][{$sClassName|lower}].tpl';
+    protected $_sThisTemplate = '[{$oModule->getModuleId()}][{$sClassName}].tpl';
 
 
 [{if $oModule->renderTasks()}]

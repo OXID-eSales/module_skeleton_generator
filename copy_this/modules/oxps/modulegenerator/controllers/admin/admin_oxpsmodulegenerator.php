@@ -21,8 +21,10 @@
  * @package       modulegenerator
  * @author        OXID Professional services
  * @link          http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2014
+ * @copyright (C) OXID eSales AG 2003-2017
  */
+
+use \OxidEsales\Eshop\Core\Str;
 
 /**
  * Class Admin_oxpsModuleGenerator.
@@ -32,6 +34,12 @@
  */
 class Admin_oxpsModuleGenerator extends oxAdminView
 {
+
+    /**
+     * Folder name identifier in class path which determines backward compatibility - old class name usage.
+     */
+    const OXPS_BACKWARD_COMPATIBILITY_FOLDER = 'BackwardCompatibility';
+
 
     /**
      * Current class template name.
@@ -363,25 +371,39 @@ class Admin_oxpsModuleGenerator extends oxAdminView
                 continue;
             }
 
-            // Build reflection object to get path to a class
-            $oReflection = new ReflectionClass(new $sClassName());
-            $sClassPath = (string) $oReflection->getFilename();
-
-            if (strpos($sClassPath, 'BackwardCompatibility') !== false) { // TODO DDR: proper fix!
-                $oReflection = $oReflection->getParentClass();
-                $sClassPath = (string) $oReflection->getFilename();
-            }
+            $sClassPath = (string) $this->_getClassPath($sClassName);
 
             if ($oFileSystemHelper->isFile($sClassPath)) {
-                $sClassName = oxStr::getStr()->strtolower($sClassName);
-                $sNoAppPath = str_replace('application' . DIRECTORY_SEPARATOR, '', dirname($sClassPath));
-                $sClassPath = str_replace($sBasePath, '', $sNoAppPath) . DIRECTORY_SEPARATOR;
-
+                $sClassPath = str_replace($sBasePath, '', dirname($sClassPath)) . DIRECTORY_SEPARATOR;
                 $aValidLinkedClasses[$sClassName] = $sClassPath;
             }
         }
 
         return $aValidLinkedClasses;
+    }
+
+    /**
+     * Build reflection object to get path to a class.
+     * In case of old class name (backwards compatibility), use new class name of parent reflection.
+     *
+     * @param string $sClassName
+     *
+     * @return string
+     */
+    protected function _getClassPath($sClassName)
+    {
+        /** @var \OxidEsales\Eshop\Core\StrMb|\OxidEsales\Eshop\Core\StrRegular $oStr */
+        $oStr = Str::getStr();
+
+        $oReflection = new ReflectionClass(new $sClassName());
+        $sClassPath = (string) $oReflection->getFilename();
+
+        if (false !== $oStr->strpos($sClassPath, self::OXPS_BACKWARD_COMPATIBILITY_FOLDER)) {
+            $oReflection = $oReflection->getParentClass();
+            $sClassPath = (string) $oReflection->getFilename();
+        }
+
+        return $sClassPath;
     }
 
     /**
@@ -399,7 +421,7 @@ class Admin_oxpsModuleGenerator extends oxAdminView
      */
     protected function _parseBlocksData($sBlocks, $sVendorPrefix, $sModuleName)
     {
-        $sModuleId = oxStr::getStr()->strtolower(sprintf('%s%s', $sVendorPrefix, $sModuleName));
+        $sModuleId = sprintf('%s%s', $sVendorPrefix, $sModuleName);
         $aBlocks = $this->_parseMultiLineInput($sBlocks, 'not_empty');
         $aValidBlocks = array();
 

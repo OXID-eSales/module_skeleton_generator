@@ -9,7 +9,7 @@
 [{assign var='iListClassNameLength' value=$sClassName|count_characters}]
 [{math assign='iTruncateLength' equation='iListClassNameLength - 4' iListClassNameLength=$iListClassNameLength}]
 [{assign var='sListObjectsClassName' value=$sClassName|truncate:$iTruncateLength:''}]
-[{assign var='sTableName' value=$oModule->getModuleId()|cat:'_'}]
+[{assign var='sTableName' value=$oModule->getModuleId(false)|cat:'_'}]
 [{assign var='sTableName' value=$sTableName|cat:$sListObjectsClassName|lower}]
 [{assign var='sFullClassName' value=$sClassNamePrefix|cat:$sClassName}]
 [{assign var='sFullObjectName' value=$sClassNamePrefix|cat:$sListObjectsClassName}]

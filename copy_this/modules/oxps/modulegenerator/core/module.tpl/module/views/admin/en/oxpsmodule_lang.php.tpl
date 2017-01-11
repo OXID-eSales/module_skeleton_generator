@@ -8,7 +8,7 @@ $sLangName = 'English';
 
 $aLang = array(
     'charset' => 'UTF-8',
-    '[{$oModule->getModuleId()}]' => '[{$oModule->getTitle()}]',
+    '[{$oModule->getModuleId(false)}]' => '[{$oModule->getTitle()}]',
 
 [{if $aModuleSettings}]
     // Settings interface translations

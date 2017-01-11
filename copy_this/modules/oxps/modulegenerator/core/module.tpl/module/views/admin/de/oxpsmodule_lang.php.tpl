@@ -7,8 +7,8 @@
 $sLangName = 'Deutsch';
 
 $aLang = array(
-    'charset' => 'ISO-8859-15', // Supports DE chars like: ä, ü, ö, etc.
-    '[{$oModule->getModuleId()}]' => '[{$oModule->getTitle()}]',
+    'charset' => 'UTF-8',
+    '[{$oModule->getModuleId(false)}]' => '[{$oModule->getTitle()}]',
 
 [{if $aModuleSettings}]
     // Settings interface translations

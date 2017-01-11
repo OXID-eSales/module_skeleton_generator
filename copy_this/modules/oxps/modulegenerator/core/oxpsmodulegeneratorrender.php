@@ -21,7 +21,7 @@
  * @package       modulegenerator
  * @author        OXID Professional services
  * @link          http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2014
+ * @copyright (C) OXID eSales AG 2003-2017
  */
 
 /**
@@ -173,13 +173,14 @@ class oxpsModuleGeneratorRender extends oxSuperCfg
         $aFilesToProcess = array(
             $sModuleId . '_de_lang.php'       => 'translations/de/oxpsmodule_lang.php.tpl',
             $sModuleId . '_en_lang.php'       => 'translations/en/oxpsmodule_lang.php.tpl',
-            $sModuleId . 'module.php'         => 'core/oxpsmodule.php.tpl',
+            $sModuleId . 'Module.php'         => 'Core/oxpsModule.php.tpl',
             'docs/install.sql',
             'docs/README.txt',
             'docs/uninstall.sql',
             $sModuleId . '_admin_de_lang.php' => 'views/admin/de/oxpsmodule_lang.php.tpl',
             $sModuleId . '_admin_en_lang.php' => 'views/admin/en/oxpsmodule_lang.php.tpl',
             'metadata.php'                    => 'metadata.php.tpl',
+            '.ide-helper.php'                 => '.ide-helper.php.tpl',
         );
 
         $aFilesToProcess = array_merge($aFilesToProcess, array_keys($aClassesToExtend), array_keys($aNewClasses));

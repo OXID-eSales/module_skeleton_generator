@@ -6,7 +6,7 @@
 [{else}]
     [{assign var='sClassName' value=$oModule->getFileNameSuffix($sFilePath)}]
 [{/if}]
-[{assign var='sTableName' value=$oModule->getModuleId()|cat:'_'}]
+[{assign var='sTableName' value=$oModule->getModuleId(false)|cat:'_'}]
 [{assign var='sTableName' value=$sTableName|cat:$sClassName|lower}]
 
 use \OxidEsales\Eshop\Core\Model\BaseModel;

@@ -21,26 +21,26 @@
  * @package       modulegenerator
  * @author        OXID Professional services
  * @link          http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2014
+ * @copyright (C) OXID eSales AG 2003-2017
  */
 
 $sLangName = 'English';
 
 $aLang = array(
-    'charset'                                                  => 'UTF-8',
-    'oxpsmodulegenerator'                                      => 'Module Generator',
-    'oxpsmodulegeneratormodule'                                => 'Wizard',
-    'OXPS_MODULEGENERATOR_ADMIN_TITLE'                         => 'Module Skeleton Generator',
+    'charset'                                     => 'UTF-8',
+    'oxpsmodulegenerator'                         => 'Module Generator',
+    'oxpsmodulegeneratormodule'                   => 'Wizard',
+    'OXPS_MODULEGENERATOR_ADMIN_TITLE'            => 'Module Skeleton Generator',
 
     // Settings
-    'SHOP_MODULE_GROUP_oxpsModuleGeneratorVendor'              => 'Vendor and Copyright Settings',
-    'SHOP_MODULE_oxpsModuleGeneratorVendorPrefix'              => 'Vendor prefix used for module generation. It should contain two to four lowercase latin letters, e.g. "abc"',
-    'SHOP_MODULE_oxpsModuleGeneratorModuleAuthor'              => 'Module authors\' name. Company or developer full name.',
-    'SHOP_MODULE_oxpsModuleGeneratorAuthorLink'                => 'Module authors\' website URL.',
-    'SHOP_MODULE_oxpsModuleGeneratorAuthorMail'                => 'Module authors\' contact email.',
-    'SHOP_MODULE_oxpsModuleGeneratorCopyright'                 => 'Module copyright part that goes before current year. For example: "My Company, 2001-"',
-    'SHOP_MODULE_oxpsModuleGeneratorComment'                   => 'File comment text used in PHP files. Start each line with an asterisk: `*`.<br/>' .
-                                                                  'Normally it should contain legal notices and short license info.',
+    'SHOP_MODULE_GROUP_oxpsModuleGeneratorVendor' => 'Vendor and Copyright Settings',
+    'SHOP_MODULE_oxpsModuleGeneratorVendorPrefix' => 'Vendor prefix used for module generation. It should contain two to four lowercase latin letters, e.g. "abc"',
+    'SHOP_MODULE_oxpsModuleGeneratorModuleAuthor' => 'Module authors\' name. Company or developer full name.',
+    'SHOP_MODULE_oxpsModuleGeneratorAuthorLink'   => 'Module authors\' website URL.',
+    'SHOP_MODULE_oxpsModuleGeneratorAuthorMail'   => 'Module authors\' contact email.',
+    'SHOP_MODULE_oxpsModuleGeneratorCopyright'    => 'Module copyright part that goes before current year. For example: "My Company, 2001-"',
+    'SHOP_MODULE_oxpsModuleGeneratorComment'      => 'File comment text used in PHP files. Start each line with an asterisk: `*`.<br/>' .
+                                                     'Normally it should contain legal notices and short license info.',
 
     'SHOP_MODULE_GROUP_oxpsModuleGeneratorTests'               => 'Generated Modules Tests Settings',
     'SHOP_MODULE_oxpsModuleGeneratorTestsGitUrl'               => 'URL of a remote GIT repository to clone tests folder from for generated modules.',

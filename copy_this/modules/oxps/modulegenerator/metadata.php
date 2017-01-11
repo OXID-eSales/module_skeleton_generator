@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  *
  * @category      module
- * @package       modulegenerator
+ * @package       ModuleGenerator
  * @author        OXID Professional services
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2017
@@ -39,25 +39,25 @@ $aModule = array(
         'de' => 'Die Erzeugung von Ordner-Struktur, leere Klassen und Metadata-Datei für neue OXID eShop Module',
         'en' => 'Folders structure, empty classes and metadata generation for new OXID eShop modules.',
     ),
-    'thumbnail'   => 'out/pictures/oxpsmodulegenerator.png',
+    'thumbnail'   => 'out/pictures/oxps_module_generator.png',
     'version'     => '0.6.0',
     'author'      => 'OXID Professional Services',
     'url'         => 'http://www.oxid-esales.com',
     'email'       => 'info@oxid-esales.com',
     'extend'      => array(
-        'oxmodule' => 'oxps/modulegenerator/core/oxpsmodulegeneratoroxmodule', // TODO DDR: CamelCase all
+        \OxidEsales\EshopCommunity\Core\Module::class => 'oxps/ModuleGenerator/Core/oxpsModuleGeneratorOxModule',
     ),
     'files'       => array(
-        'admin_oxpsmodulegenerator'     => 'oxps/modulegenerator/controllers/admin/admin_oxpsmodulegenerator.php',
-        'oxpsmodulegeneratorfilesystem' => 'oxps/modulegenerator/core/oxpsmodulegeneratorfilesystem.php',
-        'oxpsmodulegeneratorhelper'     => 'oxps/modulegenerator/core/oxpsmodulegeneratorhelper.php',
-        'oxpsmodulegeneratormodule'     => 'oxps/modulegenerator/core/oxpsmodulegeneratormodule.php',
-        'oxpsmodulegeneratorrender'     => 'oxps/modulegenerator/core/oxpsmodulegeneratorrender.php',
-        'oxpsmodulegeneratorsettings'   => 'oxps/modulegenerator/core/oxpsmodulegeneratorsettings.php',
-        'oxpsmodulegeneratorvalidator'  => 'oxps/modulegenerator/core/oxpsmodulegeneratorvalidator.php',
+        'Admin_oxpsModuleGenerator'     => 'oxps/ModuleGenerator/Application/Controller/Admin/Admin_oxpsModuleGenerator.php',
+        'oxpsModuleGeneratorFileSystem' => 'oxps/ModuleGenerator/Core/oxpsModuleGeneratorFileSystem.php',
+        'oxpsModuleGeneratorHelper'     => 'oxps/ModuleGenerator/Core/oxpsModuleGeneratorHelper.php',
+        'oxpsModuleGeneratorModule'     => 'oxps/ModuleGenerator/Core/oxpsModuleGeneratorModule.php',
+        'oxpsModuleGeneratorRender'     => 'oxps/ModuleGenerator/Core/oxpsModuleGeneratorRender.php',
+        'oxpsModuleGeneratorSettings'   => 'oxps/ModuleGenerator/Core/oxpsModuleGeneratorSettings.php',
+        'oxpsModuleGeneratorValidator'  => 'oxps/ModuleGenerator/Core/oxpsModuleGeneratorValidator.php',
     ),
     'templates'   => array(
-        'admin_oxpsmodulegenerator.tpl' => 'oxps/modulegenerator/views/admin/admin_oxpsmodulegenerator.tpl',
+        'Admin_oxpsModuleGenerator.tpl' => 'oxps/ModuleGenerator/Application/views/admin/Admin_oxpsModuleGenerator.tpl',
     ),
     'settings'    => array(
         array(

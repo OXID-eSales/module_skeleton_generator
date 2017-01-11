@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  *
  * @category      module
- * @package       modulegenerator
+ * @package       ModuleGenerator
  * @author        OXID Professional services
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2017
@@ -199,7 +199,7 @@ class oxpsModuleGeneratorHelper extends Base
         $aBlock = $this->getModule()->getBlocks();
 
         if (!empty($aBlock)) {
-            $this->_createTemplates(array_keys($aBlock), sprintf('%sviews/blocks/', $sModulePath), true);
+            $this->_createTemplates(array_keys($aBlock), sprintf('%sApplication/views/blocks/', $sModulePath), true);
         }
     }
 
@@ -215,7 +215,7 @@ class oxpsModuleGeneratorHelper extends Base
                                     array $aClassesToExtend, array $aNewClasses)
     {
         $aAllFiles = array_merge($aClassesToExtend, $aNewClasses);
-        $sTemplate = sprintf('%score/module.tpl/oxpstestclass.php.tpl', $sModuleGeneratorPath); // TODO DDR: CamelCase all
+        $sTemplate = sprintf('%sCore/module.tpl/oxpsTestClass.php.tpl', $sModuleGeneratorPath);
         $aNewFiles = (array) $this->_copyNewClasses($aAllFiles, $sTemplate, 'tests/Unit/modules/', true);
 
         if (!empty($aNewFiles)) {
@@ -224,7 +224,7 @@ class oxpsModuleGeneratorHelper extends Base
     }
 
     /**
-     * Check if provided path inside a module exists, if not choose "core" folder as internal path.
+     * Check if provided path inside a module exists, if not choose "Core" folder as internal path.
      *
      * @param string $sModulePath
      * @param string $mInnerPath
@@ -257,7 +257,7 @@ class oxpsModuleGeneratorHelper extends Base
         $aNewFiles = array();
 
         if (!empty($sClassTemplate) and !empty($sClassPath)) {
-            $sTemplatePath = sprintf('%score/module.tpl/%s', $sModuleGeneratorPath, $sClassTemplate); // TODO DDR: CamelCase all
+            $sTemplatePath = sprintf('%sCore/module.tpl/%s', $sModuleGeneratorPath, $sClassTemplate);
             $aNewFiles = $this->_copyNewClasses($aClasses, $sTemplatePath, $sClassPath);
         }
 
@@ -277,7 +277,7 @@ class oxpsModuleGeneratorHelper extends Base
         if (in_array($sObjectType, array('controllers', 'widgets')) and
             !empty($aNewFiles) and !empty($sTemplatePath)
         ) {
-            $sTemplateDestination = sprintf('%sviews/%s/', $this->getModule()->getFullPath(), $sTemplatePath);
+            $sTemplateDestination = sprintf('%sApplication/views/%s/', $this->getModule()->getFullPath(), $sTemplatePath);
             $this->_createTemplates($aNewFiles, $sTemplateDestination);
         }
     }

@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  *
  * @category      module
- * @package       modulegenerator
+ * @package       ModuleGenerator
  * @author        OXID Professional services
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2017
@@ -48,7 +48,7 @@ class Admin_oxpsModuleGenerator extends AdminController
      *
      * @var string
      */
-    protected $_sThisTemplate = 'admin_oxpsmodulegenerator.tpl';
+    protected $_sThisTemplate = 'Admin_oxpsModuleGenerator.tpl';
 
     /**
      * Module instance used as information container for new module generation.
@@ -470,7 +470,7 @@ class Admin_oxpsModuleGenerator extends AdminController
         return array(
             'template' => $sTemplatePath,
             'block'    => $sBlockName,
-            'file'     => sprintf('views/blocks/%s_%s.tpl', $sModuleId, $sBlockName),
+            'file'     => sprintf('Application/views/blocks/%s_%s.tpl', $sModuleId, $sBlockName),
         );
     }
 

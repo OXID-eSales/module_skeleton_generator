@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  *
  * @category      module
- * @package       modulegenerator
+ * @package       ModuleGenerator
  * @author        OXID Professional services
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2017
@@ -203,24 +203,24 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         $mData = array(
             'widgets'     => array(
                 'aClasses'       => (array) $this->getInfo('oxpsmodulegenerator_widgets'),
-                'sTemplateName'  => 'oxpswidgetclass.php.tpl',
+                'sTemplateName'  => 'oxpsWidgetClass.php.tpl',
                 'sInModulePath'  => 'Application/Component/Widget/',
                 'sTemplatesPath' => 'widgets',
             ),
             'controllers' => array(
                 'aClasses'       => (array) $this->getInfo('oxpsmodulegenerator_controllers'),
-                'sTemplateName'  => 'oxpscontrollerclass.php.tpl',
+                'sTemplateName'  => 'oxpsControllerClass.php.tpl',
                 'sInModulePath'  => 'Application/Controller/',
                 'sTemplatesPath' => 'pages',
             ),
             'models'      => array(
                 'aClasses'      => (array) $this->getInfo('oxpsmodulegenerator_models'),
-                'sTemplateName' => 'oxpsmodelclass.php.tpl',
+                'sTemplateName' => 'oxpsModelClass.php.tpl',
                 'sInModulePath' => 'Application/Model/',
             ),
             'list_models' => array(
                 'aClasses'      => (array) $this->getInfo('oxpsmodulegenerator_list_models'),
-                'sTemplateName' => 'oxpslistmodelclass.php.tpl',
+                'sTemplateName' => 'oxpsListModelClass.php.tpl',
                 'sInModulePath' => 'Application/Model/',
             ),
         );
@@ -366,11 +366,11 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
 
         // Copy the module from a folder structure with templates to a new module path
         $oHelper->createVendorMetadata($this->getVendorPath());
-        $oHelper->getFileSystemHelper()->copyFolder($sModuleGeneratorPath . 'core/module.tpl/module/', $sModulePath);
+        $oHelper->getFileSystemHelper()->copyFolder($sModuleGeneratorPath . 'Core/module.tpl/module/', $sModulePath);
 
         // Create classes to overload (extend)
         $aClassesToExtend = (array) $oHelper->createClassesToExtend(
-            $sModuleGeneratorPath . 'core/module.tpl/oxpsextendclass.php.tpl' // TODO DDR: CamelCase here and above
+            $sModuleGeneratorPath . 'Core/module.tpl/oxpsExtendClass.php.tpl'
         );
 
         // Create new module classes and templates

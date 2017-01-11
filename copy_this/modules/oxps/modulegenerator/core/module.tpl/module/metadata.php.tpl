@@ -66,16 +66,16 @@ $aModule = array(
     'templates'   => array(
 [{if $aControllersClasses}]
 [{foreach from=$aControllersClasses item='sControllerClassName'}]
-        '[{$sModuleCamelCaseId}][{$sControllerClassName}].tpl' => '[{$sVendorDir}]/[{$sModuleFolderName}]/views/pages/[{$sModuleCamelCaseId}][{$sControllerClassName}].tpl',
+        '[{$sModuleCamelCaseId}][{$sControllerClassName}].tpl' => '[{$sVendorDir}]/[{$sModuleFolderName}]/Application/views/pages/[{$sModuleCamelCaseId}][{$sControllerClassName}].tpl',
 [{/foreach}]
 [{/if}]
 [{if $aWidgetsClasses}]
 [{foreach from=$aWidgetsClasses item='sWidgetClassName'}]
-        '[{$sModuleCamelCaseId}][{$sWidgetClassName}].tpl' => '[{$sVendorDir}]/[{$sModuleFolderName}]/views/widgets/[{$sModuleCamelCaseId}][{$sWidgetClassName}].tpl',
+        '[{$sModuleCamelCaseId}][{$sWidgetClassName}].tpl' => '[{$sVendorDir}]/[{$sModuleFolderName}]/Application/views/widgets/[{$sModuleCamelCaseId}][{$sWidgetClassName}].tpl',
 [{/foreach}]
 [{/if}]
 [{if $oModule->renderSamples()}]
-        //'[your_template].tpl' => '[{$sVendorDir}]/[{$sModuleFolderName}]/views/pages/[theme_folder_path]/[{$sModuleCamelCaseId}][your_template].tpl',
+        //'[your_template].tpl' => '[{$sVendorDir}]/[{$sModuleFolderName}]/Application/views/pages/[theme_folder_path]/[{$sModuleCamelCaseId}][your_template].tpl',
 [{/if}]
 ),
     'blocks'      => array(
@@ -91,7 +91,7 @@ $aModule = array(
         [{if $oModule->renderSamples()}]/*array(
             'template' => '[theme_folder]/[theme_template].tpl',
             'block' => '[{$sModuleId}]_[your_block_name]',
-            'file' => 'views/blocks/[{$sModuleCamelCaseId}][your_block_name].tpl',
+            'file' => 'Application/views/blocks/[{$sModuleCamelCaseId}][your_block_name].tpl',
         ),*/
 [{/if}]
 [{/if}]

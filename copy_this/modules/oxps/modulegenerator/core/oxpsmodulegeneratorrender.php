@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  *
  * @category      module
- * @package       modulegenerator
+ * @package       ModuleGenerator
  * @author        OXID Professional services
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2017
@@ -148,7 +148,7 @@ class oxpsModuleGeneratorRender extends Base
     public function renderFileComment($sSubPackage = '')
     {
         $sBaseModulePath = realpath(dirname(__FILE__) . '/../../') . '/';
-        $sCommentTemplate = $sBaseModulePath . 'modulegenerator/core/module.tpl/oxpscomment.inc.php.tpl';
+        $sCommentTemplate = $sBaseModulePath . 'ModuleGenerator/Core/module.tpl/oxpsComment.inc.php.tpl';
 
         /** @var Smarty $oSmarty */
         $oSmarty = Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->getSmarty();
@@ -175,14 +175,14 @@ class oxpsModuleGeneratorRender extends Base
         $sModuleId = $this->getModule()->getModuleId();
 
         $aFilesToProcess = array(
-            $sModuleId . '_de_lang.php'       => 'translations/de/oxpsmodule_lang.php.tpl', // TODO DDR: CamelCase -V-
-            $sModuleId . '_en_lang.php'       => 'translations/en/oxpsmodule_lang.php.tpl',
+            $sModuleId . '_de_lang.php'       => 'Application/translations/de/oxpsModule_lang.php.tpl',
+            $sModuleId . '_en_lang.php'       => 'Application/translations/en/oxpsModule_lang.php.tpl',
             $sModuleId . 'Module.php'         => 'Core/oxpsModule.php.tpl',
             'docs/install.sql',
             'docs/README.txt',
             'docs/uninstall.sql',
-            $sModuleId . '_admin_de_lang.php' => 'views/admin/de/oxpsmodule_lang.php.tpl',
-            $sModuleId . '_admin_en_lang.php' => 'views/admin/en/oxpsmodule_lang.php.tpl',
+            $sModuleId . '_admin_de_lang.php' => 'Application/views/admin/de/oxpsModule_lang.php.tpl',
+            $sModuleId . '_admin_en_lang.php' => 'Application/views/admin/en/oxpsModule_lang.php.tpl',
             'metadata.php'                    => 'metadata.php.tpl',
             '.ide-helper.php'                 => '.ide-helper.php.tpl',
         );

@@ -4,7 +4,7 @@
 [{assign var='sModuleCamelCaseId' value=$oModule->getModuleId(true)}]
 [{assign var='aModuleSettings' value=$oModule->getSettings()}]
 
-$sLangName = 'Deutsch';
+$sLangName = 'English';
 
 $aLang = array(
     'charset' => 'UTF-8',
@@ -14,9 +14,9 @@ $aLang = array(
     // Settings interface translations
     [{if $oModule->renderTasks()}]// TODO: Adjust the settings translation if needed.
 [{/if}]
-    'SHOP_MODULE_GROUP_[{$sModuleCamelCaseId}]Settings' => '[TR - [{$oModule->getTitle()}] Module Settings]',
+    'SHOP_MODULE_GROUP_[{$sModuleCamelCaseId}]Settings' => '[{$oModule->getTitle()}] Module Settings',
 [{foreach from=$aModuleSettings key='iSettingKey' item='aModuleSetting'}]
-    'SHOP_MODULE_[{$sModuleCamelCaseId}][{$aModuleSetting->name}]' => '[TR - [{$oModule->camelCaseToHumanReadable($aModuleSetting->name)}]]',
+    'SHOP_MODULE_[{$sModuleCamelCaseId}][{$aModuleSetting->name}]' => '[{$oModule->camelCaseToHumanReadable($aModuleSetting->name)}]',
     [{if $aModuleSetting->type eq 'select'}]
     'SHOP_MODULE_[{$sModuleCamelCaseId}][{$aModuleSetting->name}]_' => ' - ',
         [{assign var='aSelectOptions' value=$oModule->getSelectSettingOptions($aModuleSetting->constrains)}]
@@ -28,5 +28,6 @@ $aLang = array(
 [{/if}]
 
     [{if $oModule->renderTasks()}]// TODO: Follow this pattern to add more translation. Delete this comment.
-    [{/if}][{if $oModule->renderSamples()}]//'[{$oModule->getVendorPrefix(true)}]_[{$oModule->getModuleFolderName(true)}]_ADMIN_[KEY]' => '[TR - Value]',
-[{/if}]);
+    [{/if}][{if $oModule->renderSamples()}]//'[{$oModule->getVendorPrefix(true)}]_[{$oModule->getModuleFolderName(true)}]_ADMIN_[KEY]' => 'Value',
+[{/if}]
+);

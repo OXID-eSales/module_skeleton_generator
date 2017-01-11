@@ -1,5 +1,5 @@
 [{include file="headitem.tpl" title="OXPS_MODULEGENERATOR_ADMIN_TITLE"|oxmultilangassign}]
-[{oxstyle include=$oViewConf->getModuleUrl('oxps/modulegenerator', 'out/src/css/admin_oxpsmodulegenerator.css')}]
+[{oxstyle include=$oViewConf->getModuleUrl('oxps/ModuleGenerator', 'out/src/css/admin_oxpsmodulegenerator.css')}]
 [{oxstyle}]
 <div id="oxpsmodulegenerator">
 <div class="export">

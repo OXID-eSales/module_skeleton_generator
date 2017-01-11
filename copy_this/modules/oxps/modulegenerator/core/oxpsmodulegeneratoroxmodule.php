@@ -203,24 +203,24 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
             'widgets'     => array(
                 'aClasses'       => (array) $this->getInfo('oxpsmodulegenerator_widgets'),
                 'sTemplateName'  => 'oxpswidgetclass.php.tpl',
-                'sInModulePath'  => 'components/widgets/',
+                'sInModulePath'  => 'Application/Component/Widget/',
                 'sTemplatesPath' => 'widgets',
             ),
             'controllers' => array(
                 'aClasses'       => (array) $this->getInfo('oxpsmodulegenerator_controllers'),
                 'sTemplateName'  => 'oxpscontrollerclass.php.tpl',
-                'sInModulePath'  => 'controllers/',
+                'sInModulePath'  => 'Application/Controller/',
                 'sTemplatesPath' => 'pages',
             ),
             'models'      => array(
                 'aClasses'      => (array) $this->getInfo('oxpsmodulegenerator_models'),
                 'sTemplateName' => 'oxpsmodelclass.php.tpl',
-                'sInModulePath' => 'models/',
+                'sInModulePath' => 'Application/Model/',
             ),
             'list_models' => array(
                 'aClasses'      => (array) $this->getInfo('oxpsmodulegenerator_list_models'),
                 'sTemplateName' => 'oxpslistmodelclass.php.tpl',
-                'sInModulePath' => 'models/',
+                'sInModulePath' => 'Application/Model/',
             ),
         );
 

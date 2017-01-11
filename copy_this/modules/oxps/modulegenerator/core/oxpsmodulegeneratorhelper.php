@@ -121,7 +121,7 @@ class oxpsModuleGeneratorHelper extends oxSuperCfg
      *
      * @return array Internal paths of created classes inside a module.
      */
-    public function createClassesToExtend($sClassExtendTemplatePath)
+    public function createClassesToExtend($sClassExtendTemplatePath) // TODO DDR: Fix "extend" from here
     {
         $oFileSystemHelper = $this->getFileSystemHelper();
         $oModule = $this->getModule();
@@ -237,7 +237,7 @@ class oxpsModuleGeneratorHelper extends oxSuperCfg
         if (!empty($mInnerPath) and $this->getFileSystemHelper()->isDir($sModulePath . $mInnerPath)) {
             $sPathInsideModule = $mInnerPath;
         } else {
-            $sPathInsideModule = 'core/';
+            $sPathInsideModule = 'Core/';
         }
 
         return $sPathInsideModule;
@@ -418,7 +418,7 @@ class oxpsModuleGeneratorHelper extends oxSuperCfg
             return $sClassName;
         }
 
-        $oReflection = new ReflectionClass(new $sClassName());
+        $oReflection = new ReflectionClass(new $sClassName()); // TODO DDR: Compatibility check?
 
         return $oReflection->getName();
     }

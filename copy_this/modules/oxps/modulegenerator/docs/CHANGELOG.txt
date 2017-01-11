@@ -1,6 +1,18 @@
 OXID Module Skeleton Generator changelog
 ========================================
 
+v0.6.0
+------
+ * Compatibility with eShop v6
+ * Generated module gains eShop v6 features
+    - New parent classes naming
+    - Adjusted extend functionality
+    - composer.json
+    - IDE fix
+    - UTF-8 encoding
+    - Multi-theme support
+ * Other minor fixes and adjustments
+
 v0.5.0
 ------
  * First standalone release of the OXID Module Skeleton Generator

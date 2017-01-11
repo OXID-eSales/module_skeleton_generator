@@ -367,6 +367,11 @@ class Admin_oxpsModuleGenerator extends oxAdminView
             $oReflection = new ReflectionClass(new $sClassName());
             $sClassPath = (string) $oReflection->getFilename();
 
+            if (strpos($sClassPath, 'BackwardCompatibility') !== false) { // TODO DDR: proper fix!
+                $oReflection = $oReflection->getParentClass();
+                $sClassPath = (string) $oReflection->getFilename();
+            }
+
             if ($oFileSystemHelper->isFile($sClassPath)) {
                 $sClassName = oxStr::getStr()->strtolower($sClassName);
                 $sNoAppPath = str_replace('application' . DIRECTORY_SEPARATOR, '', dirname($sClassPath));

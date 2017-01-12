@@ -176,6 +176,7 @@ class [{$sModuleClassName}] extends Module
 [{/if}]
         //$oDbHandler->updateViews();
 [{/if}]
+
         return true;
     }
     

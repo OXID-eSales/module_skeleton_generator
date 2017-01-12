@@ -10,6 +10,11 @@
 [{assign var='sTableName' value=$sTableName|cat:$sClassName|lower}]
 
 use \OxidEsales\Eshop\Core\Model\BaseModel;
+use \OxidEsales\Eshop\Core\DatabaseProvider;
+use \OxidEsales\Eshop\Core\TableViewNameGenerator;
+[{if $oModule->renderTasks()}]
+// TODO: Define other classes to use in the model, and delete not used.
+[{/if}]
 
 /**
  * Class [{$sClassNamePrefix}][{$sClassName}].
@@ -38,7 +43,7 @@ class [{$sClassNamePrefix}][{$sClassName}] extends BaseModel
     // NOTE: If You overload parent methods like save, load, delete, etc.,
     //       call parent methods through protected functions like "[{$sClassNamePrefix}][{$sClassName}]_[someMethod]_parent(..."
 
-    // For empty OXID use $this->getId();
+    // To get `OXID` use $this->getId();
     // And You can use methods like $this-getClassName / getCoreTableName / getViewName / isLoaded ... and so on.
 [{/if}]
 [{if $oModule->renderSamples()}]
@@ -55,17 +60,19 @@ class [{$sClassNamePrefix}][{$sClassName}] extends BaseModel
      */
     /*public function set[SomeField]([someValue])
     {
-        $this->[{$sTableName}]__[somefield] = new oxField([someValue]);
+        $this->_setFieldData('[somefield]', '[someValue]');
+        // Or direct way: $this->[{$sTableName}]__[somefield] = new oxField([someValue]);
     }*/
 
     /**
      * Get [somefield].
      *
-     * @return double
+     * @return mixed
      */
     /*public function get[SomeField]()
     {
-        return $this->[{$sTableName}]__[somefield]->value;
+        return $this->getFieldData('[somefield]');
+        // OR get raw value: return $this->oxpstest040_what__[somefield]->getRawValue();
     }*/
 
     /**
@@ -83,14 +90,18 @@ class [{$sClassNamePrefix}][{$sClassName}] extends BaseModel
         // NOTE: Database tables are name lowercase, as example "[{$sTableName}]"
         //       Each new table MUST have a primary key named "OXID" of type char(32)
         //       Custom fields are named UPPERCASE with Your vendor prefix each, for example "[{$oModule->getVendorPrefix(true)}]MYFIELD"
+
 [{/if}]
-        $sQuery = sprintf(
+        /** @var TableViewNameGenerator $tableGenerator */
+        /* $tableGenerator = \OxidEsales\Eshop\Core\Registry::get(TableViewNameGenerator::class);
+
+        $query = sprintf(
             "SELECT * FROM `%s` WHERE `[SOME_FIELD]` = %s LIMIT 1",
-            getViewName('[{$sTableName}]'),
-            oxDb::getDb()->quote(trim([mSomeField]))
+            $tableGenerator->getViewName($this->getCoreTableName()),
+            DatabaseProvider::getDb()->quote(trim([mSomeField]))
         );
 
-        return $this->assignRecord($sQuery);
+        return $this->assignRecord($query);
     } */
 [{/if}]
 }

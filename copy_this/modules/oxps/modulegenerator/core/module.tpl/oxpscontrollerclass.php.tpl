@@ -9,6 +9,11 @@
 [{/if}]
 
 use \OxidEsales\Eshop\Core\Controller\BaseController;
+use \OxidEsales\Eshop\Core\Registry;
+use \OxidEsales\Eshop\Core\Request;
+[{if $oModule->renderTasks()}]
+// TODO: Define other classes to use in the controller, and delete not used.
+[{/if}]
 
 /**
  * Class [{$sClassNamePrefix}][{$sClassName}].
@@ -24,7 +29,7 @@ class [{$sClassNamePrefix}][{$sClassName}] extends BaseController
     protected $_sThisTemplate = '[{$oModule->getModuleId()}][{$sClassName}].tpl';
 
 
-    [{if $oModule->renderSamples()}]// This is an example of overridden init method that goes before any action and render.
+    [{if $oModule->renderSamples()}]// This is an example of overridden init method which fires before any action and render.
     /* public function init()
     {
 [{if $oModule->renderTasks()}]
@@ -50,22 +55,25 @@ class [{$sClassNamePrefix}][{$sClassName}] extends BaseController
         // TODO: Implement Your custom logic here
 [{/if}]
 [{if $oModule->renderSamples()}]
-        // $this->setViewData(array('[mMyParam]' => ...)); // To set ir modify view data
+        // $this->setViewData(array('[mMyParam]' => ...)); // To set view data
+        // $this->addTplParam($sParam, $sValue); // To add a parameter to view data
 
-        // ... = $this->getConfig()->getRequestParameter('[request_parameter]'); // To get GET/POST parameters
+        /** @var \OxidEsales\Eshop\Core\Request $oRequest */
+        // $oRequest = Registry::get(Request::class);
+        // ... = $oRequest->getRequestParameter('[request_parameter]'); // To get GET/POST parameters
 
-        // $oModule = oxRegistry::get('[{$sClassNamePrefix}]Module'); // Get the module instance
+        // $oModule = oxRegistry::get([{$sClassNamePrefix}]Module::class); // Get the module instance
 
         // /** @var myObject|myObjectParent $oObject */
-        // $oObject = oxNew('myObject'); // To create new object
+        // $oObject = oxNew(myObject::class); // To create new object
 
-        // oxRegistry::getUtils()->redirect(...); // For redirect
+        // Registry::getUtils()->redirect(...); // For redirect
 
         // $this->_oaComponents['oxcmp_..']->...; // To access components
 
         // $this->getUser(); // To get active shop user
 
-        // oxRegistry::get("oxUtilsView")->addErrorToDisplay(...); // To set error
+        // Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay(...); // To set error
 [{/if}]
 
         return $mReturn;
@@ -92,7 +100,10 @@ class [{$sClassNamePrefix}][{$sClassName}] extends BaseController
 [{/if}]
 
     /**
-     * Parent `render` call. Method required for mocking.
+     * Parent `render` call.
+[{if $oModule->renderTasks()}]
+     * Method required for mocking.
+[{/if}]
      *
      * @codeCoverageIgnore
      *

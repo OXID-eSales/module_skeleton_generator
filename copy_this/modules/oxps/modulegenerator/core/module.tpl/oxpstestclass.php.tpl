@@ -52,10 +52,10 @@ class [{$sClassFullName}]Test extends OxidTestCase
         // General Good Practices:
         //  - Keep test method as small and as simple as possible
         //  - Test one condition per one test
-        //  - Write as many tests as neded to test all conditions
+        //  - Write as many tests as needed to test all conditions
 
         // TODO: For mocking use techniques like this:
-        // Create mock object and define itsx expected behavior
+        // Create mock object and define its expected behavior
         $oMyMock = $this->getMock('[someClass]', array('[someMethod]', '[otherClassMethod]'));
         $oMyMock->expects($this->once()/exactly($i[x])/never()/at($i[x])/atLeastOnce())
                 ->method('[otherClassMethod]')
@@ -71,7 +71,7 @@ class [{$sClassFullName}]Test extends OxidTestCase
         $this->getProxyClass('MyClass');
         $this->getMock($this->getProxyClassName('MyClass'), array(…));
 
-        // Mock request, cnfig and session data
+        // Mock request, config and session data
         modConfig::setParameter('param', 'value');
         modConfig::getInstance()->setConfigParam('setting', 'value');
         modSession::getInstance()->setVar('key', 'value');

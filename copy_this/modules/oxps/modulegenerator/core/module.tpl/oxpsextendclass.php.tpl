@@ -22,20 +22,23 @@ class [{$sClassNamePrefix}][{$sReadableClassName}] extends [{$sClassNamePrefix}]
 
 [{if $oModule->renderSamples()}]
     // An example of an overloaded method which already exists in parent class
-    // public function [myMethod]($[sSomeParameter] = '')
-    // {
-    //    /** @var [{$sClassNamePrefix}][{$sReadableClassName}]|[{$sClassName}] $this */
-    //
+    /* public function [myMethod]($[sSomeParameter] = '')
+    {
 [{if $oModule->renderTasks()}]
-    //    // TODO: Implement Your custom logic here or delete this sample
+        // TODO: Implement Your custom logic here or delete this sample
+        // NOTE: Overloaded method parameters must be same as in original method.
+        // NOTE: Overloaded method must always call parent and do a return similar as in original method
 [{/if}]
-    //
-    //    return $this->_[{$sClassNamePrefix}][{$sReadableClassName}]_[myMethod]_parent($[sSomeParameter]);
-    // }
+
+        return $this->_[{$sClassNamePrefix}][{$sReadableClassName}]_[myMethod]_parent($[sSomeParameter]);
+    } */
 
 
     /**
-     * Parent `[myMethod]` call. Method required for mocking.
+     * Parent `[myMethod]` call.
+[{if $oModule->renderTasks()}]
+     * Method required for mocking.
+[{/if}]
      *
      * @codeCoverageIgnore
      *

@@ -19,4 +19,6 @@ class [{$sModuleId}][{$sExtendClass}]_parent extends [{$sExtendClass}]
 
 }
 [{/foreach}]
+[{elseif $oModule->renderTasks()}]
+// TODO: Delete this file if no classes are defined here.
 [{/if}]

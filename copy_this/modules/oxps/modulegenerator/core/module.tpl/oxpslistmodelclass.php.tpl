@@ -15,6 +15,10 @@
 [{assign var='sFullObjectName' value=$sClassNamePrefix|cat:$sListObjectsClassName}]
 
 use \OxidEsales\Eshop\Core\Model\ListModel;
+use \OxidEsales\Eshop\Core\TableViewNameGenerator;
+[{if $oModule->renderTasks()}]
+// TODO: Define other classes to use in the list model, and delete not used.
+[{/if}]
 
 /**
  * Class [{$sFullClassName}].
@@ -38,9 +42,9 @@ class [{$sFullClassName}] extends ListModel
 [{if $oModule->renderTasks()}]
     // TODO: Implement real loaders and delete the examples.
 
-    // NOTE: List class assign loaded object ot itself, so use methods like:
+    // NOTE: List class assign loaded objects ot itself, so use methods like:
     // $this->count / key / next / prev / clear / assign / getArray / getBaseObject / ...  and so on!
-    // If You user objects list in other class, define it with /** @var [{$sFullClassName}][] $oMyObjectsList */
+    // If You use objects list in other class, define it with /** @var [{$sFullClassName}][] $oMyObjectsList */
 [{/if}]
 
     /**
@@ -51,10 +55,14 @@ class [{$sFullClassName}] extends ListModel
 [{if $oModule->renderTasks()}]
         // TODO: Create other loaders like this using `selectString` method.
         // NOTE: For MySQL queries user proper case, backticks (`) and keep it clear and readable.
-[{/if}]
-        $sSql = "SELECT * FROM " . getViewName('[{$sTableName}]');
 
-        $this->selectString($sSql);
+[{/if}]
+        /** @var TableViewNameGenerator $tableGenerator */
+        /* $tableGenerator = \OxidEsales\Eshop\Core\Registry::get(TableViewNameGenerator::class);
+
+        $query = "SELECT * FROM " . $tableGenerator->getViewName($this->getBaseObject()->getCoreTableName());
+
+        $this->selectString($query);
     } */
 [{/if}]
 }

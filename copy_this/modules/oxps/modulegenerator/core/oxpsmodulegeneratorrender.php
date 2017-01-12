@@ -183,8 +183,9 @@ class oxpsModuleGeneratorRender extends Base
             'docs/uninstall.sql',
             $sModuleId . '_admin_de_lang.php' => 'Application/views/admin/de/oxpsModule_lang.php.tpl',
             $sModuleId . '_admin_en_lang.php' => 'Application/views/admin/en/oxpsModule_lang.php.tpl',
-            'metadata.php'                    => 'metadata.php.tpl',
             '.ide-helper.php'                 => '.ide-helper.php.tpl',
+            'composer.json'                   => 'composer.json.tpl',
+            'metadata.php'                    => 'metadata.php.tpl',
         );
 
         $aFilesToProcess = array_merge($aFilesToProcess, array_keys($aClassesToExtend), array_keys($aNewClasses));

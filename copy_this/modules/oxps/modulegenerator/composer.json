@@ -1,0 +1,16 @@
+{
+  "name": "oxid-esales/module-generator",
+  "description": "Folders structure, empty classes and metadata generation for new OXID eShop modules.",
+  "type": "oxideshop-module",
+  "keywords": ["oxid", "modules", "eShop", "generator", "skeleton", "structure"],
+  "homepage": "https://www.oxid-esales.com/en/home.html",
+  "license": [
+    "GPL-3.0",
+    "proprietary"
+  ],
+  "extra": {
+    "oxideshop": {
+      "target-directory": "oxps/ModuleGenerator"
+    }
+  }
+}

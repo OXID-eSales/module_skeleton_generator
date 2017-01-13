@@ -274,6 +274,23 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
     }
 
     /**
+     * Get a list of theme IDs to generate tempalte for - multi-theme support.
+     * List with empty string means use default templates generation - same for all themes.
+     *
+     * @return array
+     */
+    public function getThemesList()
+    {
+        if ($this->getInfo('oxpsmodulegenerator_module_theme_none')) {
+            return array('');
+        }
+
+        $aThemes = (array) $this->getInfo('oxpsmodulegenerator_module_theme_list');
+
+        return empty($aThemes) ? array('') : $aThemes;
+    }
+
+    /**
      * Get module version.
      *
      * @return string
@@ -339,6 +356,8 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      *                                     `aNewWidgets`      - A list of widgets to create.
      *                                     `aNewBlocks`       - A list of blocks data to create.
      *                                     `aModuleSettings`  - Data for module settings to create.
+     *                                     `lbThemesNone`     - Use same templates for all themes (no multi-theme)
+     *                                     `aThemesList`      - A list on theme IDs for multi-theme templates
      *                                     `sInitialVersion`  - Initial version value for a new module.
      *                                     `blFetchUnitTests` - Whatever to clone PHPUnit tests from GIT or not.
      *                                     `blRenderTasks`    - Option to render "To Do" tasks comments.
@@ -511,6 +530,8 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
             'oxpsmodulegenerator_module_settings'     => $oSettingsParser->getModuleSettings(
                 (array) $this->getArrayValue($aOptions, 'aModuleSettings', 'array')
             ),
+            'oxpsmodulegenerator_module_theme_none'   => $this->getArrayValue($aOptions, 'lbThemesNone'),
+            'oxpsmodulegenerator_module_theme_list'   => $this->getArrayValue($aOptions, 'aThemesList', 'array'),
             'oxpsmodulegenerator_module_init_version' => $this->getArrayValue($aOptions, 'sInitialVersion'),
             'oxpsmodulegenerator_render_tasks'        => $this->getArrayValue($aOptions, 'blRenderTasks', 'bool'),
             'oxpsmodulegenerator_render_samples'      => $this->getArrayValue($aOptions, 'blRenderSamples', 'bool'),

@@ -216,6 +216,11 @@ class Admin_oxpsModuleGenerator extends AdminController
                 $this->_getTextParam('modulegenerator_module_name')
             ),
             'aModuleSettings'  => (array) $oRequest->getRequestParameter('modulegenerator_settings'),
+            'lbThemesNone'     => (bool) $oRequest->getRequestParameter('modulegenerator_theme_none'),
+            'aThemesList'      => $this->_parseMultiLineInput(
+                $this->_getTextParam('modulegenerator_theme_list'),
+                'not_empty'
+            ),
             'sInitialVersion'  => (string) $oRequest->getRequestParameter('modulegenerator_init_version'),
             'blFetchUnitTests' => (bool) $oRequest->getRequestParameter('modulegenerator_fetch_unit_tests'),
             'blRenderTasks'    => (bool) $oRequest->getRequestParameter('modulegenerator_render_tasks'),
@@ -235,7 +240,11 @@ class Admin_oxpsModuleGenerator extends AdminController
         /** @var oxpsModuleGeneratorValidator $oValidator */
         $oValidator = Registry::get('oxpsModuleGeneratorValidator');
 
+        $blFormSubmitted = !empty($_POST);
         $aOptions = (array) $this->_getGenerationOptions();
+
+        $sThemeList = $this->_toString($oValidator->getArrayValue($aOptions, 'aThemesList', 'array'));
+        $sThemeList .= (!$blFormSubmitted or empty($sThemeList)) ? $this->_toString(array('flow', 'azure')) : '';
 
         return array(
             'name'        => $this->_getTextParam('modulegenerator_module_name'),
@@ -246,8 +255,10 @@ class Admin_oxpsModuleGenerator extends AdminController
             'widgets'     => $this->_toString($oValidator->getArrayValue($aOptions, 'aNewWidgets', 'array')),
             'blocks'      => $this->_getBlocksFieldValue($oValidator->getArrayValue($aOptions, 'aNewBlocks', 'array')),
             'settings'    => $oValidator->getArrayValue($aOptions, 'aModuleSettings', 'array'),
+            'theme_none'  => $blFormSubmitted ? $oValidator->getArrayValue($aOptions, 'lbThemesNone', 'boolean') : true,
+            'theme_list'  => $sThemeList,
             'version'     => $this->_getFormVersionFieldValue($oValidator->getArrayValue($aOptions, 'sInitialVersion')),
-            'tests'       => $oValidator->getArrayValue($aOptions, 'blFetchUnitTests', 'boolean'),
+            'tests'       => $blFormSubmitted ? $oValidator->getArrayValue($aOptions, 'blFetchUnitTests', 'boolean') : true,
             'tasks'       => $oValidator->getArrayValue($aOptions, 'blRenderTasks', 'boolean'),
             'samples'     => $oValidator->getArrayValue($aOptions, 'blRenderSamples', 'boolean'),
         );

@@ -1,4 +1,12 @@
 [{include file="headitem.tpl" title="OXPS_MODULEGENERATOR_ADMIN_TITLE"|oxmultilangassign}]
+<script type="application/javascript">
+    /**
+     * Themes list disabling/enabling event depending on "no themes" checkbox status.
+     */
+    function themeListToggle() {
+        document.getElementById('theme_list').disabled = document.getElementById('theme_none').checked;
+    }
+</script>
 [{oxstyle include=$oViewConf->getModuleUrl('oxps/ModuleGenerator', 'out/src/css/admin_oxpsmodulegenerator.css')}]
 [{oxstyle}]
 <div id="oxpsmodulegenerator">
@@ -156,6 +164,32 @@
                                 </table>
                                 [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_SETTINGS_HINT"}]
                             </td>
+                            <tr>
+                                <td colspan="2">&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class="edittext edittext-label">
+                                    [{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_MODULE_THEMES"}]
+                                </td>
+                                <td class="edittext">
+                                    <input type="checkbox" name="modulegenerator_theme_none" id="theme_none" value="1"
+                                           onclick="themeListToggle();"
+                                           [{if $oValues->theme_none}]checked="checked"[{/if}]/>&nbsp;
+                                    [{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_MODULE_THEMES_NONE"}]<br/>
+                                    <br/>
+                                    [{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_MODULE_THEMES_OR"}]<br/>
+                                    <br/>
+                                    [{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_MODULE_THEMES_LIST"}]:<br/>
+                                    <textarea name="modulegenerator_theme_list" id="theme_list"
+                                              cols="10" rows="4">[{$oValues->theme_list}]</textarea>
+                                    <script type="application/javascript">
+                                        document.addEventListener('DOMContentLoaded', function(event) {
+                                            themeListToggle();
+                                        });
+                                    </script>
+                                    [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_MODULE_THEMES_HINT"}]
+                                </td>
+                            </tr>
                             <tr>
                                 <td colspan="2">&nbsp;</td>
                             </tr>

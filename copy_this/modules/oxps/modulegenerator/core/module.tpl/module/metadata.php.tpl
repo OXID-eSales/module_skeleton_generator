@@ -11,10 +11,11 @@
 [{assign var='aExtendClasses' value=$oModule->getClassesToExtend()}]
 [{assign var='aModuleBlocks' value=$oModule->getBlocks()}]
 [{assign var='aModuleSettings' value=$oModule->getSettings()}]
+[{assign var='aThemesList' value=$oModule->getThemesList()}]
 /**
  * Metadata version
  */
-$sMetadataVersion = '1.2';
+$sMetadataVersion = '1.3';
 
 /**
  * Module information
@@ -65,42 +66,62 @@ $aModule = array(
 [{/if}]
 ),
     'templates'   => array(
+[{foreach from=$aThemesList item='sThemeID'}]
+[{if $sThemeID}]
+[{assign var='sThemeSuffix' value='.'|cat:$sThemeID}]
+      '[{$sThemeID}]' => array(
+[{else}]
+[{assign var='sThemeSuffix' value=''}]
+[{/if}]
 [{if $aControllersClasses}]
 [{foreach from=$aControllersClasses item='sControllerClassName'}]
-        '[{$sModuleCamelCaseId}][{$sControllerClassName}].tpl' => '[{$sVendorDir}]/[{$sModuleFolderName}]/Application/views/pages/[{$sModuleCamelCaseId}][{$sControllerClassName}].tpl',
+        '[{$sModuleCamelCaseId}][{$sControllerClassName}].tpl' => '[{$sVendorDir}]/[{$sModuleFolderName}]/Application/views/pages/[{$sModuleCamelCaseId}][{$sControllerClassName}][{$sThemeSuffix}].tpl',
 [{/foreach}]
 [{/if}]
 [{if $aWidgetsClasses}]
 [{foreach from=$aWidgetsClasses item='sWidgetClassName'}]
-        '[{$sModuleCamelCaseId}][{$sWidgetClassName}].tpl' => '[{$sVendorDir}]/[{$sModuleFolderName}]/Application/views/widgets/[{$sModuleCamelCaseId}][{$sWidgetClassName}].tpl',
+        '[{$sModuleCamelCaseId}][{$sWidgetClassName}].tpl' => '[{$sVendorDir}]/[{$sModuleFolderName}]/Application/views/widgets/[{$sModuleCamelCaseId}][{$sWidgetClassName}][{$sThemeSuffix}].tpl',
 [{/foreach}]
 [{/if}]
+[{if $sThemeID}]
+      ),
+[{/if}]
+[{/foreach}]
 [{if $oModule->renderSamples()}]
         //'[your_template].tpl' => '[{$sVendorDir}]/[{$sModuleFolderName}]/Application/views/pages/[theme_folder_path]/[{$sModuleCamelCaseId}][your_template].tpl',
 [{/if}]
-),
+    ),
     'blocks'      => array(
 [{if $aModuleBlocks}]
-    [{foreach from=$aModuleBlocks item='aModuleBlock'}]
-    array(
+[{foreach from=$aThemesList item='sThemeID'}]
+[{if $sThemeID}]
+[{assign var='sThemeSuffix' value='.'|cat:$sThemeID}]
+[{else}]
+[{assign var='sThemeSuffix' value=''}]
+[{/if}]
+[{foreach from=$aModuleBlocks item='aModuleBlock'}]
+        array(
+[{if $sThemeID}]
+            'theme' => '[{$sThemeID}]',
+[{/if}]
             'template'  => '[{$aModuleBlock->template}]',
             'block'  => '[{$aModuleBlock->block}]',
-            'file' => '[{$aModuleBlock->file}]',
+            'file' => '[{$aModuleBlock->file|replace:'.tpl':$sThemeSuffix|cat:'.tpl'}]',
         ),
-    [{/foreach}]
-[{else}]
-        [{if $oModule->renderSamples()}]/*array(
+[{/foreach}]
+[{/foreach}]
+[{elseif $oModule->renderSamples()}]
+        /*array(
             'template' => '[theme_folder]/[theme_template].tpl',
             'block' => '[{$sModuleId}]_[your_block_name]',
             'file' => 'Application/views/blocks/[{$sModuleCamelCaseId}][your_block_name].tpl',
         ),*/
 [{/if}]
-[{/if}]
     ),
     'settings'    => array(
 [{if $aModuleSettings}]
-    [{foreach from=$aModuleSettings key='iSettingKey' item='aModuleSetting'}]
-    array(
+[{foreach from=$aModuleSettings key='iSettingKey' item='aModuleSetting'}]
+        array(
             'group' => '[{$sModuleCamelCaseId}]Settings',
             'name'  => '[{$sModuleCamelCaseId}][{$aModuleSetting->name}]',
             'type'  => '[{$aModuleSetting->type}]',
@@ -109,9 +130,9 @@ $aModule = array(
             'constrains' => [{$aModuleSetting->constrains}],
 [{/if}]
         ),
-    [{/foreach}]
-[{else}]
-        [{if $oModule->renderSamples()}]/*array(
+[{/foreach}]
+[{elseif $oModule->renderSamples()}]
+        /*array(
             'group' => '[{$sModuleCamelCaseId}][SettingsGroup]',
             'name'  => '[{$sModuleCamelCaseId}][SettingName]',
 [{if $oModule->renderTasks()}]
@@ -121,8 +142,7 @@ $aModule = array(
             'value' => '[initial_setting_value]',
         ),*/
 [{/if}]
-[{/if}]
-),
+    ),
     'events'      => array(
         'onActivate'   => '[{$oModule->getModuleClassName()}]Module::onActivate',
         'onDeactivate' => '[{$oModule->getModuleClassName()}]Module::onDeactivate',

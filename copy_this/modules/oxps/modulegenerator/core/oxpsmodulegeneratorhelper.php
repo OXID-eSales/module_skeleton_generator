@@ -390,15 +390,20 @@ class oxpsModuleGeneratorHelper extends Base
 
         $sModuleId = $oModule->getModuleId();
         $sClassPrefix = $oModule->getModuleClassName();
+        $aThemes = (array) $oModule->getThemesList();
 
         $sDemoContentFormat = $this->_getTemplateContentFormat($blBlocks);
 
-        foreach ($aClasses as $sClass) {
-            $sTemplateFileName = sprintf('%s%s.tpl', $sModuleId, $sClass);
-            $sTemplateFilePath = $sDestinationPath . $sTemplateFileName;
-            $sTemplateContent = sprintf($sDemoContentFormat, $sClass, $sTemplateFilePath, $sClassPrefix . $sClass);
+        foreach ($aThemes as $sTheme) {
+            $sThemeSuffix = empty($sTheme) ? '' : ('.' . $sTheme);
 
-            $oFileSystemHelper->createFile($sTemplateFilePath, $sTemplateContent);
+            foreach ($aClasses as $sClass) {
+                $sTemplateFileName = sprintf('%s%s%s.tpl', $sModuleId, $sClass, $sThemeSuffix);
+                $sTemplateFilePath = $sDestinationPath . $sTemplateFileName;
+                $sTemplateContent = sprintf($sDemoContentFormat, $sClass, $sTemplateFilePath, $sClassPrefix . $sClass);
+
+                $oFileSystemHelper->createFile($sTemplateFilePath, $sTemplateContent);
+            }
         }
 
         return true;

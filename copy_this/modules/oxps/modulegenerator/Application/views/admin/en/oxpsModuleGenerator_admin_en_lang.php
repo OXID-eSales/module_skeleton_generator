@@ -67,6 +67,12 @@ $aLang = array(
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_SETTING_VALUE'          => 'Default value',
     'OXPS_MODULEGENERATOR_ADMIN_CREATE_SETTINGS_HINT'          => 'Enter initial values like in examples: Checkbox - "0" or "1", String - "my value", Number - "7.88", for other types - each value from new line.<br/>' .
                                                                   'NOTE: Older eShop versions don\'t support "Number" setting type.',
+    'OXPS_MODULEGENERATOR_ADMIN_MODULE_THEMES'                 => 'Multi-theme support',
+    'OXPS_MODULEGENERATOR_ADMIN_MODULE_THEMES_HINT'            => 'If a list on theme IDs is specified, multi-theme feature will be used to create separate templates for each theme.' .
+                                                                  'Else standard functionality is used - same templates for all themes.',
+    'OXPS_MODULEGENERATOR_ADMIN_MODULE_THEMES_NONE'            => 'No theme specific templates (standard)',
+    'OXPS_MODULEGENERATOR_ADMIN_MODULE_THEMES_OR'              => 'OR',
+    'OXPS_MODULEGENERATOR_ADMIN_MODULE_THEMES_LIST'            => 'Define theme IDs for module multi-theme template',
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_INIT_VERSION'           => 'Initial module version',
     'OXPS_MODULEGENERATOR_ADMIN_HAS_ADMINISTRATION'            => 'Has admin interface',
     'OXPS_MODULEGENERATOR_ADMIN_HAS_ADMINISTRATION_HINT'       => 'Select this option if module requires administration interface.',

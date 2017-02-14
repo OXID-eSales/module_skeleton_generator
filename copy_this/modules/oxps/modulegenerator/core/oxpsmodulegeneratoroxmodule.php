@@ -59,6 +59,13 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     protected $_oValidator = null;
 
+    /**
+     * Edit Mode flag.
+     *
+     * @var null|bool
+     */
+    protected $_blEditMode = null;
+
 
     /**
      * Set module vendor prefix. It is also a vendor directory name.
@@ -340,7 +347,6 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         return $this->getVendorPath() . $this->getModuleFolderName() . '/';
     }
 
-
     /**
      * Generate a module.
      * Creates blank pre-configure module skeleton in a vendor folder.
@@ -367,6 +373,11 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     public function generateModule($sModuleName, array $aGenerationOptions = array())
     {
+        // TODO: Delete after debuging!
+        echo "<pre>";
+        print_r($aGenerationOptions);
+        echo "</pre>";
+
         // Initialize helpers
         /** @var oxpsModuleGeneratorHelper $oHelper */
         $oHelper = Registry::get('oxpsModuleGeneratorHelper');
@@ -375,6 +386,11 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         /** @var oxpsModuleGeneratorRender $oRenderHelper */
         $oRenderHelper = Registry::get('oxpsModuleGeneratorRender');
         $oRenderHelper->init($this);
+
+        // Check if Edit Mode is active or not
+        if ($this->isEditMode($sModuleName)) {
+            $aGenerationOptions = $this->_getMetaDataInfo($sModuleName);
+        }
 
         // Set module data - initializes it with new module info
         $this->_setNewModuleData($sModuleName, $aGenerationOptions);
@@ -411,7 +427,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
 
 
     /**
-     * Validate new module name: should be "UpperCamelCase" and not yet exist in the configured vendor directory.
+     * Validate new module name: should be "UpperCamelCase".
      *
      * @param string $sModuleName
      *
@@ -419,7 +435,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     public function validateModuleName($sModuleName)
     {
-        return ($this->getValidator()->validateCamelCaseName($sModuleName) and !$this->_moduleExists($sModuleName));
+        return ($this->getValidator()->validateCamelCaseName($sModuleName));
     }
 
     /**
@@ -493,6 +509,21 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
 
 
     /**
+     * Check if entered module name already exists.
+     *
+     * @param $sModuleName
+     *
+     * @return bool
+     */
+    public function isEditMode($sModuleName)
+    {
+        if($this->_blEditMode === null) {
+            $this->_blEditMode = $this->_moduleExists($sModuleName);
+        }
+        return $this->_blEditMode;
+    }
+
+    /**
      * Compile additional module params and set all module data.
      *
      * @param string $sModuleName Module name in CamelCase style.
@@ -553,5 +584,27 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         $oFileSystemHelper = Registry::get('oxpsModuleGeneratorFileSystem');
 
         return $oFileSystemHelper->isDir($this->getVendorPath() . $sModuleName);
+    }
+
+    // TODO: Logic for tranfering info from existing module metadata to Generation Options array
+    protected function _readGenerationOptions($sModuleName)
+    {
+        $sFullModulePath = Registry::getConfig()->getModulesDir() . $this->getVendorPrefix() . "/" . $sModuleName;
+        $sMetadataPath = $sFullModulePath . "/metadata.php";
+        $aModule = array();
+        include $sMetadataPath;
+        print_r($aModule);
+        die;
+
+       // Registry::get('oxpsmodulegeneratormetadata');
+
+        $aGenerationOptions = $this->getExtensions();
+        print_r($aGenerationOptions); die;
+        return $aGenerationOptions;
+    }
+
+    protected function _getMetaDataInfo()
+    {
+
     }
 }

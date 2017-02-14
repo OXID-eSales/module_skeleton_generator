@@ -161,8 +161,9 @@ class Admin_oxpsModuleGenerator extends AdminController
 
             // Set an error if module name is not valid
             $this->_setMessage('OXPS_MODULEGENERATOR_ADMIN_MODULE_ERROR_INVALID_NAME');
-        } elseif ($this->getModule()->generateModule($sModuleName, $aGenerationOptions)
-        ) {
+        } else {
+
+            $this->getModule()->generateModule($sModuleName, $aGenerationOptions);
 
             // Set success massage
             $this->_setMessage('OXPS_MODULEGENERATOR_ADMIN_MODULE_MSG_GENERATION_SUCCESS', false);

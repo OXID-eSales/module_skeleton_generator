@@ -373,7 +373,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     public function generateModule($sModuleName, array $aGenerationOptions = array())
     {
-        // TODO: Delete after debuging!
+        // TODO: Delete after debugging!
         echo "<pre>";
         print_r($aGenerationOptions);
         echo "</pre>";
@@ -392,7 +392,11 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
             $aGenerationOptions = $this->_readGenerationOptions($sModuleName);
         }
 
-        print_r($aGenerationOptions); die;
+        // TODO: Delete after debugging!
+        echo "<pre>";
+        print_r($aGenerationOptions);
+        echo "</pre>";
+        die;
 
         // Set module data - initializes it with new module info
         $this->_setNewModuleData($sModuleName, $aGenerationOptions);
@@ -597,9 +601,9 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     protected function _readGenerationOptions($sModuleName)
     {
-        $aMetaData = $this->_getMetaDataInfo($sModuleName);
-        $oMetaDataParser = Registry::get('oxpsModuleGeneratorMetaData');
-        $aGenerationOptions = $oMetaDataParser->parse($aMetaData);
+        $aMetadata = $this->_getMetadataInfo($sModuleName);
+        $oMetadataParser = Registry::get('oxpsModuleGeneratorMetadata');
+        $aGenerationOptions = $oMetadataParser->parseMetadata($aMetadata);
 
         return $aGenerationOptions;
     }
@@ -611,7 +615,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      *
      * @return array
      */
-    protected function _getMetaDataInfo($sModuleName)
+    protected function _getMetadataInfo($sModuleName)
     {
         $sFullModulePath = Registry::getConfig()->getModulesDir() . $this->getVendorPrefix() . "/" . $sModuleName;
         $sMetadataPath = $sFullModulePath . "/metadata.php";

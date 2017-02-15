@@ -162,7 +162,7 @@ class oxpsModuleGeneratorMetadata extends Base
 
         return (array) $aMetadataWidgets;
     }
-
+    // TODO: templates and blocks are the same and only depend on theme, do we need to duplicate?
     protected function _parseMetadataBlocks(array $aMetadataBlockFiles)
     {
         $aMetadataBlocks = [];
@@ -185,7 +185,7 @@ class oxpsModuleGeneratorMetadata extends Base
             }
             $arrKey++;
         }
-        // TODO: need to seperate 'value' index by new lines (\n)
+        // TODO: need to seperate 'value' index by new lines (\n) as it is submitted through form
         echo "<pre>";
         print_r($aMetadataSettings);
         echo "</pre>";

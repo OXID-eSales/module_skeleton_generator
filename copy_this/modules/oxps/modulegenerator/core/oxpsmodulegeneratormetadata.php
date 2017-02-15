@@ -24,14 +24,19 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
+use OxidEsales\Eshop\Core\Base;
+
 /**
- * WRITE ABOUT
+ * TODO: WRITE DESC
  */
-class oxpsModuleGeneratorMetadata extends oxSuperCfg
+class oxpsModuleGeneratorMetaData extends Base
 {
 
-    public function parse(array $a): array
+    public function parse($aMetaData)
     {
-
+        return [
+            'meta' => 'data',
+            'first' => 'second',
+        ];
     }
 }

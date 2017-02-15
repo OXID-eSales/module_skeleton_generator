@@ -387,10 +387,12 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         $oRenderHelper = Registry::get('oxpsModuleGeneratorRender');
         $oRenderHelper->init($this);
 
-        // Check if Edit Mode is active or not
+        // Read Generation Options of existing module if Edit Mode is activated
         if ($this->isEditMode($sModuleName)) {
-            $aGenerationOptions = $this->_getMetaDataInfo($sModuleName);
+            $aGenerationOptions = $this->_readGenerationOptions($sModuleName);
         }
+
+        print_r($aGenerationOptions); die;
 
         // Set module data - initializes it with new module info
         $this->_setNewModuleData($sModuleName, $aGenerationOptions);
@@ -586,25 +588,36 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         return $oFileSystemHelper->isDir($this->getVendorPath() . $sModuleName);
     }
 
-    // TODO: Logic for tranfering info from existing module metadata to Generation Options array
+    /**
+     * Return parsed module metadata info to Generation Options to fill Module Generator form.
+     *
+     * @param $sModuleName
+     *
+     * @return array
+     */
     protected function _readGenerationOptions($sModuleName)
+    {
+        $aMetaData = $this->_getMetaDataInfo($sModuleName);
+        $oMetaDataParser = Registry::get('oxpsModuleGeneratorMetaData');
+        $aGenerationOptions = $oMetaDataParser->parse($aMetaData);
+
+        return $aGenerationOptions;
+    }
+
+    /**
+     * Get Metadata of provided module name.
+     *
+     * @param $sModuleName
+     *
+     * @return array
+     */
+    protected function _getMetaDataInfo($sModuleName)
     {
         $sFullModulePath = Registry::getConfig()->getModulesDir() . $this->getVendorPrefix() . "/" . $sModuleName;
         $sMetadataPath = $sFullModulePath . "/metadata.php";
         $aModule = array();
         include $sMetadataPath;
-        print_r($aModule);
-        die;
 
-       // Registry::get('oxpsmodulegeneratormetadata');
-
-        $aGenerationOptions = $this->getExtensions();
-        print_r($aGenerationOptions); die;
-        return $aGenerationOptions;
-    }
-
-    protected function _getMetaDataInfo()
-    {
-
+        return $aModule;
     }
 }

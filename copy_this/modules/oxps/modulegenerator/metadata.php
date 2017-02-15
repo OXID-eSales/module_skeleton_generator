@@ -51,6 +51,7 @@ $aModule = array(
         'Admin_oxpsModuleGenerator'     => 'oxps/ModuleGenerator/Application/Controller/Admin/Admin_oxpsModuleGenerator.php',
         'oxpsModuleGeneratorFileSystem' => 'oxps/ModuleGenerator/Core/oxpsModuleGeneratorFileSystem.php',
         'oxpsModuleGeneratorHelper'     => 'oxps/ModuleGenerator/Core/oxpsModuleGeneratorHelper.php',
+        'oxpsModuleGeneratorMetaData'   => 'oxps/ModuleGenerator/Core/oxpsModuleGeneratorMetaData.php',
         'oxpsModuleGeneratorModule'     => 'oxps/ModuleGenerator/Core/oxpsModuleGeneratorModule.php',
         'oxpsModuleGeneratorRender'     => 'oxps/ModuleGenerator/Core/oxpsModuleGeneratorRender.php',
         'oxpsModuleGeneratorSettings'   => 'oxps/ModuleGenerator/Core/oxpsModuleGeneratorSettings.php',

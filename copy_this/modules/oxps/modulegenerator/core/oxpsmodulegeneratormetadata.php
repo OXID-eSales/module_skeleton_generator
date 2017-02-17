@@ -42,7 +42,32 @@ class oxpsModuleGeneratorMetadata extends Base
     const LIST_PATTERN = 'List.php';
     const WIDGET_PATTERN = '/Application/Component/Widget/';
 
-    /** @var array */
+    /**
+     * Array of methods to parse different metadata settings depending on setting type.
+     *
+     * @var array
+     *
+     * @see _parseBoolSettingValue      Parse Checkbox values
+     * @see _parseStrSettingValue       Parse String values
+     * @see _parseNumSettingValue       Parse Number values
+     * @see _parseArrSettingValue       Parse Array values
+     * @see _parseAarrSettingValue      Parse Associative Array values
+     * @see _parseSelectSettingValue    Parse Dropdown values
+     */
+    protected $aMetadataSettingsParse = [
+        'bool'   => '_parseBoolSettingValue',
+        'str'    => '_parseStrSettingValue',
+        'num'    => '_parseNumSettingValue',
+        'arr'    => '_parseArrSettingValue',
+        'aarr'   => '_parseAarrSettingValue',
+        'select' => '_parseSelectSettingValue',
+    ];
+
+    /**
+     * Existing module metadata from metadata.php file
+     *
+     * @var array
+     */
     protected $_aMetadata = [];
 
     /**
@@ -56,26 +81,16 @@ class oxpsModuleGeneratorMetadata extends Base
     {
         $this->_aMetadata = $aMetadata;
 
-        // debug
-        echo '<pre>';
-        print_r($this->_aMetadata);
-        echo "</pre>";
-        // debug
+        // TODO: check with 1) array_key_exists() and 2) cast type
 
         $aGenerationOptions = [
-            'aExtendClasses'   => array_keys($this->_aMetadata['extend']),
-            'aNewControllers'  => $this->_parseMetadataControllers($this->_aMetadata['files']),
-            'aNewModels'       => $this->_parseMetadataModels($this->_aMetadata['files']),
-            'aNewLists'        => $this->_parseMetadataLists($this->_aMetadata['files']),
-            'aNewWidgets'      => $this->_parseMetadataWidgets($this->_aMetadata['files']),
-            'aNewBlocks'       => $this->_parseMetadataBlocks($this->_aMetadata['blocks']),
-            'aModuleSettings'  => $this->_parseMetadataSettings($this->_aMetadata['settings']),
-            'lbThemesNone'     => '',
-            'aThemesList'      => [],
-            'sInitialVersion'  => $this->_aMetadata['version'],
-            'blFetchUnitTests' => '',
-            'blRenderTasks'    => '',
-            'blRenderSamples'  => '',
+            'aExtendClasses'  => array_keys($this->_aMetadata['extend']),
+            'aNewControllers' => $this->_parseMetadataControllers($this->_aMetadata['files']),
+            'aNewModels'      => $this->_parseMetadataModels($this->_aMetadata['files'], 'model'),
+            'aNewLists'       => $this->_parseMetadataModels($this->_aMetadata['files'], 'list'),
+            'aNewWidgets'     => $this->_parseMetadataWidgets($this->_aMetadata['files']),
+            'aNewBlocks'      => $this->_parseMetadataBlocks($this->_aMetadata['blocks']),
+            'aModuleSettings' => $this->_parseMetadataSettings($this->_aMetadata['settings']),
         ];
 
         return $aGenerationOptions;
@@ -101,47 +116,32 @@ class oxpsModuleGeneratorMetadata extends Base
     }
 
     /**
-     * Parse Models from existing Metadata
+     * Parse Models (or Lists) from existing Metadata
      *
-     * @param array $aMetadataFiles
+     * @param array  $aMetadataFiles
+     * @param string $sFileType
      *
      * @return array
      */
-    protected function _parseMetadataModels(array $aMetadataFiles)
+    protected function _parseMetadataModels(array $aMetadataFiles, $sFileType = '')
     {
         $aMetadataModels = [];
         foreach ($aMetadataFiles as $aMetadataKey => $aMetadataValue) {
             if (stripos($aMetadataValue, self::MODEL_PATTERN) !== false) {
                 $aExplodedModelPath = explode("/", $aMetadataValue);
-                if (stripos(end($aExplodedModelPath), self::LIST_PATTERN) === false) {
-                    $aMetadataModels[] = $this->_stripModuleId($aMetadataKey);
+                if ('model' === $sFileType) {
+                    if (stripos(end($aExplodedModelPath), self::LIST_PATTERN) === false) {
+                        $aMetadataModels[] = $this->_stripModuleId($aMetadataKey);
+                    }
+                } elseif ('list' === $sFileType) {
+                    if (stripos(end($aExplodedModelPath), self::LIST_PATTERN) !== false) {
+                        $aMetadataModels[] = $this->_stripModuleId($aMetadataKey);
+                    }
                 }
             }
         }
 
-        return (array) $aMetadataModels;
-    }
-
-    /**
-     * Parse Lists from existing Metadata
-     *
-     * @param array $aMetadataFiles
-     *
-     * @return array
-     */
-    protected function _parseMetadataLists(array $aMetadataFiles)
-    {
-        $aMetadataLists = [];
-        foreach ($aMetadataFiles as $aMetadataKey => $aMetadataValue) {
-            if (stripos($aMetadataValue, self::MODEL_PATTERN) !== false) {
-                $aExplodedListPath = explode("/", $aMetadataValue);
-                if (stripos(end($aExplodedListPath), self::LIST_PATTERN) !== false) {
-                    $aMetadataLists[] = $this->_stripModuleId($aMetadataKey);
-                }
-            }
-        }
-
-        return (array) $aMetadataLists;
+        return $aMetadataModels;
     }
 
     /**
@@ -160,38 +160,58 @@ class oxpsModuleGeneratorMetadata extends Base
             }
         }
 
-        return (array) $aMetadataWidgets;
+        return $aMetadataWidgets;
     }
-    // TODO: templates and blocks are the same and only depend on theme, do we need to duplicate?
+
+    /**
+     * Parse Metadata blocks from existing Metadata and check if they are unique.
+     *
+     * @param array $aMetadataBlockFiles
+     *
+     * @return array
+     */
     protected function _parseMetadataBlocks(array $aMetadataBlockFiles)
     {
         $aMetadataBlocks = [];
         foreach ($aMetadataBlockFiles as $aMetadataBlockFile) {
-            $aMetadataBlocks[] = $aMetadataBlockFile['block'] . "@" . $aMetadataBlockFile['template'];
+            $sBlockPath = $aMetadataBlockFile['block'] . "@" . $aMetadataBlockFile['template'];
+            if (!in_array($sBlockPath, $aMetadataBlocks)) {
+                $aMetadataBlocks[] = $sBlockPath;
+            }
         }
 
-        return (array) $aMetadataBlocks;
+        return $aMetadataBlocks;
     }
 
-    protected function _parseMetadataSettings(array $aMetadataSettingsFiles)
+    /**
+     * Parse Metadata settings arrays of existing Metadata using different methods depending on type.
+     *
+     * @param array $aMetadataSettingsArrays
+     *
+     * @return array
+     */
+    protected function _parseMetadataSettings(array $aMetadataSettingsArrays)
     {
         $aMetadataSettings = [];
-        $arrKey = 0;
-        foreach ($aMetadataSettingsFiles as $aMetadataSettingsFile) {
-            foreach ($aMetadataSettingsFile as $index => $item) {
-                if ($index !== 'group') {
-                    $aMetadataSettings[$arrKey][$index] = $item;
-                }
-            }
-            $arrKey++;
-        }
-        // TODO: need to seperate 'value' index by new lines (\n) as it is submitted through form
-        echo "<pre>";
-        print_r($aMetadataSettings);
-        echo "</pre>";
-        die;
+        $iArrayKey = 0;
 
-        return (array) $aMetadataSettings;
+        foreach ($aMetadataSettingsArrays as $aMetadataSettingsArray) {
+
+            $aMetadataSettings[$iArrayKey]['name'] = $aMetadataSettingsArray['name'];
+
+            $sType = array_key_exists($aMetadataSettingsArray['type'], $this->aMetadataSettingsParse)
+                ? $aMetadataSettingsArray['type']
+                : 'str';
+
+            $sMethod = $this->aMetadataSettingsParse[$sType];
+
+            $aMetadataSettings[$iArrayKey]['type'] = $sType;
+            $aMetadataSettings[$iArrayKey]['value'] = $this->$sMethod($aMetadataSettingsArray);
+
+            $iArrayKey++;
+        }
+
+        return $aMetadataSettings;
     }
 
     /**
@@ -204,5 +224,72 @@ class oxpsModuleGeneratorMetadata extends Base
     protected function _stripModuleId($sFullName)
     {
         return (string) str_ireplace($this->_aMetadata['id'], '', $sFullName);
+    }
+
+    /**
+     * @param array $aMetadataSettingsArray
+     *
+     * @return string
+     */
+    protected function _parseBoolSettingValue(array $aMetadataSettingsArray)
+    {
+        return (string) $aMetadataSettingsArray['value'];
+    }
+
+    /**
+     * @param array $aMetadataSettingsArray
+     *
+     * @return string
+     */
+    protected function _parseStrSettingValue(array $aMetadataSettingsArray)
+    {
+        return (string) $aMetadataSettingsArray['value'];
+    }
+
+    /**
+     * @param array $aMetadataSettingsArray
+     *
+     * @return string
+     */
+    protected function _parseNumSettingValue(array $aMetadataSettingsArray)
+    {
+        return (string) $aMetadataSettingsArray['value'];
+    }
+
+    /**
+     * @param array $aMetadataSettingsArray
+     *
+     * @return string
+     */
+    protected function _parseArrSettingValue(array $aMetadataSettingsArray)
+    {
+        return (string) implode(PHP_EOL, $aMetadataSettingsArray['value']);
+    }
+
+    /**
+     * @param array $aMetadataSettingsArray
+     *
+     * @return string
+     */
+    protected function _parseAarrSettingValue(array $aMetadataSettingsArray)
+    {
+        $sArray = '';
+        foreach ($aMetadataSettingsArray['value'] as $index => $item) {
+            $sArray .= $index . ' => ' . $item . PHP_EOL;
+        }
+
+        return $sArray;
+    }
+
+    /**
+     * @param array $aMetadataSettingsArray
+     *
+     * @return string
+     */
+    protected function _parseSelectSettingValue(array $aMetadataSettingsArray)
+    {
+        $sConstrains = $aMetadataSettingsArray['constrains'];
+
+        return (string) str_replace("|", PHP_EOL, $sConstrains);
     }
 }

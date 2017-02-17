@@ -388,9 +388,16 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         $oRenderHelper->init($this);
 
         // Read Generation Options of existing module if Edit Mode is activated
+        // TODO: Append parsed values to existing Generation Options (KEY to KEY)
         if ($this->isEditMode($sModuleName)) {
-            $aGenerationOptions = $this->_readGenerationOptions($sModuleName);
+            $aRenderedOptions = $this->_readGenerationOptions($sModuleName);
         }
+/*        array_walk(
+            $aGenerationOptions, function ($value, $key) use ($aRenderedOptions) {
+                // TODO: build new array by adding parsed data first, then user entered.
+            }
+        );
+        print_r($aRenderedOptions);*/
 
         // TODO: Delete after debugging!
         echo "<pre>";
@@ -523,9 +530,10 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     public function isEditMode($sModuleName)
     {
-        if($this->_blEditMode === null) {
+        if (null === $this->_blEditMode) {
             $this->_blEditMode = $this->_moduleExists($sModuleName);
         }
+
         return $this->_blEditMode;
     }
 
@@ -601,9 +609,13 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     protected function _readGenerationOptions($sModuleName)
     {
+        $aGenerationOptions = [];
         $aMetadata = $this->_getMetadataInfo($sModuleName);
-        $oMetadataParser = Registry::get('oxpsModuleGeneratorMetadata');
-        $aGenerationOptions = $oMetadataParser->parseMetadata($aMetadata);
+        if (!empty($aMetadata)) {
+            /** @var oxpsModuleGeneratorMetadata $oMetadataParser */
+            $oMetadataParser = Registry::get('oxpsModuleGeneratorMetadata');
+            $aGenerationOptions = $oMetadataParser->parseMetadata($aMetadata);
+        }
 
         return $aGenerationOptions;
     }
@@ -617,10 +629,17 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     protected function _getMetadataInfo($sModuleName)
     {
-        $sFullModulePath = Registry::getConfig()->getModulesDir() . $this->getVendorPrefix() . "/" . $sModuleName;
+        $sFullModulePath = $this->getConfig()->getModulesDir() . $this->getVendorPrefix() . "/" . $sModuleName;
         $sMetadataPath = $sFullModulePath . "/metadata.php";
-        $aModule = array();
-        include $sMetadataPath;
+        $aModule = [];
+        if (file_exists($sMetadataPath)) {
+            // TODO: Expand Exception on corrupt include file.
+            try {
+                include $sMetadataPath;
+            } catch (Exception $e) {
+                echo $e->getMessage();
+            }
+        }
 
         return $aModule;
     }

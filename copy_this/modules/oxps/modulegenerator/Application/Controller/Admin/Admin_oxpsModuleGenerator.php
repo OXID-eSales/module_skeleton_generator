@@ -206,12 +206,12 @@ class Admin_oxpsModuleGenerator extends AdminController
         $oRequest = Registry::get(\OxidEsales\Eshop\Core\Request::class);
 
         $aGenerationOptions = array(
-            'aExtendClasses'   => $this->_validateAndLinkClasses($this->_getTextParam('modulegenerator_extend_classes')),
+            'aExtendClasses'   => $this->validateAndLinkClasses($this->_getTextParam('modulegenerator_extend_classes')),
             'aNewControllers'  => $this->_parseMultiLineInput($this->_getTextParam('modulegenerator_controllers')),
             'aNewModels'       => $this->_parseMultiLineInput($this->_getTextParam('modulegenerator_models')),
             'aNewLists'        => $this->_parseMultiLineInput($this->_getTextParam('modulegenerator_lists')),
             'aNewWidgets'      => $this->_parseMultiLineInput($this->_getTextParam('modulegenerator_widgets')),
-            'aNewBlocks'       => $this->_parseBlocksData(
+            'aNewBlocks'       => $this->parseBlocksData(
                 $this->_getTextParam('modulegenerator_blocks'),
                 $this->getVendorPrefix(),
                 $this->_getTextParam('modulegenerator_module_name')
@@ -375,7 +375,7 @@ class Admin_oxpsModuleGenerator extends AdminController
      *
      * @return array With relative application path as value and clean class name as key for each valid class.
      */
-    protected function _validateAndLinkClasses($sClasses)
+    public function validateAndLinkClasses($sClasses)
     {
         /** @var oxpsModuleGeneratorFileSystem $oFileSystemHelper */
         $oFileSystemHelper = Registry::get('oxpsModuleGeneratorFileSystem');
@@ -437,7 +437,7 @@ class Admin_oxpsModuleGenerator extends AdminController
      *
      * @return array
      */
-    protected function _parseBlocksData($sBlocks, $sVendorPrefix, $sModuleName)
+    public function parseBlocksData($sBlocks, $sVendorPrefix, $sModuleName)
     {
         $sModuleId = sprintf('%s%s', $sVendorPrefix, $sModuleName);
         $aBlocks = $this->_parseMultiLineInput($sBlocks, 'not_empty');

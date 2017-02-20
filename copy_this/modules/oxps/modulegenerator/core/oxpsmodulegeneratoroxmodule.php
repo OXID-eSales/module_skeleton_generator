@@ -374,9 +374,9 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
     public function generateModule($sModuleName, array $aGenerationOptions = array())
     {
         // TODO: Delete after debugging!
-        echo "<pre>";
-        print_r($aGenerationOptions);
-        echo "</pre>";
+//        echo "<pre>";
+//        print_r($aGenerationOptions);
+//        echo "</pre>";
 
         // Initialize helpers
         /** @var oxpsModuleGeneratorHelper $oHelper */
@@ -388,22 +388,30 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         $oRenderHelper->init($this);
 
         // Read Generation Options of existing module if Edit Mode is activated
-        // TODO: Append parsed values to existing Generation Options (KEY to KEY)
+        // TODO: check if there are overwrite possibilities of other files
         if ($this->isEditMode($sModuleName)) {
-            $aRenderedOptions = $this->_readGenerationOptions($sModuleName);
-        }
-/*        array_walk(
-            $aGenerationOptions, function ($value, $key) use ($aRenderedOptions) {
-                // TODO: build new array by adding parsed data first, then user entered.
+            $aParsedMetadataOptions = $this->_readGenerationOptions($sModuleName);
+            foreach ($aGenerationOptions as $index => $aGenerationOption) {
+                if (array_key_exists($index, $aParsedMetadataOptions)) {
+                    $aGenerationOptions[$index] = array_merge(
+                        $aParsedMetadataOptions[$index],
+                        $aGenerationOptions[$index]
+                    );
+                }
             }
-        );
-        print_r($aRenderedOptions);*/
+
+            if (file_exists($this->getFullMetadataPath($sModuleName))) {
+                rename(
+                    $this->getFullMetadataPath($sModuleName),
+                    $this->getVendorPath() . $sModuleName . '/metadata_' . time() . '.bak');
+            }
+        }
 
         // TODO: Delete after debugging!
-        echo "<pre>";
-        print_r($aGenerationOptions);
-        echo "</pre>";
-        die;
+//        echo "<pre>";
+//        print_r($aGenerationOptions);
+//        echo "</pre>";
+//        die;
 
         // Set module data - initializes it with new module info
         $this->_setNewModuleData($sModuleName, $aGenerationOptions);
@@ -614,7 +622,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         if (!empty($aMetadata)) {
             /** @var oxpsModuleGeneratorMetadata $oMetadataParser */
             $oMetadataParser = Registry::get('oxpsModuleGeneratorMetadata');
-            $aGenerationOptions = $oMetadataParser->parseMetadata($aMetadata);
+            $aGenerationOptions = $oMetadataParser->parseMetadata($aMetadata, $this->getVendorPrefix(), $sModuleName);
         }
 
         return $aGenerationOptions;
@@ -629,18 +637,31 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     protected function _getMetadataInfo($sModuleName)
     {
-        $sFullModulePath = $this->getConfig()->getModulesDir() . $this->getVendorPrefix() . "/" . $sModuleName;
-        $sMetadataPath = $sFullModulePath . "/metadata.php";
+        $sMetadataPath = $this->getFullMetadataPath($sModuleName);
         $aModule = [];
         if (file_exists($sMetadataPath)) {
-            // TODO: Expand Exception on corrupt include file.
             try {
                 include $sMetadataPath;
             } catch (Exception $e) {
-                echo $e->getMessage();
+                echo 'Caught exception: ', $e->getMessage(), '\n';
             }
         }
 
         return $aModule;
+    }
+
+    /**
+     * Get full path to module metadata.php file
+     *
+     * @param string $sModuleName
+     *
+     * @return string
+     */
+    protected function getFullMetadataPath($sModuleName)
+    {
+        $sFullModulePath = $this->getVendorPath() . $sModuleName;
+        $sMetadataPath = $sFullModulePath . "/metadata.php";
+
+        return (string) $sMetadataPath;
     }
 }

@@ -373,10 +373,6 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     public function generateModule($sModuleName, array $aGenerationOptions = array())
     {
-        // TODO: Delete after debugging!
-//        echo "<pre>";
-//        print_r($aGenerationOptions);
-//        echo "</pre>";
 
         // Initialize helpers
         /** @var oxpsModuleGeneratorHelper $oHelper */
@@ -400,18 +396,18 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
                 }
             }
 
-            if (file_exists($this->getFullMetadataPath($sModuleName))) {
+            if (file_exists($this->getFullFilePath($sModuleName, 'metadata.php'))) {
+                // TODO: Extract to method
                 rename(
-                    $this->getFullMetadataPath($sModuleName),
-                    $this->getVendorPath() . $sModuleName . '/metadata_' . time() . '.bak');
+                    $this->getFullFilePath($sModuleName, 'metadata.php'),
+                    $this->getVendorPath() . $sModuleName . '/metadata_' . date('YmdHi') . '_backup.php'
+                );
+                rename(
+                    $this->getFullFilePath($sModuleName, '.ide-helper.php'),
+                    $this->getVendorPath() . $sModuleName . '/.ide-helper_' . date('YmdHi') . '_backup.php'
+                );
             }
         }
-
-        // TODO: Delete after debugging!
-//        echo "<pre>";
-//        print_r($aGenerationOptions);
-//        echo "</pre>";
-//        die;
 
         // Set module data - initializes it with new module info
         $this->_setNewModuleData($sModuleName, $aGenerationOptions);
@@ -589,7 +585,6 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
             'oxpsmodulegenerator_render_tasks'        => $this->getArrayValue($aOptions, 'blRenderTasks', 'bool'),
             'oxpsmodulegenerator_render_samples'      => $this->getArrayValue($aOptions, 'blRenderSamples', 'bool'),
         );
-
         $this->setModuleData($aModuleData);
     }
 
@@ -637,7 +632,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     protected function _getMetadataInfo($sModuleName)
     {
-        $sMetadataPath = $this->getFullMetadataPath($sModuleName);
+        $sMetadataPath = $this->getFullFilePath($sModuleName, 'metadata.php');
         $aModule = [];
         if (file_exists($sMetadataPath)) {
             try {
@@ -655,12 +650,14 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      *
      * @param string $sModuleName
      *
+     * @param string $sFilename
+     *
      * @return string
      */
-    protected function getFullMetadataPath($sModuleName)
+    protected function getFullFilePath($sModuleName, $sFilename)
     {
         $sFullModulePath = $this->getVendorPath() . $sModuleName;
-        $sMetadataPath = $sFullModulePath . "/metadata.php";
+        $sMetadataPath = $sFullModulePath . "/" . $sFilename;
 
         return (string) $sMetadataPath;
     }

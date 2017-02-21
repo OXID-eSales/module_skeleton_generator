@@ -42,8 +42,6 @@ class oxpsModuleGeneratorMetadata extends Base
     const LIST_PATTERN = 'List.php';
     const WIDGET_PATTERN = '/Application/Component/Widget/';
 
-
-
     /**
      * Array of methods to parse different metadata settings depending on setting type.
      *
@@ -264,7 +262,7 @@ class oxpsModuleGeneratorMetadata extends Base
 
             foreach ($this->_aMetadata[$sMetadataArrayKey] as $aMetadataSettingsArray) {
 
-                $aMetadataSettings[$iArrayKey]['name'] = $aMetadataSettingsArray['name'];
+                $aMetadataSettings[$iArrayKey]['name'] = $this->_stripModuleId($aMetadataSettingsArray['name']);
 
                 $sType = array_key_exists($aMetadataSettingsArray['type'], $this->_aMetadataSettingsParse)
                     ? $aMetadataSettingsArray['type']

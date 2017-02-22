@@ -455,10 +455,12 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     public function setNewModuleData($blAddParsedOptions = false)
     {
+        $aOptionsToSet = $this->_aParsedMetadataOptions;
+
         if ($blAddParsedOptions) {
             foreach ($this->_aGenerationOptions as $index => $aGenerationOption) {
                 if (array_key_exists($index, $this->_aParsedMetadataOptions)) {
-                    $this->_aGenerationOptions[$index] = array_merge(
+                    $aOptionsToSet[$index] = array_merge(
                         $this->_aParsedMetadataOptions[$index],
                         $this->_aGenerationOptions[$index]
                     );
@@ -467,7 +469,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         }
 
         // Set module data - initializes it with new module info
-        $this->_setNewModuleData($this->_sModuleName, $this->_aGenerationOptions);
+        $this->_setNewModuleData($this->_sModuleName, $aOptionsToSet);
     }
 
     /**

@@ -139,11 +139,27 @@ class oxpsModuleGeneratorFileSystem extends Base
      */
     public function copyFile($sSourcePath, $sDestinationPath)
     {
-        if ($this->isFile($sSourcePath) and copy($sSourcePath, $sDestinationPath)) {
+        if (!$this->_isFileOrTemplateAvailable($sDestinationPath)
+            && $this->isFile($sSourcePath)
+            && copy($sSourcePath, $sDestinationPath)
+        ) {
             chmod($sDestinationPath, 0777);
         }
     }
 
+    /**
+     * @param string $sPath
+     *
+     * @return bool
+     */
+    protected function _isFileOrTemplateAvailable($sPath)
+    {
+        return (
+               $this->isFile($sPath)) ||
+               $this->isFile(
+                   str_replace('.tpl', '', $sPath)
+               );
+    }
 
     /**
      * Check if resource could be copied.

@@ -84,7 +84,6 @@ class oxpsModuleGeneratorFileSystem extends Base
         if (!$this->isFile($sFileFullPath) or empty($blIfDoesNotExist)) {
             $blFileCreated = (bool) file_put_contents($sFileFullPath, $sFileContent);
         }
-
         if ($blFileCreated) {
             chmod($sFileFullPath, 0777);
         }
@@ -98,13 +97,8 @@ class oxpsModuleGeneratorFileSystem extends Base
      */
     public function renameFile($sOldPathAndName, $sNewPathAndName)
     {
-        // Check if file exists to prevent overwriting while renaming
-        if (!is_file($sNewPathAndName)) {
-            if ($this->isFile($sOldPathAndName)) {
-                rename($sOldPathAndName, $sNewPathAndName);
-                // TODO: DEBUG LINE
-                echo 'RENAME: ' . $sOldPathAndName . '  ->  ' . $sNewPathAndName . '<br />';
-            }
+        if ($this->isFile($sOldPathAndName)) {
+            rename($sOldPathAndName, $sNewPathAndName);
         }
     }
 
@@ -145,16 +139,8 @@ class oxpsModuleGeneratorFileSystem extends Base
      */
     public function copyFile($sSourcePath, $sDestinationPath)
     {
-
-        $sStripedDestinationPath = str_replace('.tpl', '', $sDestinationPath);
-
-        // If file already exists, skip copy action
-        if (!is_file($sStripedDestinationPath)) {
-            if ($this->isFile($sSourcePath) and copy($sSourcePath, $sDestinationPath)) {
-                chmod($sDestinationPath, 0777);
-            }
-            // TODO: DEBUG LINE
-            echo 'FILE: ' . $sSourcePath . '  ->  ' . $sDestinationPath. '<br />';
+        if ($this->isFile($sSourcePath) and copy($sSourcePath, $sDestinationPath)) {
+            chmod($sDestinationPath, 0777);
         }
     }
 
@@ -172,8 +158,6 @@ class oxpsModuleGeneratorFileSystem extends Base
         if (!in_array($sFile, array('.', '..', '.gitkeep'))) {
             if ($this->isDir($sSourcePath)) {
                 $this->copyFolder($sSourcePath, $sDestinationPath);
-                // TODO: DEBUG LINE
-                echo 'FOLDER: ' . $sSourcePath . '  ->  ' . $sDestinationPath. '<br />';
             } else {
                 $this->copyFile($sSourcePath, $sDestinationPath);
             }

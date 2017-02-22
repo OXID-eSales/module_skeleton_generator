@@ -1,4 +1,5 @@
 <?php
+[{$oModule->setNewModuleData(true)}]
 [{$oModule->renderFileComment()}]
 
 [{assign var='sVendorDir' value=$oModule->getVendorPrefix()}]

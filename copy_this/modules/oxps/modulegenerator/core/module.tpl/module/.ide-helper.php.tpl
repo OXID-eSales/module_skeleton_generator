@@ -1,4 +1,5 @@
 <?php
+[{$oModule->setNewModuleData(true)}]
 [{$oModule->renderFileComment()}]
 
 [{assign var='sModuleId' value=$oModule->getModuleId()}]

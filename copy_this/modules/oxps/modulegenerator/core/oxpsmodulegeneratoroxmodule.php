@@ -66,6 +66,23 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     protected $_blEditMode = null;
 
+    /**
+     * Generated module name.
+     *
+     * @var string
+     */
+    protected $_sModuleName = '';
+
+    /**
+     * @var array
+     */
+    protected $_aGenerationOptions = [];
+
+    /**
+     * @var array
+     */
+    protected $_aParsedMetadataOptions = [];
+
 
     /**
      * Set module vendor prefix. It is also a vendor directory name.
@@ -374,6 +391,12 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
     public function generateModule($sModuleName, array $aGenerationOptions = array())
     {
 
+        // Set field for generated module name
+        $this->_sModuleName = $sModuleName;
+
+        // Set field for Generation Options from Generator submitted form
+        $this->_aGenerationOptions = $aGenerationOptions;
+
         // Initialize helpers
         /** @var oxpsModuleGeneratorHelper $oHelper */
         $oHelper = Registry::get('oxpsModuleGeneratorHelper');
@@ -383,34 +406,15 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         $oRenderHelper = Registry::get('oxpsModuleGeneratorRender');
         $oRenderHelper->init($this);
 
-        // Read Generation Options of existing module if Edit Mode is activated
-        // TODO: check if there are overwrite possibilities of other files
-        if ($this->isEditMode($sModuleName)) {
-            $aParsedMetadataOptions = $this->_readGenerationOptions($sModuleName);
-            foreach ($aGenerationOptions as $index => $aGenerationOption) {
-                if (array_key_exists($index, $aParsedMetadataOptions)) {
-                    $aGenerationOptions[$index] = array_merge(
-                        $aParsedMetadataOptions[$index],
-                        $aGenerationOptions[$index]
-                    );
-                }
-            }
-
-            if (file_exists($this->getFullFilePath($sModuleName, 'metadata.php'))) {
-                // TODO: Extract to method
-                rename(
-                    $this->getFullFilePath($sModuleName, 'metadata.php'),
-                    $this->getVendorPath() . $sModuleName . '/metadata_' . date('YmdHi') . '_backup.php'
-                );
-                rename(
-                    $this->getFullFilePath($sModuleName, '.ide-helper.php'),
-                    $this->getVendorPath() . $sModuleName . '/.ide-helper_' . date('YmdHi') . '_backup.php'
-                );
-            }
+        // Check if Edit Mode is activated
+        if ($this->isEditMode($this->_sModuleName)) {
+            $this->_aParsedMetadataOptions = $this->_readGenerationOptions($this->_sModuleName);
+            $this->backupFileIfExists('metadata.php');
+            $this->backupFileIfExists('.ide-helper.php');
         }
 
         // Set module data - initializes it with new module info
-        $this->_setNewModuleData($sModuleName, $aGenerationOptions);
+        $this->setNewModuleData();
 
         // Get new module and module generation template full paths
         $sModuleGeneratorPath = Registry::get('oxpsModuleGeneratorModule')->getPath();
@@ -442,6 +446,29 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         return true;
     }
 
+    /**
+     * Set module data with or without existing parsed data depending on bool flag.
+     * For example, flag is used to render full metadata.php template, but skip
+     * the regeneration of already existing files to avoid overwriting.
+     *
+     * @param bool $blAddParsedOptions
+     */
+    public function setNewModuleData($blAddParsedOptions = false)
+    {
+        if ($blAddParsedOptions) {
+            foreach ($this->_aGenerationOptions as $index => $aGenerationOption) {
+                if (array_key_exists($index, $this->_aParsedMetadataOptions)) {
+                    $this->_aGenerationOptions[$index] = array_merge(
+                        $this->_aParsedMetadataOptions[$index],
+                        $this->_aGenerationOptions[$index]
+                    );
+                }
+            }
+        }
+
+        // Set module data - initializes it with new module info
+        $this->_setNewModuleData($this->_sModuleName, $this->_aGenerationOptions);
+    }
 
     /**
      * Validate new module name: should be "UpperCamelCase".
@@ -649,7 +676,6 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      * Get full path to module metadata.php file
      *
      * @param string $sModuleName
-     *
      * @param string $sFilename
      *
      * @return string
@@ -660,5 +686,20 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         $sMetadataPath = $sFullModulePath . "/" . $sFilename;
 
         return (string) $sMetadataPath;
+    }
+
+    /**
+     * @param string $sFileName
+     */
+    protected function backupFileIfExists($sFileName)
+    {
+        if (file_exists($this->getFullFilePath($this->_sModuleName, $sFileName))) {
+            $sFileNameWithoutExt = preg_replace('/\\.[^.\\s]{3,4}$/', '', $sFileName);
+            $sFileBackupName = $sFileNameWithoutExt . '_' . date('YmdHi') . '_backup.php';
+            rename(
+                $this->getFullFilePath($this->_sModuleName, $sFileName),
+                $this->getVendorPath() . $this->_sModuleName . '/' . $sFileBackupName
+            );
+        }
     }
 }

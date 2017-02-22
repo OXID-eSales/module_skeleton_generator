@@ -455,7 +455,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     public function setNewModuleData($blAddParsedOptions = false)
     {
-        $aOptionsToSet = $this->_aParsedMetadataOptions;
+        $aOptionsToSet = $this->_aGenerationOptions;
 
         if ($blAddParsedOptions) {
             foreach ($this->_aGenerationOptions as $index => $aGenerationOption) {

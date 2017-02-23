@@ -122,6 +122,10 @@ class oxpsModuleGeneratorRender extends Base
 
             $sFileFullPath = $sModulePath . $sFilePath;
 
+            if (!$oFileSystemHelper->isFile($sFileFullPath)) {
+                continue;
+            }
+
             // Render template file with Smarty and overwrite it
             $oFileSystemHelper->createFile($sFileFullPath, $oSmarty->fetch($sFileFullPath));
 

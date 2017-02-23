@@ -1,8 +1,23 @@
 [{include file="headitem.tpl" title="OXPS_MODULEGENERATOR_ADMIN_TITLE"|oxmultilangassign}]
+[{oxscript include="js/libs/jquery.min.js"}]
+[{oxscript include="js/libs/jquery-ui.min.js"}]
+[{oxscript include=$oViewConf->getModuleUrl('oxps/ModuleGenerator', 'out/src/js/admin_oxpsmodulegenerator.js')}]
+[{oxscript add="$.noConflict();" priority=10}]
+[{*TODO : The widget below to be implemented, current code is just demo, how to call and pass params*}]
+[{assign var="anyPhpVarExample" value="OXPS_MODULEGENERATOR_ADMIN_TITLE"|oxmultilangassign}]
+[{oxscript add="
+            jQuery(document).ready(function () {
+                jQuery('#oxpsmodulegenerator').wizard({
+                     someParam: '`$oValues->name`',
+                     otherParam: '`$anyPhpVarExample`'
+                });
+            });"
+           priority=10}]
 <script type="application/javascript">
     /**
      * Themes list disabling/enabling event depending on "no themes" checkbox status.
      */
+    // TODO: Move is to admin_oxpsmodulegenerator widget as well as any other JS in the tempalte
     function themeListToggle() {
         document.getElementById('theme_list').disabled = document.getElementById('theme_none').checked;
     }

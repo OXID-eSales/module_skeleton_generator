@@ -49,6 +49,7 @@ $aModule = array(
     ),
     'files'       => array(
         'Admin_oxpsModuleGenerator'     => 'oxps/ModuleGenerator/Application/Controller/Admin/Admin_oxpsModuleGenerator.php',
+        'Admin_oxpsAjaxDataProvider'    => 'oxps/ModuleGenerator/Application/Controller/Admin/Admin_oxpsAjaxDataProvider.php',
         'oxpsModuleGeneratorFileSystem' => 'oxps/ModuleGenerator/Core/oxpsModuleGeneratorFileSystem.php',
         'oxpsModuleGeneratorHelper'     => 'oxps/ModuleGenerator/Core/oxpsModuleGeneratorHelper.php',
         'oxpsModuleGeneratorMetaData'   => 'oxps/ModuleGenerator/Core/oxpsModuleGeneratorMetaData.php',

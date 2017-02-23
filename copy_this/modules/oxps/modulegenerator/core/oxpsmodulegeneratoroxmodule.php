@@ -84,6 +84,16 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
     protected $_aParsedMetadataOptions = [];
 
     /**
+     * Array for storing filenames that need to be backed up during Edit Mode.
+     *
+     * @var array
+     */
+    protected $_aFilesToBackupOnEdit = [
+        'metadata.php',
+        '.ide-helper.php',
+    ];
+
+    /**
      * File templates to ignore in edit mode.
      *
      * @var array
@@ -421,10 +431,9 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         $oRenderHelper->init($this);
 
         // Check if Edit Mode is activated
-        if ($this->isEditMode($this->_sModuleName)) {
+        if ($this->isEditMode()) {
             $this->_aParsedMetadataOptions = $this->_readGenerationOptions($this->_sModuleName);
-            $this->backupFileIfExists('metadata.php');
-            $this->backupFileIfExists('.ide-helper.php');
+            $this->backupFiles();
         }
 
         // Set module data - initializes it with new module info
@@ -439,7 +448,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         $oHelper->getFileSystemHelper()->copyFolder(
             $sModuleGeneratorPath . 'Core/module.tpl/module/',
             $sModulePath,
-            $this->isEditMode($this->_sModuleName) ? (array) $this->_aIgnoreOnEdit : array()
+            $this->isEditMode() ? (array) $this->_aIgnoreOnEdit : array()
         );
 
         // Create classes to overload (extend)
@@ -575,17 +584,22 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
     /**
      * Check if entered module name already exists.
      *
-     * @param $sModuleName
-     *
      * @return bool
      */
-    public function isEditMode($sModuleName)
+    public function isEditMode()
     {
         if (null === $this->_blEditMode) {
-            $this->_blEditMode = $this->_moduleExists($sModuleName);
+            $this->_blEditMode = $this->_moduleExists($this->_sModuleName);
         }
 
         return $this->_blEditMode;
+    }
+
+    public function backupFiles()
+    {
+        foreach ($this->_aFilesToBackupOnEdit as $item) {
+            $this->_backupFileIfExists($item);
+        }
     }
 
     /**
@@ -679,17 +693,17 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     protected function _getMetadataInfo($sModuleName)
     {
-        $sMetadataPath = $this->getFullFilePath($sModuleName, 'metadata.php');
+        $sMetadataPath = $this->_getFullFilePath($sModuleName, 'metadata.php');
         $aModule = [];
         if (file_exists($sMetadataPath)) {
             try {
                 include $sMetadataPath;
             } catch (Exception $e) {
-                echo 'Caught exception: ', $e->getMessage(), '\n';
+                // Optionally it could log to eShop standard exceptions log
             }
         }
 
-        return $aModule;
+        return (array) $aModule;
     }
 
     /**
@@ -700,7 +714,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      *
      * @return string
      */
-    protected function getFullFilePath($sModuleName, $sFilename)
+    protected function _getFullFilePath($sModuleName, $sFilename)
     {
         $sFullModulePath = $this->getVendorPath() . $sModuleName;
         $sMetadataPath = $sFullModulePath . "/" . $sFilename;
@@ -711,13 +725,12 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
     /**
      * @param string $sFileName
      */
-    protected function backupFileIfExists($sFileName)
+    protected function _backupFileIfExists($sFileName)
     {
-        if (file_exists($this->getFullFilePath($this->_sModuleName, $sFileName))) {
-            $sFileNameWithoutExt = preg_replace('/\\.[^.\\s]{3,4}$/', '', $sFileName);
-            $sFileBackupName = $sFileNameWithoutExt . '_' . date('YmdHi') . '_backup.php';
+        if (file_exists($this->_getFullFilePath($this->_sModuleName, $sFileName))) {
+            $sFileBackupName = $sFileName . '.' . time() . '.bak';
             rename(
-                $this->getFullFilePath($this->_sModuleName, $sFileName),
+                $this->_getFullFilePath($this->_sModuleName, $sFileName),
                 $this->getVendorPath() . $this->_sModuleName . '/' . $sFileBackupName
             );
         }

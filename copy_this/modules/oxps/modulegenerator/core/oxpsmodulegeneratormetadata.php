@@ -37,10 +37,10 @@ class oxpsModuleGeneratorMetadata extends Base
     /**
      * Components' path patterns to extract file types from metadata 'files' array
      */
-    const CONTROLLER_PATTERN = '/Application/Controller/';
-    const MODEL_PATTERN = '/Application/Model/';
-    const LIST_PATTERN = 'List.php';
-    const WIDGET_PATTERN = '/Application/Component/Widget/';
+    const OXPS_CONTROLLER_PATTERN = '/Application/Controller/';
+    const OXPS_MODEL_PATTERN = '/Application/Model/';
+    const OXPS_LIST_PATTERN = 'List.php';
+    const OXPS_WIDGET_PATTERN = '/Application/Component/Widget/';
 
     /**
      * Array of methods to parse different metadata settings depending on setting type.
@@ -151,7 +151,7 @@ class oxpsModuleGeneratorMetadata extends Base
         $aMetadataControllers = [];
         if ($this->_isValidMetadataKey($sMetadataArrayKey)) {
             foreach ($this->_aMetadata[$sMetadataArrayKey] as $aMetadataKey => $aMetadataValue) {
-                if (stripos($aMetadataValue, self::CONTROLLER_PATTERN) !== false) {
+                if (stripos($aMetadataValue, self::OXPS_CONTROLLER_PATTERN) !== false) {
                     $aMetadataControllers[] = $this->_stripModuleId($aMetadataKey);
                 }
             }
@@ -173,14 +173,14 @@ class oxpsModuleGeneratorMetadata extends Base
         $aMetadataModels = [];
         if ($this->_isValidMetadataKey($sMetadataArrayKey)) {
             foreach ($this->_aMetadata[$sMetadataArrayKey] as $aMetadataKey => $aMetadataValue) {
-                if (stripos($aMetadataValue, self::MODEL_PATTERN) !== false) {
+                if (stripos($aMetadataValue, self::OXPS_MODEL_PATTERN) !== false) {
                     $aExplodedModelPath = explode("/", $aMetadataValue);
                     if ('model' === $sFileType) {
-                        if (stripos(end($aExplodedModelPath), self::LIST_PATTERN) === false) {
+                        if (stripos(end($aExplodedModelPath), self::OXPS_LIST_PATTERN) === false) {
                             $aMetadataModels[] = $this->_stripModuleId($aMetadataKey);
                         }
                     } elseif ('list' === $sFileType) {
-                        if (stripos(end($aExplodedModelPath), self::LIST_PATTERN) !== false) {
+                        if (stripos(end($aExplodedModelPath), self::OXPS_LIST_PATTERN) !== false) {
                             $aMetadataModels[] = $this->_stripModuleId($aMetadataKey);
                         }
                     }
@@ -203,7 +203,7 @@ class oxpsModuleGeneratorMetadata extends Base
         $aMetadataWidgets = [];
         if ($this->_isValidMetadataKey($sMetadataArrayKey)) {
             foreach ($this->_aMetadata[$sMetadataArrayKey] as $aMetadataKey => $aMetadataValue) {
-                if (stripos($aMetadataValue, self::WIDGET_PATTERN) !== false) {
+                if (stripos($aMetadataValue, self::OXPS_WIDGET_PATTERN) !== false) {
                     $aMetadataWidgets[] = $this->_stripModuleId($aMetadataKey);
                 }
             }

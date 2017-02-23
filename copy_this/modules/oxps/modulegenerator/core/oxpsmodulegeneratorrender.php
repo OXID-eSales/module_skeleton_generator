@@ -122,6 +122,7 @@ class oxpsModuleGeneratorRender extends Base
 
             $sFileFullPath = $sModulePath . $sFilePath;
 
+            // TODO: remake condition as it preserves to generate composer.json in existing module
             if (!$oFileSystemHelper->isFile($sFileFullPath)) {
                 continue;
             }

@@ -83,6 +83,20 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     protected $_aParsedMetadataOptions = [];
 
+    /**
+     * File templates to ignore in edit mode.
+     *
+     * @var array
+     */
+    protected $_aIgnoreOnEdit = array(
+        'oxpsModule_lang.php.tpl',
+        'oxpsModule.php.tpl',
+        'install.sql',
+        'README.txt',
+        'uninstall.sql',
+        'composer.json.tpl',
+    );
+
 
     /**
      * Set module vendor prefix. It is also a vendor directory name.
@@ -422,7 +436,11 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
 
         // Copy the module from a folder structure with templates to a new module path
         $oHelper->createVendorMetadata($this->getVendorPath());
-        $oHelper->getFileSystemHelper()->copyFolder($sModuleGeneratorPath . 'Core/module.tpl/module/', $sModulePath);
+        $oHelper->getFileSystemHelper()->copyFolder(
+            $sModuleGeneratorPath . 'Core/module.tpl/module/',
+            $sModulePath,
+            $this->isEditMode($this->_sModuleName) ? (array) $this->_aIgnoreOnEdit : array()
+        );
 
         // Create classes to overload (extend)
         $aClassesToExtend = (array) $oHelper->createClassesToExtend(

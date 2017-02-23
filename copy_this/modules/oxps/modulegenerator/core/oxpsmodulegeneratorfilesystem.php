@@ -34,6 +34,29 @@ class oxpsModuleGeneratorFileSystem extends Base
 {
 
     /**
+     * Files and paths to ignore while copying.
+     *
+     * @var array
+     */
+    protected $_aIgnoreFiles = array('.', '..', '.gitkeep');
+
+
+    /**
+     * Get a list of files and paths to ignore while copying.
+     *
+     * @param array $aExtraIgnoreFiles Additional files and paths to ignore.
+     *
+     * @return array
+     */
+    public function getIgnoreFiles($aExtraIgnoreFiles = array())
+    {
+        $this->_aIgnoreFiles = array_merge((array) $this->_aIgnoreFiles, (array) $aExtraIgnoreFiles);
+
+        return $this->_aIgnoreFiles;
+    }
+
+
+    /**
      * An alias for PHP function `is_file`.
      *
      * @param string $sPath
@@ -111,7 +134,7 @@ class oxpsModuleGeneratorFileSystem extends Base
      *
      * @return bool
      */
-    public function copyFolder($sSourcePath, $sDestinationPath)
+    public function copyFolder($sSourcePath, $sDestinationPath, $aExtraIgnoreFiles = array())
     {
         $sDS = DIRECTORY_SEPARATOR;
 
@@ -119,11 +142,15 @@ class oxpsModuleGeneratorFileSystem extends Base
             return false;
         }
 
+        $aIgnoreFiles = (array) $this->getIgnoreFiles($aExtraIgnoreFiles);
+
         // Check module path to make sure nothing is missing
         $this->createFolder($sDestinationPath);
 
         while (false !== ($sFile = readdir($hDir))) {
-            $this->_copy($sFile, $sSourcePath . $sDS . $sFile, $sDestinationPath . $sDS . $sFile);
+            if (!in_array($sFile, $aIgnoreFiles)) {
+                $this->_copy($sSourcePath . $sDS . $sFile, $sDestinationPath . $sDS . $sFile);
+            }
         }
 
         closedir($hDir);
@@ -148,6 +175,19 @@ class oxpsModuleGeneratorFileSystem extends Base
     }
 
     /**
+     * Delete file.
+     *
+     * @param string $sFilePath
+     */
+    public function deleteFile($sFilePath)
+    {
+        if ($this->isFile($sFilePath)) {
+            unlink($sFilePath);
+        }
+    }
+
+
+    /**
      * @param string $sPath
      *
      * @return bool
@@ -162,21 +202,17 @@ class oxpsModuleGeneratorFileSystem extends Base
     }
 
     /**
-     * Check if resource could be copied.
      * If it's a file, copy it. If it's a folder, call recursive folder copy.
      *
-     * @param string $sFile
      * @param string $sSourcePath
      * @param string $sDestinationPath
      */
-    protected function _copy($sFile, $sSourcePath, $sDestinationPath)
+    protected function _copy($sSourcePath, $sDestinationPath)
     {
-        if (!in_array($sFile, array('.', '..', '.gitkeep'))) {
             if ($this->isDir($sSourcePath)) {
                 $this->copyFolder($sSourcePath, $sDestinationPath);
             } else {
                 $this->copyFile($sSourcePath, $sDestinationPath);
-            }
         }
     }
 }

@@ -725,6 +725,8 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
     /**
      * @param string $sFileName
      */
+    // TODO: Method should go to class \oxpsModuleGeneratorFileSystem and use its helpers. Of course parameter
+    // TODO: would become full path, not just file name (full path could be set in new "backupFiles" method).
     protected function _backupFileIfExists($sFileName)
     {
         if (file_exists($this->_getFullFilePath($this->_sModuleName, $sFileName))) {

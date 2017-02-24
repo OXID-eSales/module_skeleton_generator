@@ -71,6 +71,27 @@ class oxpsModuleGeneratorMetadata extends Base
     protected $_aMetadata = [];
 
     /**
+     * Array to test if required Block keys exists for parsing.
+     *
+     * @var array
+     */
+    protected $_aBlockKeys = [
+        'block',
+        'template',
+    ];
+
+    /**
+     * Array to test if required Settings keys exists for parsing.
+     *
+     * @var array
+     */
+    protected $_aSettingsKeys = [
+        'name',
+        'type',
+        'value',
+    ];
+
+    /**
      * Keep instance of Admin_oxpsModuleGenerator controller
      *
      * @var null|Admin_oxpsModuleGenerator
@@ -227,10 +248,12 @@ class oxpsModuleGeneratorMetadata extends Base
         $aParsedBlocks = [];
         if ($this->_isValidMetadataKey($sMetadataArrayKey)) {
 
-            foreach ($this->_aMetadata[$sMetadataArrayKey] as $aMetadataBlockFile) {
-                $sBlockPath = $aMetadataBlockFile['block'] . "@" . $aMetadataBlockFile['template'];
-                if (!in_array($sBlockPath, $aMetadataBlocks)) {
-                    $aMetadataBlocks[] = $sBlockPath;
+            foreach ($this->_aMetadata[$sMetadataArrayKey] as $aMetadataBlockArray) {
+                if ($this->_hasRequiredArrayKeys($aMetadataBlockArray, $this->_aBlockKeys)) {
+                    $sBlockPath = $aMetadataBlockArray['block'] . "@" . $aMetadataBlockArray['template'];
+                    if (!in_array($sBlockPath, $aMetadataBlocks)) {
+                        $aMetadataBlocks[] = $sBlockPath;
+                    }
                 }
             }
 
@@ -262,18 +285,20 @@ class oxpsModuleGeneratorMetadata extends Base
 
             foreach ($this->_aMetadata[$sMetadataArrayKey] as $aMetadataSettingsArray) {
 
-                $aMetadataSettings[$iArrayKey]['name'] = $this->_stripModuleId($aMetadataSettingsArray['name']);
+                if ($this->_hasRequiredArrayKeys($aMetadataSettingsArray, $this->_aSettingsKeys)) {
+                    $aMetadataSettings[$iArrayKey]['name'] = $this->_stripModuleId($aMetadataSettingsArray['name']);
 
-                $sType = array_key_exists($aMetadataSettingsArray['type'], $this->_aMetadataSettingsParse)
-                    ? $aMetadataSettingsArray['type']
-                    : 'str';
+                    $sType = array_key_exists($aMetadataSettingsArray['type'], $this->_aMetadataSettingsParse)
+                        ? $aMetadataSettingsArray['type']
+                        : 'str';
 
-                $sMethod = $this->_aMetadataSettingsParse[$sType];
+                    $sMethod = $this->_aMetadataSettingsParse[$sType];
 
-                $aMetadataSettings[$iArrayKey]['type'] = $sType;
-                $aMetadataSettings[$iArrayKey]['value'] = $this->$sMethod($aMetadataSettingsArray);
+                    $aMetadataSettings[$iArrayKey]['type'] = $sType;
+                    $aMetadataSettings[$iArrayKey]['value'] = $this->$sMethod($aMetadataSettingsArray);
 
-                $iArrayKey++;
+                    $iArrayKey++;
+                }
             }
         }
 
@@ -289,7 +314,9 @@ class oxpsModuleGeneratorMetadata extends Base
      */
     protected function _stripModuleId($sFullName)
     {
-        return (string) str_ireplace($this->_aMetadata['id'], '', $sFullName);
+        return (string) array_key_exists('id', $this->_aMetadata)
+            ? str_ireplace($this->_aMetadata['id'], '', $sFullName)
+            : '';
     }
 
     /**
@@ -299,7 +326,7 @@ class oxpsModuleGeneratorMetadata extends Base
      */
     protected function _parseBoolSettingValue(array $aMetadataSettingsArray)
     {
-        return (string) $aMetadataSettingsArray['value'];
+        return (string) array_key_exists('value', $aMetadataSettingsArray) ? $aMetadataSettingsArray['value'] : '';
     }
 
     /**
@@ -309,7 +336,7 @@ class oxpsModuleGeneratorMetadata extends Base
      */
     protected function _parseStrSettingValue(array $aMetadataSettingsArray)
     {
-        return (string) $aMetadataSettingsArray['value'];
+        return (string) array_key_exists('value', $aMetadataSettingsArray) ? $aMetadataSettingsArray['value'] : '';
     }
 
     /**
@@ -319,7 +346,7 @@ class oxpsModuleGeneratorMetadata extends Base
      */
     protected function _parseNumSettingValue(array $aMetadataSettingsArray)
     {
-        return (string) $aMetadataSettingsArray['value'];
+        return (string) array_key_exists('value', $aMetadataSettingsArray) ? $aMetadataSettingsArray['value'] : '';
     }
 
     /**
@@ -329,7 +356,7 @@ class oxpsModuleGeneratorMetadata extends Base
      */
     protected function _parseArrSettingValue(array $aMetadataSettingsArray)
     {
-        return (string) implode(PHP_EOL, $aMetadataSettingsArray['value']);
+        return (string) array_key_exists('value', $aMetadataSettingsArray) ? $aMetadataSettingsArray['value'] : '';
     }
 
     /**
@@ -340,8 +367,10 @@ class oxpsModuleGeneratorMetadata extends Base
     protected function _parseAarrSettingValue(array $aMetadataSettingsArray)
     {
         $sArray = '';
-        foreach ($aMetadataSettingsArray['value'] as $index => $item) {
-            $sArray .= $index . ' => ' . $item . PHP_EOL;
+        if (array_key_exists('value', $aMetadataSettingsArray)) {
+            foreach ($aMetadataSettingsArray['value'] as $index => $item) {
+                $sArray .= $index . ' => ' . $item . PHP_EOL;
+            }
         }
 
         return $sArray;
@@ -354,7 +383,9 @@ class oxpsModuleGeneratorMetadata extends Base
      */
     protected function _parseSelectSettingValue(array $aMetadataSettingsArray)
     {
-        $sConstrains = $aMetadataSettingsArray['constrains'];
+        $sConstrains = (string) array_key_exists('constrains', $aMetadataSettingsArray)
+            ? $aMetadataSettingsArray['constrains']
+            : '';
 
         return (string) str_replace("|", PHP_EOL, $sConstrains);
     }
@@ -370,5 +401,21 @@ class oxpsModuleGeneratorMetadata extends Base
     {
         return array_key_exists($sArrayKey, $this->_aMetadata)
                && is_array($this->_aMetadata[$sArrayKey]);
+    }
+
+    /**
+     * Check if array exists and has required array keys for parsing process.
+     *
+     * @param array $aMetadataArray
+     * @param array $aRequiredKeys
+     *
+     * @return bool
+     */
+    protected function _hasRequiredArrayKeys(array $aMetadataArray, array $aRequiredKeys)
+    {
+        return is_array($aMetadataArray)
+               && count(
+                      array_intersect_key(array_flip($aRequiredKeys), $aMetadataArray)
+                  ) === count($aRequiredKeys);
     }
 }

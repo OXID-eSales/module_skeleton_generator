@@ -131,6 +131,7 @@ class oxpsModuleGeneratorFileSystem extends Base
      *
      * @param string $sSourcePath      Where to copy from.
      * @param string $sDestinationPath Where to copy to.
+     * @param array  $aExtraIgnoreFiles
      *
      * @return bool
      */

@@ -432,7 +432,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
 
         // Check if Edit Mode is activated
         if ($this->isEditMode()) {
-            $this->_aParsedMetadataOptions = $this->_readGenerationOptions($this->_sModuleName);
+            $this->_aParsedMetadataOptions = $this->readGenerationOptions($this->_sModuleName);
             $this->backupFiles();
         }
 
@@ -589,7 +589,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
     public function isEditMode()
     {
         if (null === $this->_blEditMode) {
-            $this->_blEditMode = $this->_moduleExists($this->_sModuleName);
+            $this->_blEditMode = $this->moduleExists($this->_sModuleName);
         }
 
         return $this->_blEditMode;
@@ -656,11 +656,10 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      *
      * @return boolean
      */
-    protected function _moduleExists($sModuleName)
+    public function moduleExists($sModuleName)
     {
         /** @var oxpsModuleGeneratorFileSystem $oFileSystemHelper */
         $oFileSystemHelper = Registry::get('oxpsModuleGeneratorFileSystem');
-
         return $oFileSystemHelper->isDir($this->getVendorPath() . $sModuleName);
     }
 
@@ -671,7 +670,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      *
      * @return array
      */
-    protected function _readGenerationOptions($sModuleName)
+    public function readGenerationOptions($sModuleName)
     {
         $aGenerationOptions = [];
         $aMetadata = $this->_getMetadataInfo($sModuleName);
@@ -702,7 +701,6 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
                 // Optionally it could log to eShop standard exceptions log
             }
         }
-
         return (array) $aModule;
     }
 

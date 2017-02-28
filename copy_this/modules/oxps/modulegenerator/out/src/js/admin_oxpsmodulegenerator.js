@@ -12,10 +12,8 @@ jQuery.widget(
          * Widget options with default values.
          */
         options: {
-            someParam: '',
-            otherParam: ''
+            responseUrl: ''
         },
-
 
         /**
          * [Info].
@@ -24,7 +22,6 @@ jQuery.widget(
          */
         _constOrProp: 'value',
 
-
         /**
          * Constructor.
          * Initialize widget and Module Generation form.
@@ -32,10 +29,19 @@ jQuery.widget(
          * @private
          */
         _create: function () {
-            // actions go here
-            console.log('Hello World!');
+            var _this = this;
 
-            this._privateMethod();
+            jQuery("input[name='modulegenerator_module_name']").keyup(function () {
+                var moduleName = jQuery(this).val();
+                jQuery.ajax({
+                    type: 'post',
+                    url: _this.options.responseUrl,
+                    data: {moduleName: moduleName},
+                    success: function (data) {
+                        console.log(data);
+                    }
+                });
+            });
         },
 
         /**
@@ -44,9 +50,8 @@ jQuery.widget(
          * @private
          */
         _privateMethod: function () {
-            console.log(jQuery(this._constOrProp));
-            console.log(jQuery(this.options.someParam));
-            console.log(jQuery(this.options.otherParam));
+            //     console.log(jQuery(this._constOrProp));
+            //     console.log(jQuery(this.options.someParam));
         }
     }
 );

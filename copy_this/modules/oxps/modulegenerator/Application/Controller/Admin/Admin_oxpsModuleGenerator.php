@@ -170,6 +170,22 @@ class Admin_oxpsModuleGenerator extends AdminController
         }
     }
 
+    /**
+     * Generate full URL for AJAX response;
+     *
+     * @param string $sResponseMethodName
+     *
+     * @return string
+     */
+    public function generateUrlForAjax($sResponseMethodName)
+    {
+        return (string)
+        htmlspecialchars_decode(
+            Registry::get("oxUtilsUrl")->processUrl($this->getConfig()->getCurrentShopUrl() . 'index.php', true) .
+            '&amp;cl=admin_oxpsajaxdataprovider&amp;fnc=' .
+            strtolower($sResponseMethodName)
+        );
+    }
 
     /**
      * Check if vendor/author data is configured in the module settings.

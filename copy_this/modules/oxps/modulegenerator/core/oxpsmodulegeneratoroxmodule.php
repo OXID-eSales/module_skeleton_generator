@@ -389,6 +389,42 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
     }
 
     /**
+     * Initialization for module generation method.
+     *
+     * @param string $sModuleName
+     * @param array  $aGenerationOptions
+     * @param string $sVendorPrefix
+     *
+     * @return array
+     */
+    public function init($sModuleName, array $aGenerationOptions = array(), $sVendorPrefix = '')
+    {
+
+        if (!empty($sVendorPrefix)) {
+            $this->setVendorPrefix($sVendorPrefix);
+        }
+        // Set field for generated module name
+        $this->_sModuleName = $sModuleName;
+
+        // Set field for Generation Options from Generator submitted form
+        $this->_aGenerationOptions = $aGenerationOptions;
+
+        // Initialize helpers
+        /** @var oxpsModuleGeneratorHelper $oHelper */
+        $oHelper = Registry::get('oxpsModuleGeneratorHelper');
+        $oHelper->init($this);
+
+        /** @var oxpsModuleGeneratorRender $oRenderHelper */
+        $oRenderHelper = Registry::get('oxpsModuleGeneratorRender');
+        $oRenderHelper->init($this);
+
+        // Set module data - initializes it with new module info
+        $this->setNewModuleData();
+
+        return array($oHelper, $oRenderHelper);
+    }
+
+    /**
      * Generate a module.
      * Creates blank pre-configure module skeleton in a vendor folder.
      *
@@ -414,61 +450,8 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     public function generateModule($sModuleName, array $aGenerationOptions = array())
     {
-
-        // Set field for generated module name
-        $this->_sModuleName = $sModuleName;
-
-        // Set field for Generation Options from Generator submitted form
-        $this->_aGenerationOptions = $aGenerationOptions;
-
-        // Initialize helpers
-        /** @var oxpsModuleGeneratorHelper $oHelper */
-        $oHelper = Registry::get('oxpsModuleGeneratorHelper');
-        $oHelper->init($this);
-
-        /** @var oxpsModuleGeneratorRender $oRenderHelper */
-        $oRenderHelper = Registry::get('oxpsModuleGeneratorRender');
-        $oRenderHelper->init($this);
-
-        // Check if Edit Mode is activated
-        if ($this->isEditMode()) {
-            $this->_aParsedMetadataOptions = $this->readGenerationOptions($this->_sModuleName);
-            $this->backupFiles();
-        }
-
-        // Set module data - initializes it with new module info
-        $this->setNewModuleData();
-
-        // Get new module and module generation template full paths
-        $sModuleGeneratorPath = Registry::get('oxpsModuleGeneratorModule')->getPath();
-        $sModulePath = $this->getFullPath();
-
-        // Copy the module from a folder structure with templates to a new module path
-        $oHelper->createVendorMetadata($this->getVendorPath());
-        $oHelper->getFileSystemHelper()->copyFolder(
-            $sModuleGeneratorPath . 'Core/module.tpl/module/',
-            $sModulePath,
-            $this->isEditMode() ? (array) $this->_aIgnoreOnEdit : array()
-        );
-
-        // Create classes to overload (extend)
-        $aClassesToExtend = (array) $oHelper->createClassesToExtend(
-            $sModuleGeneratorPath . 'Core/module.tpl/oxpsExtendClass.php.tpl'
-        );
-
-        // Create new module classes and templates
-        $aNewClasses = (array) $oHelper->createNewClassesAndTemplates($sModuleGeneratorPath);
-
-        // Create blocks templates
-        $oHelper->createBlock($sModulePath);
-
-        // Process copied module files as Smarty templates to fill them with the real module data
-        $oRenderHelper->renderModuleFiles($aClassesToExtend, $aNewClasses);
-
-        // Clone PHP Unit tests libraries if the option is checked and configured
-        if ($this->getArrayValue($aGenerationOptions, 'blFetchUnitTests')) {
-            $oHelper->fillTestsFolder($oRenderHelper, $sModuleGeneratorPath, $aClassesToExtend, $aNewClasses);
-        }
+        list($oHelper, $oRenderHelper) = $this->init($sModuleName, $aGenerationOptions);
+        $this->_moduleGeneration($aGenerationOptions, $oHelper, $oRenderHelper);
 
         return true;
     }
@@ -565,6 +548,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         return $this->getValidator()->camelCaseToHumanReadable($sCamelCaseString);
     }
 
+
     /**
      * An alias for validator class method.
      * Get array value by key, optionally casting its type to desired one.
@@ -579,7 +563,6 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
     {
         return $this->getValidator()->getArrayValue($aDataArray, $mArrayKey, $sType);
     }
-
 
     /**
      * Check if entered module name already exists.
@@ -600,6 +583,42 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         foreach ($this->_aFilesToBackupOnEdit as $item) {
             $this->_backupFileIfExists($item);
         }
+    }
+
+    /**
+     * Check if module with provided name exists in the configured vendor directory.
+     *
+     * @param string $sModuleName
+     *
+     * @return boolean
+     */
+    public function moduleExists($sModuleName)
+    {
+        /** @var oxpsModuleGeneratorFileSystem $oFileSystemHelper */
+        $oFileSystemHelper = Registry::get('oxpsModuleGeneratorFileSystem');
+
+        return $oFileSystemHelper->isDir($this->getVendorPath() . $sModuleName);
+    }
+
+    /**
+     * Return parsed module metadata info to Generation Options to fill Module Generator form.
+     *
+     * @param string $sModuleName
+     *
+     * @return array
+     */
+    public function readGenerationOptions($sModuleName)
+    {
+        $aGenerationOptions = [];
+
+        $aMetadata = $this->_getMetadataInfo($sModuleName);
+        if (!empty($aMetadata)) {
+            /** @var oxpsModuleGeneratorMetadata $oMetadataParser */
+            $oMetadataParser = Registry::get('oxpsModuleGeneratorMetadata');
+            $aGenerationOptions = $oMetadataParser->parseMetadata($aMetadata, $this->getVendorPrefix(), $sModuleName);
+        }
+
+        return $aGenerationOptions;
     }
 
     /**
@@ -650,40 +669,6 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
     }
 
     /**
-     * Check if module with provided name exists in the configured vendor directory.
-     *
-     * @param string $sModuleName
-     *
-     * @return boolean
-     */
-    public function moduleExists($sModuleName)
-    {
-        /** @var oxpsModuleGeneratorFileSystem $oFileSystemHelper */
-        $oFileSystemHelper = Registry::get('oxpsModuleGeneratorFileSystem');
-        return $oFileSystemHelper->isDir($this->getVendorPath() . $sModuleName);
-    }
-
-    /**
-     * Return parsed module metadata info to Generation Options to fill Module Generator form.
-     *
-     * @param $sModuleName
-     *
-     * @return array
-     */
-    public function readGenerationOptions($sModuleName)
-    {
-        $aGenerationOptions = [];
-        $aMetadata = $this->_getMetadataInfo($sModuleName);
-        if (!empty($aMetadata)) {
-            /** @var oxpsModuleGeneratorMetadata $oMetadataParser */
-            $oMetadataParser = Registry::get('oxpsModuleGeneratorMetadata');
-            $aGenerationOptions = $oMetadataParser->parseMetadata($aMetadata, $this->getVendorPrefix(), $sModuleName);
-        }
-
-        return $aGenerationOptions;
-    }
-
-    /**
      * Get Metadata of provided module name.
      *
      * @param $sModuleName
@@ -714,9 +699,10 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     protected function _getFullFilePath($sModuleName, $sFilename)
     {
+        // TODO: VendorPath is null using this method from AjaxDataProvider;
         $sFullModulePath = $this->getVendorPath() . $sModuleName;
-        $sMetadataPath = $sFullModulePath . "/" . $sFilename;
 
+        $sMetadataPath = $sFullModulePath . "/" . $sFilename;
         return (string) $sMetadataPath;
     }
 
@@ -733,6 +719,53 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
                 $this->_getFullFilePath($this->_sModuleName, $sFileName),
                 $this->getVendorPath() . $this->_sModuleName . '/' . $sFileBackupName
             );
+        }
+    }
+
+    /**
+     * Module generation action.
+     *
+     * @param array                     $aGenerationOptions
+     * @param oxpsModuleGeneratorHelper $oHelper
+     * @param oxpsModuleGeneratorRender $oRenderHelper
+     */
+    protected function _moduleGeneration(array $aGenerationOptions, $oHelper, $oRenderHelper)
+    {
+        // Check if Edit Mode is activated
+        if ($this->isEditMode()) {
+            $this->_aParsedMetadataOptions = $this->readGenerationOptions($this->_sModuleName);
+            $this->backupFiles();
+        }
+
+        // Get new module and module generation template full paths
+        $sModuleGeneratorPath = Registry::get('oxpsModuleGeneratorModule')->getPath();
+        $sModulePath = $this->getFullPath();
+
+        // Copy the module from a folder structure with templates to a new module path
+        $oHelper->createVendorMetadata($this->getVendorPath());
+        $oHelper->getFileSystemHelper()->copyFolder(
+            $sModuleGeneratorPath . 'Core/module.tpl/module/',
+            $sModulePath,
+            $this->isEditMode() ? (array) $this->_aIgnoreOnEdit : array()
+        );
+
+        // Create classes to overload (extend)
+        $aClassesToExtend = (array) $oHelper->createClassesToExtend(
+            $sModuleGeneratorPath . 'Core/module.tpl/oxpsExtendClass.php.tpl'
+        );
+
+        // Create new module classes and templates
+        $aNewClasses = (array) $oHelper->createNewClassesAndTemplates($sModuleGeneratorPath);
+
+        // Create blocks templates
+        $oHelper->createBlock($sModulePath);
+
+        // Process copied module files as Smarty templates to fill them with the real module data
+        $oRenderHelper->renderModuleFiles($aClassesToExtend, $aNewClasses);
+
+        // Clone PHP Unit tests libraries if the option is checked and configured
+        if ($this->getArrayValue($aGenerationOptions, 'blFetchUnitTests')) {
+            $oHelper->fillTestsFolder($oRenderHelper, $sModuleGeneratorPath, $aClassesToExtend, $aNewClasses);
         }
     }
 }

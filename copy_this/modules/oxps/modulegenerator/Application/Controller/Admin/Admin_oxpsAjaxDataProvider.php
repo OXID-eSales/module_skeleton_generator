@@ -30,9 +30,13 @@ use \OxidEsales\Eshop\Application\Controller\Admin\AdminController;
  * Class Admin_oxpsAjaxDataProvider.
  * Module Generator Ajax Data Provider for data validation in form and data provision for Edit Mode.
  */
-// TODO: pagal suvestą modulio name nustatyti ar tai edit mode; užkrauti ir perduoti parsedGenerationOptions; ...
 class Admin_oxpsAjaxDataProvider extends AdminController
 {
+
+    /**
+     * @var string
+     */
+    protected $_sVendorPrefix;
 
     /**
      * @var oxpsModuleGeneratorOxModule
@@ -45,30 +49,109 @@ class Admin_oxpsAjaxDataProvider extends AdminController
     protected $_oModuleGeneratorModule;
 
     /**
-     * Get Module Settings if exists
+     * @return string
+     */
+    public function getVendorPrefix()
+    {
+        return $this->_sVendorPrefix;
+    }
+
+    /**
+     * @param string $sVendorPrefix
+     */
+    public function setVendorPrefix($sVendorPrefix)
+    {
+        $this->_sVendorPrefix = $sVendorPrefix;
+    }
+
+    /**
+     * @return oxpsModuleGeneratorOxModule
+     */
+    public function getModuleGeneratorOxModule()
+    {
+        if (null === $this->_oModuleGeneratorOxModule) {
+            $this->_oModuleGeneratorOxModule = oxNew('oxpsModuleGeneratorOxModule');
+        }
+
+        return $this->_oModuleGeneratorOxModule;
+    }
+
+    /**
+     * @return oxpsModuleGeneratorModule
+     */
+    public function getModuleGeneratorModule()
+    {
+        if (null === $this->_oModuleGeneratorModule) {
+            $this->_oModuleGeneratorModule = oxNew('oxpsModuleGeneratorModule');
+        }
+
+        return $this->_oModuleGeneratorModule;
+    }
+
+    /**
+     * Get Module Settings if exists. Returns metadata.php module file information rendered like form input.
      */
     public function getExistingModuleSettings()
     {
-        /** @var oxpsModuleGeneratorOxModule $_oModuleGeneratorOxModule */
-        $this->_oModuleGeneratorOxModule = oxNew('oxpsModuleGeneratorOxModule');
-
-        /** @var oxpsModuleGeneratorModule $_oModuleGeneratorModule */
-        $this->_oModuleGeneratorModule = oxNew('oxpsModuleGeneratorModule');
-
         $sModuleName = $this->getConfig()->getRequestParameter('moduleName');
+
+        // Set vendor prefix from settings as it can only be set through oxpsModuleGenerator Controller
+        $this->setVendorPrefix(
+            $this->getModuleGeneratorModule()->getSetting('VendorPrefix')
+        );
+
+        $this->getModuleGeneratorOxModule()->init(
+            $sModuleName,
+            [],
+            $this->getVendorPrefix()
+        );
+
         if ($this->_isModuleExists($sModuleName)) {
-            // TODO: Cannot read Generation Options as vendor prefix is not defined in full path during metadata.php
-            // TODO: file include process and as a result returns empty $aExistingModuleSettings array.
-            $aExistingModuleSettings = $this->_oModuleGeneratorOxModule->readGenerationOptions($sModuleName);
+            $aExistingModuleSettings = $this->getModuleGeneratorOxModule()->readGenerationOptions($sModuleName);
 
             header('Content-Type: application/json');
             echo json_encode($aExistingModuleSettings);
         } else {
-            // Shows that user is in new module generation mode
+            echo "CREATE MODE";
         }
         exit;
     }
 
+    public function validateExtendClasses()
+    {
+        
+    }
+
+    public function validateControllers()
+    {
+        
+    }
+
+    public function validateModels()
+    {
+        
+    }
+
+    public function validateLists()
+    {
+        
+    }
+
+    public function validateWidgets()
+    {
+        
+    }
+
+    public function validateBlocks()
+    {
+        
+    }
+
+    public function validateModuleSettings()
+    {
+
+    }
+    
     /**
      * Check module availability
      *
@@ -78,12 +161,9 @@ class Admin_oxpsAjaxDataProvider extends AdminController
      */
     protected function _isModuleExists($sModuleName)
     {
-        $sVendorPrefix = $this->_oModuleGeneratorModule->getSetting('VendorPrefix');
-
-        return ($this->_oModuleGeneratorOxModule->moduleExists($sVendorPrefix . "/" . $sModuleName) && $sModuleName)
-            ? true
-            : false;
+        return (
+            $this->getModuleGeneratorOxModule()->moduleExists($sModuleName)
+            && !empty($sModuleName)
+        );
     }
-
-
 }

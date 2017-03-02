@@ -177,7 +177,7 @@ class Admin_oxpsModuleGenerator extends AdminController
      *
      * @return string
      */
-    public function generateUrlForAjax($sResponseMethodName)
+    public function generateAjaxResponseUrl($sResponseMethodName)
     {
         return (string)
         htmlspecialchars_decode(

@@ -3,11 +3,12 @@
 [{oxscript include="js/libs/jquery-ui.min.js"}]
 [{oxscript include=$oViewConf->getModuleUrl('oxps/ModuleGenerator', 'out/src/js/admin_oxpsmodulegenerator.js')}]
 [{oxscript add="$.noConflict();" priority=10}]
-[{assign var="sResponseUrl" value=$oView->generateUrlForAjax('getExistingModuleSettings')}]
+[{assign var="sModuleNameValidationUrl" value=$oView->generateAjaxResponseUrl('validateModuleName')}]
+
 [{oxscript add="
             jQuery(document).ready(function () {
                 jQuery('#oxpsmodulegenerator').wizard({
-                     responseUrl: '`$sResponseUrl`'
+                     moduleNameValidationUrl: '`$sModuleNameValidationUrl`'
                 });
             });"
            priority=10}]

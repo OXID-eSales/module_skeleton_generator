@@ -91,7 +91,7 @@ class Admin_oxpsAjaxDataProvider extends AdminController
     /**
      * Get Module Settings if exists. Returns metadata.php module file information rendered like form input.
      */
-    public function getExistingModuleSettings()
+    public function validateModuleName()
     {
         $sModuleName = $this->getConfig()->getRequestParameter('moduleName');
 
@@ -111,47 +111,10 @@ class Admin_oxpsAjaxDataProvider extends AdminController
 
             header('Content-Type: application/json');
             echo json_encode($aExistingModuleSettings);
-        } else {
-            echo "CREATE MODE";
         }
         exit;
     }
 
-    public function validateExtendClasses()
-    {
-        
-    }
-
-    public function validateControllers()
-    {
-        
-    }
-
-    public function validateModels()
-    {
-        
-    }
-
-    public function validateLists()
-    {
-        
-    }
-
-    public function validateWidgets()
-    {
-        
-    }
-
-    public function validateBlocks()
-    {
-        
-    }
-
-    public function validateModuleSettings()
-    {
-
-    }
-    
     /**
      * Check module availability
      *

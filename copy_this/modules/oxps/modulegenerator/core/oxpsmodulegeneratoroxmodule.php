@@ -686,6 +686,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
                 // Optionally it could log to eShop standard exceptions log
             }
         }
+
         return (array) $aModule;
     }
 
@@ -703,6 +704,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         $sFullModulePath = $this->getVendorPath() . $sModuleName;
 
         $sMetadataPath = $sFullModulePath . "/" . $sFilename;
+
         return (string) $sMetadataPath;
     }
 

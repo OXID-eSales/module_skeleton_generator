@@ -16,7 +16,6 @@ jQuery.widget(
         _moduleListsSelector: "textarea[name='modulegenerator_lists']",
         _moduleWidgetsSelector: "textarea[name='modulegenerator_widgets']",
         _moduleBlocksSelector: "textarea[name='modulegenerator_blocks']",
-        _inputDelayValue: 5000,
         _inputValue: '',
 
         _create: function () {
@@ -25,15 +24,15 @@ jQuery.widget(
 
         _bindEvents: function () {
             var self = this;
-            var delay = this._makeDelay(this._inputDelayValue);
 
             jQuery(this._moduleNameSelector).keyup(function () {
                 self._inputValue = jQuery(this).val();
-                delay(self._validateModuleName(self._inputValue));
+                self._validateModuleName(self._inputValue);
             });
 
             jQuery(this._moduleClassesSelector).keyup(function () {
                 self._inputValue = jQuery(this).val();
+
                 if (!self._validateCamelCaseName(self._inputValue)) {
                     console.log('false');
                 } else {
@@ -42,8 +41,11 @@ jQuery.widget(
             });
         },
 
+        // TODO: separate to 2 methods: 1) responsible for validation 2) responsible for JSON response fetch action
+        // TODO: remove hardcoded stuff with createElement function
         _validateModuleName: function (inputValue) {
             var self = this;
+
             jQuery.ajax({
                 dataType: 'json',
                 type: 'post',
@@ -52,29 +54,79 @@ jQuery.widget(
                 success: function (data) {
                     if (null != data) {
                         console.log(data);
-                        jQuery("#helpText_OXPS_MODULEGENERATOR_ADMIN_OVERRIDE_CLASSES_HINT").after('<div>' + data['aNewClasses'] + '</div>');
-                        jQuery("#helpText_OXPS_MODULEGENERATOR_ADMIN_CREATE_CONTROLLERS_HINT").after('<div>' + data['aNewControllers'] + '</div>');
-                        jQuery("#helpText_OXPS_MODULEGENERATOR_ADMIN_CREATE_MODELS_HINT").after('<div>' + data['aNewModels'] + '</div>');
-                        jQuery("#helpText_OXPS_MODULEGENERATOR_ADMIN_CREATE_LISTS_HINT").after('<div>' + data['aNewLists'] + '</div>');
-                        jQuery("#helpText_OXPS_MODULEGENERATOR_ADMIN_CREATE_WIDGETS_HINT").after('<div>' + data['aNewWidgets'] + '</div>');
-                        jQuery("#helpText_OXPS_MODULEGENERATOR_ADMIN_CREATE_BLOCKS_HINT").after('<div>' + data['aNewBlocks'] + '</div>');
+                        jQuery(self._moduleClassesSelector).before('<div><b>' + self._buildHtmlResponse(data['aExtendClasses'], true) + '</b></div>');
+                        jQuery(self._moduleControllersSelector).before('<div><b>' + self._buildHtmlResponse(data['aNewControllers'], false) + '</b></div>');
+                        jQuery(self._moduleModelsSelector).before('<div><b>' + self._buildHtmlResponse(data['aNewModels'], false) + '</b></div>');
+                        jQuery(self._moduleListsSelector).before('<div><b>' + self._buildHtmlResponse(data['aNewLists'], false) + '</b></div>');
+                        jQuery(self._moduleWidgetsSelector).before('<div><b>' + self._buildHtmlResponse(data['aNewWidgets'], false) + '</b></div>');
+                        jQuery(self._moduleBlocksSelector).before('<div><b>' + self._buildSelectiveHtmlResponse(data['aNewBlocks'], true) + '</b></div>');
+                        jQuery(self._moduleBlocksSelector).after('<div><b>' + self._buildSelectiveHtmlResponse(data['aModuleSettings'], false) + '</b></div>');
                     }
                 }
             });
         },
 
-        // Same backend validation in \oxpsModuleGeneratorValidator::validateCamelCaseName
-        _validateCamelCaseName: function (value) {
-            return value.match(/^([A-Z]{1})([a-zA-Z0-9]{1,63})$/);
+        /**
+         * @param {object} oMetaObject
+         * @param {boolean} keys
+         *
+         * @returns {string}
+         */
+        _buildHtmlResponse: function (oMetaObject, keys) {
+            var aObjectData = [];
+            var sFormattedValue = '';
+
+            if (true == keys) {
+                aObjectData = Object.keys(oMetaObject);
+            } else {
+                aObjectData = Object.values(oMetaObject);
+            }
+
+            for (var i in aObjectData) {
+                sFormattedValue += aObjectData[i] + "<br />";
+            }
+
+            return sFormattedValue;
         },
 
-        // TODO: Not working yet
-        _makeDelay: function (ms) {
-            var timer = 0;
-            return function (callback) {
-                clearTimeout(timer);
-                timer = setTimeout(callback, ms);
-            };
+        /**
+         * Different logic of Html Response required for Metadata Settings and Blocks objects
+         *
+         * @param {object} oMetaObject
+         * @param {boolean} blocks
+         *
+         * @returns {string}
+         */
+        _buildSelectiveHtmlResponse: function (oMetaObject, blocks) {
+            var sFormattedValue = '';
+            var aObjectData = Object.keys(oMetaObject);
+
+            for (var i in aObjectData) {
+                if(blocks) {
+                    sFormattedValue += oMetaObject[aObjectData[i]]['block']
+                        + "@"
+                        + oMetaObject[aObjectData[i]]['template']
+                        + "<br />";
+                } else {
+                    sFormattedValue += oMetaObject[aObjectData[i]]['name']
+                        + " | "
+                        + oMetaObject[aObjectData[i]]['type']
+                        + " | "
+                        + oMetaObject[aObjectData[i]]['value']
+                        + "<br />";
+                }
+            }
+
+            return sFormattedValue;
+        },
+
+        /**
+         * Same backend validation in \oxpsModuleGeneratorValidator::validateCamelCaseName
+         *
+         * @param {string} value
+         */
+        _validateCamelCaseName: function (value) {
+            return value.match(/^([A-Z]{1})([a-zA-Z0-9]{1,63})$/);
         }
     }
 );

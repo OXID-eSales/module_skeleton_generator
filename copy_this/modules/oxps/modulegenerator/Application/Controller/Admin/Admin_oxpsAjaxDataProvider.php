@@ -106,11 +106,9 @@ class Admin_oxpsAjaxDataProvider extends AdminController
             $this->getVendorPrefix()
         );
 
-        if ($this->_isModuleExists($sModuleName)) {
+        if ($this->_moduleExists($sModuleName)) {
             $aExistingModuleSettings = $this->getModuleGeneratorOxModule()->readGenerationOptions($sModuleName);
-
-            header('Content-Type: application/json');
-            echo json_encode($aExistingModuleSettings);
+            $this->_encodeToJson($aExistingModuleSettings);
         }
         exit;
     }
@@ -122,11 +120,20 @@ class Admin_oxpsAjaxDataProvider extends AdminController
      *
      * @return bool
      */
-    protected function _isModuleExists($sModuleName)
+    protected function _moduleExists($sModuleName)
     {
         return (
             $this->getModuleGeneratorOxModule()->moduleExists($sModuleName)
             && !empty($sModuleName)
         );
+    }
+
+    /**
+     * @param array $aExistingModuleSettings
+     */
+    protected function _encodeToJson(array $aExistingModuleSettings)
+    {
+        header('Content-Type: application/json');
+        echo json_encode($aExistingModuleSettings, JSON_FORCE_OBJECT);
     }
 }

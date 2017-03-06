@@ -34,6 +34,20 @@ class oxpsModuleGeneratorValidator extends Base
 {
 
     /**
+     * Setting types
+     *
+     * @var array
+     */
+    protected $_aSettingTypes = [
+        'bool',
+        'str',
+        'num',
+        'arr',
+        'aarr',
+        'select',
+    ];
+
+    /**
      * Check if vendor prefix matches official format: 2 to 4 latin lowercase letters.
      *
      * @param string $sVendorPrefix
@@ -59,6 +73,18 @@ class oxpsModuleGeneratorValidator extends Base
             !empty($sVariableName) and
             preg_match('/^([A-Z]{1})([a-zA-Z0-9]{1,63})$/', (string) $sVariableName)
         );
+    }
+
+    /**
+     * Validate Settings type.
+     *
+     * @param string $sSettingType
+     *
+     * @return bool
+     */
+    public function validateSettingsType($sSettingType)
+    {
+        return in_array($sSettingType, $this->_aSettingTypes);
     }
 
     /**

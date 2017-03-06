@@ -58,9 +58,7 @@ class oxpsModuleGeneratorSettings extends Base
             $sInitialValue = $oValidator->getArrayValue($aModuleSetting, 'value');
 
             // Check if name and type are valid
-            if ($oValidator->validateCamelCaseName($sSettingName) and
-                in_array($sSettingType, array('bool', 'str', 'num', 'arr', 'aarr', 'select'))
-            ) {
+            if ($oValidator->validateCamelCaseName($sSettingName) && $oValidator->validateSettingsType($sSettingType)) {
                 // Prepare for rendering as raw value (variable as string with quotes and so on)
                 $aSetting = (array) $this->_getRawSettingValue($sSettingName, $sSettingType, $sInitialValue);
 

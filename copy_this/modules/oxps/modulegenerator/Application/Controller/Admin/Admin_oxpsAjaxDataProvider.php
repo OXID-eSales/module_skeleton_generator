@@ -110,7 +110,6 @@ class Admin_oxpsAjaxDataProvider extends AdminController
             $aExistingModuleSettings = $this->getModuleGeneratorOxModule()->readGenerationOptions($sModuleName);
             $this->_encodeToJson($aExistingModuleSettings);
         }
-        exit;
     }
 
     /**
@@ -134,6 +133,8 @@ class Admin_oxpsAjaxDataProvider extends AdminController
     protected function _encodeToJson(array $aExistingModuleSettings)
     {
         header('Content-Type: application/json');
-        echo json_encode($aExistingModuleSettings, JSON_FORCE_OBJECT);
+        OxidEsales\Eshop\Core\Registry::getUtils()->showMessageAndExit(
+            json_encode($aExistingModuleSettings, JSON_FORCE_OBJECT)
+        );
     }
 }

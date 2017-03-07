@@ -577,7 +577,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
     public function isEditMode()
     {
         if (null === $this->_blEditMode) {
-            $this->_blEditMode = $this->moduleExists($this->_sModuleName);
+            $this->_blEditMode = $this->getValidator()->moduleExists($this->_sModuleName);
         }
 
         return $this->_blEditMode;
@@ -588,22 +588,6 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         foreach ($this->_aFilesToBackupOnEdit as $item) {
             $this->_backupFileIfExists($item);
         }
-    }
-
-    /**
-     * Check if module with provided name exists in the configured vendor directory.
-     *
-     * @param string $sModuleName
-     *
-     * @return boolean
-     */
-    public function moduleExists($sModuleName)
-    {
-        /** @var oxpsModuleGeneratorFileSystem $oFileSystemHelper */
-        $oFileSystemHelper = Registry::get('oxpsModuleGeneratorFileSystem');
-
-        return $oFileSystemHelper->isDir($this->getVendorPath() . $sModuleName)
-               && !empty($sModuleName);
     }
 
     /**

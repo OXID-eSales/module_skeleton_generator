@@ -31,18 +31,9 @@ use \OxidEsales\Eshop\Core\Str;
 /**
  * Class Admin_oxpsModuleGenerator.
  * Module Generator GUI controller.
- *
- * @todo (nice2have) Class got too long -> move some methods to validation helper or some other class.
  */
 class Admin_oxpsModuleGenerator extends AdminController
 {
-
-    /**
-     * Folder name identifier in class path which determines backward compatibility - old class name usage.
-     */
-    const OXPS_BACKWARD_COMPATIBILITY_FOLDER = 'BackwardCompatibility';
-
-
     /**
      * Current class template name.
      *
@@ -57,6 +48,12 @@ class Admin_oxpsModuleGenerator extends AdminController
      */
     protected $_oModule;
 
+    /**
+     * Module Validator instance used for validating data required for new module generation.
+     *
+     * @var oxpsModuleGeneratorValidator
+     */
+    protected $_oValidator;
 
     /**
      * Overridden parent method.
@@ -98,6 +95,20 @@ class Admin_oxpsModuleGenerator extends AdminController
         return $this->_Admin_oxpsModuleGenerator_render_parent();
     }
 
+    /**
+     * Get Validator instance or set it if not available.
+     *
+     * @return oxpsModuleGeneratorValidator
+     */
+    public function getValidator()
+    {
+        if (null === $this->_oValidator) {
+            /** @var oxpsModuleGeneratorValidator $oValidator */
+            $this->_oValidator = Registry::get('oxpsModuleGeneratorValidator');
+        }
+
+        return $this->_oValidator;
+    }
 
     /**
      * Get module instance.
@@ -150,10 +161,8 @@ class Admin_oxpsModuleGenerator extends AdminController
         // Get module generation options
         $aGenerationOptions = $this->_getGenerationOptions();
 
-        /** @var oxpsModuleGeneratorValidator $oValidator */
-        $oValidator = Registry::get('oxpsModuleGeneratorValidator');
 
-        if (!$oValidator->validateVendorPrefix($this->getVendorPrefix())) {
+        if (!$this->getValidator()->validateVendorPrefix($this->getVendorPrefix())) {
 
             // Set an error if configured module vendor prefix is not valid
             $this->_setMessage('OXPS_MODULEGENERATOR_ADMIN_MODULE_ERROR_INVALID_VENDOR');
@@ -222,19 +231,29 @@ class Admin_oxpsModuleGenerator extends AdminController
         $oRequest = Registry::get(\OxidEsales\Eshop\Core\Request::class);
 
         $aGenerationOptions = array(
-            'aExtendClasses'   => $this->validateAndLinkClasses($this->_getTextParam('modulegenerator_extend_classes')),
-            'aNewControllers'  => $this->_parseMultiLineInput($this->_getTextParam('modulegenerator_controllers')),
-            'aNewModels'       => $this->_parseMultiLineInput($this->_getTextParam('modulegenerator_models')),
-            'aNewLists'        => $this->_parseMultiLineInput($this->_getTextParam('modulegenerator_lists')),
-            'aNewWidgets'      => $this->_parseMultiLineInput($this->_getTextParam('modulegenerator_widgets')),
-            'aNewBlocks'       => $this->parseBlocksData(
+            'aExtendClasses'   => $this->getValidator()->validateAndLinkClasses(
+                $this->_getTextParam('modulegenerator_extend_classes')
+            ),
+            'aNewControllers'  => $this->getValidator()->parseMultiLineInput(
+                $this->_getTextParam('modulegenerator_controllers')
+            ),
+            'aNewModels'       => $this->getValidator()->parseMultiLineInput(
+                $this->_getTextParam('modulegenerator_models')
+            ),
+            'aNewLists'        => $this->getValidator()->parseMultiLineInput(
+                $this->_getTextParam('modulegenerator_lists')
+            ),
+            'aNewWidgets'      => $this->getValidator()->parseMultiLineInput(
+                $this->_getTextParam('modulegenerator_widgets')
+            ),
+            'aNewBlocks'       => $this->getValidator()->parseBlocksData(
                 $this->_getTextParam('modulegenerator_blocks'),
                 $this->getVendorPrefix(),
                 $this->_getTextParam('modulegenerator_module_name')
             ),
             'aModuleSettings'  => (array) $oRequest->getRequestParameter('modulegenerator_settings'),
             'lbThemesNone'     => (bool) $oRequest->getRequestParameter('modulegenerator_theme_none'),
-            'aThemesList'      => $this->_parseMultiLineInput(
+            'aThemesList'      => $this->getValidator()->parseMultiLineInput(
                 $this->_getTextParam('modulegenerator_theme_list'),
                 'not_empty'
             ),
@@ -384,179 +403,6 @@ class Admin_oxpsModuleGenerator extends AdminController
         $this->_addViewData(array('sMessage' => (string) $sMessage, 'blError' => !empty($blError)));
     }
 
-    /**
-     * Check list of classes and link it with its relative path for each valid class.
-     *
-     * @param string $sClasses List of classes names separated with a new line.
-     *
-     * @return array With relative application path as value and clean class name as key for each valid class.
-     */
-    public function validateAndLinkClasses($sClasses)
-    {
-        /** @var oxpsModuleGeneratorFileSystem $oFileSystemHelper */
-        $oFileSystemHelper = Registry::get('oxpsModuleGeneratorFileSystem');
-        $aClasses = $this->_parseMultiLineInput($sClasses, 'not_empty');
-        $aValidLinkedClasses = array();
-        $oConfig = Registry::getConfig();
-        $sBasePath = $oConfig->getConfigParam('sShopDir');
-
-        foreach ($aClasses as $sClassName) {
-            if (!class_exists($sClassName)) {
-                continue;
-            }
-
-            $sClassPath = (string) $this->_getClassPath($sClassName);
-
-            if ($oFileSystemHelper->isFile($sClassPath)) {
-                $sClassPath = str_replace($sBasePath, '', dirname($sClassPath)) . DIRECTORY_SEPARATOR;
-                $aValidLinkedClasses[$sClassName] = $sClassPath;
-            }
-        }
-
-        return $aValidLinkedClasses;
-    }
-
-    /**
-     * Build reflection object to get path to a class.
-     * In case of old class name (backwards compatibility), use new class name of parent reflection.
-     *
-     * @param string $sClassName
-     *
-     * @return string
-     */
-    protected function _getClassPath($sClassName)
-    {
-        /** @var \OxidEsales\Eshop\Core\StrMb|\OxidEsales\Eshop\Core\StrRegular $oStr */
-        $oStr = Str::getStr();
-
-        $oReflection = new ReflectionClass(new $sClassName());
-        $sClassPath = (string) $oReflection->getFilename();
-
-        if (false !== $oStr->strpos($sClassPath, self::OXPS_BACKWARD_COMPATIBILITY_FOLDER)) {
-            $oReflection = $oReflection->getParentClass();
-            $sClassPath = (string) $oReflection->getFilename();
-        }
-
-        return $sClassPath;
-    }
-
-    /**
-     * Parse new blocks multi-line data to valid metadata blocks definition.
-     * Each valid element will have a template, block and file keys.
-     *
-     * @todo (nice2have): When using block name as blocks list key, block becomes unique in a module.
-     *                    Maybe it should not be unique, i.e. module could extend same block many times, or not?
-     *
-     * @param string $sBlocks
-     * @param string $sVendorPrefix
-     * @param string $sModuleName
-     *
-     * @return array
-     */
-    public function parseBlocksData($sBlocks, $sVendorPrefix, $sModuleName)
-    {
-        $sModuleId = sprintf('%s%s', $sVendorPrefix, $sModuleName);
-        $aBlocks = $this->_parseMultiLineInput($sBlocks, 'not_empty');
-        $aValidBlocks = array();
-
-        foreach ($aBlocks as $sBlockDefinition) {
-            $aBlock = $this->_parseBlockDefinition($sBlockDefinition, $sModuleId);
-
-            if (isset($aBlock['template'], $aBlock['block'], $aBlock['file'])) {
-                $aValidBlocks[sprintf('_%s', $aBlock['block'])] = (object) $aBlock;
-            }
-        }
-
-        return $aValidBlocks;
-    }
-
-    /**
-     * Parse block definition from string to metadata block entry array.
-     *
-     * @todo (nice2have): Validate block name [a-z{1}a-z_{1,}] and check if template exists in active theme?
-     *
-     * @param string $sBlockDefinition String in format "[block_name]@[path/to/existing/template.tpl]"
-     * @param string $sModuleId
-     *
-     * @return array
-     */
-    protected function _parseBlockDefinition($sBlockDefinition, $sModuleId)
-    {
-        /** @var oxpsModuleGeneratorValidator $oValidator */
-        $oValidator = Registry::get('oxpsModuleGeneratorValidator');
-
-        $sBlockDefinition = trim((string) $sBlockDefinition);
-        $aBlockDefinition = !empty($sBlockDefinition) ? explode("@", $sBlockDefinition) : array();
-
-        $sBlockName = $oValidator->getArrayValue($aBlockDefinition, 0);
-        $sTemplatePath = $oValidator->getArrayValue($aBlockDefinition, 1);
-
-        if (empty($sBlockName) or empty($sTemplatePath)) {
-            return array();
-        }
-
-        return array(
-            'template' => $sTemplatePath,
-            'block'    => $sBlockName,
-            'file'     => sprintf('Application/views/blocks/%s_%s.tpl', $sModuleId, $sBlockName),
-        );
-    }
-
-    /**
-     * Parse multi-line string input as array and validate each line.
-     * Line validation is one of following:
-     *  `not_empty`  - there must be something in the line
-     *  `camel_case` - a value must be in "UpperCamelCase" format
-     *
-     * @todo (nice2have): Check class names among all types to be unique
-     *
-     * @param string $sInput
-     * @param string $sLineValidation A validation rule name.
-     *
-     * @return array
-     */
-    protected function _parseMultiLineInput($sInput, $sLineValidation = 'camel_case')
-    {
-        $aInput = (array) explode(PHP_EOL, (string) $sInput);
-        $aValidInput = array();
-
-        foreach ($aInput as $sLine) {
-            $sLine = trim((string) $sLine);
-
-            if ($this->_isLineInputValid($sLine, $sLineValidation) and !in_array($sLine, $aValidInput)) {
-                $aValidInput[] = $sLine;
-            }
-        }
-
-        return $aValidInput;
-    }
-
-    /**
-     * Check if a value passes specified validation rule.
-     *
-     * @param string $sValue
-     * @param string $sValidationRule
-     *
-     * @return bool
-     */
-    protected function _isLineInputValid($sValue, $sValidationRule)
-    {
-        $blIsValid = false;
-
-        switch ($sValidationRule) {
-            case 'not_empty';
-                $blIsValid = !empty($sValue);
-                break;
-
-            case 'camel_case':
-                /** @var oxpsModuleGeneratorValidator $oValidator */
-                $oValidator = Registry::get('oxpsModuleGeneratorValidator');
-                $blIsValid = (bool) $oValidator->validateCamelCaseName($sValue);
-                break;
-        }
-
-        return $blIsValid;
-    }
 
     /**
      * Filter generation options to check if list models were set and if those list models match item models.

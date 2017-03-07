@@ -6,7 +6,8 @@ jQuery.widget(
     'oxpsmodulegenerator.wizard',
     {
         options: {
-            moduleNameValidationUrl: ''
+            moduleNameValidationUrl: '',
+            extendClassesValidationUrl: ''
         },
 
         _moduleNameSelector: "input[name='modulegenerator_module_name']",
@@ -26,12 +27,15 @@ jQuery.widget(
 
             jQuery(this._moduleNameSelector).keyup(function () {
 
-                var inputValue = jQuery(this).val();
-                if (self._validateModuleName(inputValue)) {
-                    self._requestJsonResponse(inputValue);
+                if (self._validateModuleName(this)) {
+                    self._requestModuleNameJsonResponse(this);
                 } else {
                     console.log('CamelCase Name False');
                 }
+            });
+
+            jQuery(this._moduleClassesSelector).keyup(function () {
+                self._requestExtendClassesJsonResponse(this);
             });
 
             jQuery(this._moduleControllersSelector).keyup(function () {
@@ -51,40 +55,42 @@ jQuery.widget(
             });
         },
 
-        // TODO: remove hardcoded stuff with createElement function
         /**
          * Validate JSON data response
          *
-         * @param {string} inputValue
+         * @param {object} element
          *
          * @returns {boolean}
          */
-        _validateModuleName: function (inputValue) {
-            return this._validateCamelCaseName(inputValue);
-         },
+        _validateModuleName: function (element) {
+            return this._validateCamelCaseName(element);
+        },
 
-        _requestJsonResponse: function (inputValue) {
+        /**
+         * @param {object} element
+         * @private
+         */
+        _requestModuleNameJsonResponse: function (element) {
             var self = this;
 
             jQuery.ajax({
                 dataType: 'json',
                 type: 'post',
                 url: self.options.moduleNameValidationUrl,
-                data: {moduleName: inputValue},
+                data: {moduleName: jQuery(element).val()},
                 success: function (data) {
                     if (null != data) {
-                        self._showHtmlResponse(data);
+                        self._showModuleNameHtmlResponse(data);
                     }
                 }
             });
         },
 
+        // TODO: remove hardcoded stuff with createElement function
         /**
-         * Receive JSON response from Ajax function.
-         *
          * @param {object} data
          */
-        _showHtmlResponse: function(data) {
+        _showModuleNameHtmlResponse: function (data) {
             var self = this;
 
             console.log(data);
@@ -95,6 +101,34 @@ jQuery.widget(
             jQuery(self._moduleWidgetsSelector).before('<div><b>' + self._buildHtmlResponse(data['aNewWidgets'], false) + '</b></div>');
             jQuery(self._moduleBlocksSelector).before('<div><b>' + self._buildSelectiveHtmlResponse(data['aNewBlocks'], true) + '</b></div>');
             jQuery(self._moduleBlocksSelector).after('<div><b>' + self._buildSelectiveHtmlResponse(data['aModuleSettings'], false) + '</b></div>');
+        },
+
+        /**
+         * @param {object} element
+         */
+        _requestExtendClassesJsonResponse: function (element) {
+            var self = this;
+
+            jQuery.ajax({
+                dataType: 'json',
+                type: 'post',
+                url: self.options.extendClassesValidationUrl,
+                data: {extendClasses: jQuery(element).val()},
+                success: function (data) {
+                    if (null != data) {
+                        self._showExtendClassesHtmlResponse(data);
+                    }
+                }
+            });
+        },
+
+        /**
+         * @param {object} data
+         */
+        _showExtendClassesHtmlResponse: function (data) {
+            var self = this;
+
+            console.log(data);
         },
 
         /**
@@ -133,7 +167,7 @@ jQuery.widget(
             var aObjectData = Object.keys(oMetaObject);
 
             for (var i in aObjectData) {
-                if(blocks) {
+                if (blocks) {
                     sFormattedValue += oMetaObject[aObjectData[i]]['block']
                         + "@"
                         + oMetaObject[aObjectData[i]]['template']
@@ -160,9 +194,10 @@ jQuery.widget(
          */
         _validateCamelCaseName: function (element) {
             if (new RegExp(/^([A-Z])([a-zA-Z0-9]{1,63})$/).test(jQuery(element).val())) {
+                console.log(jQuery(element).attr('name') + ': TRUE');
                 return true;
             }
-            console.log(element + ': FALSE');
+            console.log(jQuery(element).attr('name') + ': FALSE');
         }
     }
 );

@@ -4,11 +4,13 @@
 [{oxscript include=$oViewConf->getModuleUrl('oxps/ModuleGenerator', 'out/src/js/admin_oxpsmodulegenerator.js')}]
 [{oxscript add="$.noConflict();" priority=10}]
 [{assign var="sModuleNameValidationUrl" value=$oView->generateAjaxResponseUrl('validateModuleName')}]
+[{assign var="sExtendClassesNamesValidationUrl" value=$oView->generateAjaxResponseUrl('validateExtendClassNames')}]
 
 [{oxscript add="
             jQuery(document).ready(function () {
                 jQuery('#oxpsmodulegenerator').wizard({
-                     moduleNameValidationUrl: '`$sModuleNameValidationUrl`'
+                     moduleNameValidationUrl: '`$sModuleNameValidationUrl`',
+                     extendClassesValidationUrl: '`$sExtendClassesNamesValidationUrl`',
                 });
             });"
            priority=10}]

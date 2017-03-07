@@ -24,12 +24,13 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
-use \OxidEsales\Eshop\Application\Controller\Admin\AdminController;
+use OxidEsales\Eshop\Application\Controller\Admin\AdminController;
 
 /**
  * Class Admin_oxpsAjaxDataProvider.
  * Module Generator Ajax Data Provider for data validation in form and data provision for Edit Mode.
  */
+// TODO: Refactor field names to be short
 class Admin_oxpsAjaxDataProvider extends AdminController
 {
 
@@ -41,12 +42,43 @@ class Admin_oxpsAjaxDataProvider extends AdminController
     /**
      * @var oxpsModuleGeneratorOxModule
      */
-    protected $_oModuleGeneratorOxModule;
+    protected $_oOxModule;
 
     /**
      * @var oxpsModuleGeneratorModule
      */
-    protected $_oModuleGeneratorModule;
+    protected $_oModule;
+
+    /**
+     * @var oxpsModuleGeneratorValidator
+     */
+    protected $_oValidator;
+
+    /**
+     * @var string
+     */
+    protected $_sModuleName;
+
+    /**
+     * Fill Module object with required content before other interactions
+     */
+    public function init()
+    {
+        $this->_init_parent();
+
+        $this->_sModuleName = $this->getConfig()->getRequestParameter('moduleName');
+
+        // Set vendor prefix from settings as it can only be set through oxpsModuleGenerator Controller
+        $this->setVendorPrefix(
+            $this->getModule()->getSetting('VendorPrefix')
+        );
+
+        $this->getOxModule()->init(
+            $this->_sModuleName,
+            [],
+            $this->getVendorPrefix()
+        );
+    }
 
     /**
      * @return string
@@ -67,25 +99,37 @@ class Admin_oxpsAjaxDataProvider extends AdminController
     /**
      * @return oxpsModuleGeneratorOxModule
      */
-    public function getModuleGeneratorOxModule()
+    public function getOxModule()
     {
-        if (null === $this->_oModuleGeneratorOxModule) {
-            $this->_oModuleGeneratorOxModule = oxNew('oxpsModuleGeneratorOxModule');
+        if (null === $this->_oOxModule) {
+            $this->_oOxModule = oxNew('oxpsModuleGeneratorOxModule');
         }
 
-        return $this->_oModuleGeneratorOxModule;
+        return $this->_oOxModule;
     }
 
     /**
      * @return oxpsModuleGeneratorModule
      */
-    public function getModuleGeneratorModule()
+    public function getModule()
     {
-        if (null === $this->_oModuleGeneratorModule) {
-            $this->_oModuleGeneratorModule = oxNew('oxpsModuleGeneratorModule');
+        if (null === $this->_oModule) {
+            $this->_oModule = oxNew('oxpsModuleGeneratorModule');
         }
 
-        return $this->_oModuleGeneratorModule;
+        return $this->_oModule;
+    }
+
+    /**
+     * @return oxpsModuleGeneratorValidator
+     */
+    public function getValidator()
+    {
+        if (null === $this->_oValidator) {
+            $this->_oValidator = oxNew('oxpsModuleGeneratorValidator');
+        }
+
+        return $this->_oValidator;
     }
 
     /**
@@ -93,37 +137,30 @@ class Admin_oxpsAjaxDataProvider extends AdminController
      */
     public function validateModuleName()
     {
-        $sModuleName = $this->getConfig()->getRequestParameter('moduleName');
-
-        // Set vendor prefix from settings as it can only be set through oxpsModuleGenerator Controller
-        $this->setVendorPrefix(
-            $this->getModuleGeneratorModule()->getSetting('VendorPrefix')
-        );
-
-        $this->getModuleGeneratorOxModule()->init(
-            $sModuleName,
-            [],
-            $this->getVendorPrefix()
-        );
-
-        if ($this->_moduleExists($sModuleName)) {
-            $aExistingModuleSettings = $this->getModuleGeneratorOxModule()->readGenerationOptions($sModuleName);
+        if ($this->_moduleExists()) {
+            $aExistingModuleSettings = $this->getOxModule()->readGenerationOptions($this->_sModuleName);
             $this->_encodeToJson($aExistingModuleSettings);
         }
+    }
+
+    public function validateExtendClassNames()
+    {
+        $sExtendClasses = $this->getConfig()->getRequestParameter('extendClasses');
+
+        $aValidLinkedClasses = $this->getValidator()->validateAndLinkClasses($sExtendClasses);
+        $this->_encodeToJson($aValidLinkedClasses);
     }
 
     /**
      * Check module availability
      *
-     * @param string $sModuleName
-     *
      * @return bool
      */
-    protected function _moduleExists($sModuleName)
+    protected function _moduleExists()
     {
         return (
-            $this->getModuleGeneratorOxModule()->moduleExists($sModuleName)
-            && !empty($sModuleName)
+            $this->getValidator()->moduleExists($this->_sModuleName)
+            && !empty($this->_sModuleName)
         );
     }
 
@@ -136,5 +173,10 @@ class Admin_oxpsAjaxDataProvider extends AdminController
         OxidEsales\Eshop\Core\Registry::getUtils()->showMessageAndExit(
             json_encode($aExistingModuleSettings, JSON_FORCE_OBJECT)
         );
+    }
+
+    protected function _init_parent()
+    {
+        parent::init();
     }
 }

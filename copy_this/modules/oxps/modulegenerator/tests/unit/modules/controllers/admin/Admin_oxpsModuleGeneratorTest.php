@@ -24,13 +24,18 @@
  * @copyright (C) OXID eSales AG 2003-2014
  */
 
+if (!class_exists('Smarty')) {
+    include dirname(__FILE__) . '../../../../../../../../../vendor/smarty/smarty/libs/Smarty.class.php';
+}
+
+
 /**
  * Class Admin_oxpsModuleGeneratorTest
  * INTEGRATION tests for controller class Admin_oxpsModuleGenerator.
  *
  * @see Admin_oxpsModuleGenerator
  */
-class Admin_oxpsModuleGeneratorTest extends OxidTestCase
+class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCase
 {
 
     /**
@@ -84,21 +89,6 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
         @shell_exec('rm -rf ' . $this->_getTestPath());
 
         parent::tearDown();
-    }
-
-    public static function setUpBeforeClass()
-    {
-        parent::setUpBeforeClass();
-
-        importTestdataFile('testdata_remove.sql');
-        importTestdataFile('testdata_add.sql');
-    }
-
-    public static function tearDownAfterClass()
-    {
-        parent::tearDownAfterClass();
-
-        importTestdataFile('testdata_remove.sql');
     }
 
 
@@ -169,23 +159,23 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     public function testRender_formWasSubmitted_collectProperFormInitialValuesFromParsedRequest()
     {
         // Config mock (request data)
-        modConfig::setRequestParameter('modulegenerator_module_name', 'badModuleName ');
-        modConfig::setRequestParameter(
+        $this->setRequestParameter('modulegenerator_module_name', 'badModuleName ');
+        $this->setRequestParameter(
             'modulegenerator_extend_classes',
             'oxarticle' . PHP_EOL . 'oxarticle' . PHP_EOL . 'oxlist' . PHP_EOL . 'oxarticle' . PHP_EOL . 'asdasd'
         );
-        modConfig::setRequestParameter(
+        $this->setRequestParameter(
             'modulegenerator_controllers',
             ' Page' . PHP_EOL . PHP_EOL . ' ' . PHP_EOL . 'view'
         );
-        modConfig::setRequestParameter('modulegenerator_models', 'Item' . PHP_EOL . 'Thing_Two');
-        modConfig::setRequestParameter('modulegenerator_lists', 'Item' . PHP_EOL . 'ThingTwo' . PHP_EOL . 'ItemList');
-        modConfig::setRequestParameter('modulegenerator_widgets', 'Bar' . PHP_EOL . '1Trash');
-        modConfig::setRequestParameter(
+        $this->setRequestParameter('modulegenerator_models', 'Item' . PHP_EOL . 'Thing_Two');
+        $this->setRequestParameter('modulegenerator_lists', 'Item' . PHP_EOL . 'ThingTwo' . PHP_EOL . 'ItemList');
+        $this->setRequestParameter('modulegenerator_widgets', 'Bar' . PHP_EOL . '1Trash');
+        $this->setRequestParameter(
             'modulegenerator_blocks',
             'block@' . PHP_EOL . '@page.tpl' . PHP_EOL . 'block@page.tpl'
         );
-        modConfig::setRequestParameter(
+        $this->setRequestParameter(
             'modulegenerator_settings',
             array(
                 array(
@@ -205,9 +195,9 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
                 )
             )
         );
-        modConfig::setRequestParameter('modulegenerator_init_version', '0.0.1 beta');
-        modConfig::setRequestParameter('modulegenerator_render_tasks', '1');
-        modConfig::setRequestParameter('modulegenerator_render_samples', '1');
+        $this->setRequestParameter('modulegenerator_init_version', '0.0.1 beta');
+        $this->setRequestParameter('modulegenerator_render_tasks', '1');
+        $this->setRequestParameter('modulegenerator_render_samples', '1');
 
         $this->SUT->expects($this->once())->method('_Admin_oxpsModuleGenerator_init_parent');
         $this->SUT->expects($this->once())->method('_Admin_oxpsModuleGenerator_render_parent')->will(
@@ -321,7 +311,7 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     public function testGenerateModule_noModuleName_setErrorMessage()
     {
         // Config mock
-        modConfig::setRequestParameter('modulegenerator_module_name', '');
+        $this->setRequestParameter('modulegenerator_module_name', '');
 
         $this->SUT->init();
         $this->SUT->generateModule();
@@ -336,7 +326,7 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     public function testGenerateModule_invalidModuleName_setErrorMessage()
     {
         // Config mock
-        modConfig::setRequestParameter('modulegenerator_module_name', 'myModule');
+        $this->setRequestParameter('modulegenerator_module_name', 'myModule');
 
         $this->SUT->init();
         $this->SUT->generateModule();
@@ -351,7 +341,7 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     public function testGenerateModule_onlyModuleNameSet_generateModuleSkeletonWithNoCustomFeatures()
     {
         // Config mock
-        modConfig::setRequestParameter('modulegenerator_module_name', 'NameOnly');
+        $this->setRequestParameter('modulegenerator_module_name', 'NameOnly');
 
         $this->SUT->init();
         $this->SUT->generateModule();
@@ -461,8 +451,8 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     public function testGenerateModule_extendedClassesSet_generateModuleSkeletonWithExtendedClasses()
     {
         // Config mock
-        modConfig::setRequestParameter('modulegenerator_module_name', 'Extended');
-        modConfig::setRequestParameter('modulegenerator_extend_classes', 'oxarticle' . PHP_EOL . 'oxList');
+        $this->setRequestParameter('modulegenerator_module_name', 'Extended');
+        $this->setRequestParameter('modulegenerator_extend_classes', 'oxarticle' . PHP_EOL . 'oxList');
 
         $this->SUT->init();
         $this->SUT->generateModule();
@@ -501,8 +491,8 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     public function testGenerateModule_extendedClassesAreInvalid_generateModuleSkeletonWithNoFaultyExtendedClasses()
     {
         // Config mock
-        modConfig::setRequestParameter('modulegenerator_module_name', 'Extended');
-        modConfig::setRequestParameter('modulegenerator_extend_classes', 'oxNonExistingBox');
+        $this->setRequestParameter('modulegenerator_module_name', 'Extended');
+        $this->setRequestParameter('modulegenerator_extend_classes', 'oxNonExistingBox');
 
         $this->SUT->init();
         $this->SUT->generateModule();
@@ -529,9 +519,9 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     public function testGenerateModule_controllersSet_generateModuleSkeletonWithControllersClasses()
     {
         // Config mock
-        modConfig::setRequestParameter('modulegenerator_module_name', 'Ctrl1');
-        modConfig::setRequestParameter('modulegenerator_extend_classes', '');
-        modConfig::setRequestParameter('modulegenerator_controllers', 'Page');
+        $this->setRequestParameter('modulegenerator_module_name', 'Ctrl1');
+        $this->setRequestParameter('modulegenerator_extend_classes', '');
+        $this->setRequestParameter('modulegenerator_controllers', 'Page');
 
         $this->SUT->init();
         $this->SUT->generateModule();
@@ -577,9 +567,9 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     public function testGenerateModule_sameControllersSetMultipleTimes_generateModuleSkeletonWithUniqueControllersClasses()
     {
         // Config mock
-        modConfig::setRequestParameter('modulegenerator_module_name', 'Ctrl1');
-        modConfig::setRequestParameter('modulegenerator_extend_classes', '');
-        modConfig::setRequestParameter('modulegenerator_controllers', 'Page' . PHP_EOL . 'Page' . PHP_EOL . 'View');
+        $this->setRequestParameter('modulegenerator_module_name', 'Ctrl1');
+        $this->setRequestParameter('modulegenerator_extend_classes', '');
+        $this->setRequestParameter('modulegenerator_controllers', 'Page' . PHP_EOL . 'Page' . PHP_EOL . 'View');
 
         $this->SUT->init();
         $this->SUT->generateModule();
@@ -624,9 +614,9 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     public function testGenerateModule_invalidControllerName_generateModuleSkeletonWithNoControllersClasses()
     {
         // Config mock
-        modConfig::setRequestParameter('modulegenerator_module_name', 'Ctrl1');
-        modConfig::setRequestParameter('modulegenerator_extend_classes', '');
-        modConfig::setRequestParameter('modulegenerator_controllers', ' some_class');
+        $this->setRequestParameter('modulegenerator_module_name', 'Ctrl1');
+        $this->setRequestParameter('modulegenerator_extend_classes', '');
+        $this->setRequestParameter('modulegenerator_controllers', ' some_class');
 
         $this->SUT->init();
         $this->SUT->generateModule();
@@ -656,10 +646,10 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     public function testGenerateModule_modelsSet_generateModuleSkeletonWithModelsClasses()
     {
         // Config mock
-        modConfig::setRequestParameter('modulegenerator_module_name', 'Special');
-        modConfig::setRequestParameter('modulegenerator_extend_classes', '');
-        modConfig::setRequestParameter('modulegenerator_controllers', '');
-        modConfig::setRequestParameter('modulegenerator_models', 'Offer');
+        $this->setRequestParameter('modulegenerator_module_name', 'Special');
+        $this->setRequestParameter('modulegenerator_extend_classes', '');
+        $this->setRequestParameter('modulegenerator_controllers', '');
+        $this->setRequestParameter('modulegenerator_models', 'Offer');
 
         $this->SUT->init();
         $this->SUT->generateModule();
@@ -699,11 +689,11 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     public function testGenerateModule_listModelSetWithNoItemModel_generateModuleSkeletonWithNoListModel()
     {
         // Config mock
-        modConfig::setRequestParameter('modulegenerator_module_name', 'Special');
-        modConfig::setRequestParameter('modulegenerator_extend_classes', '');
-        modConfig::setRequestParameter('modulegenerator_controllers', '');
-        modConfig::setRequestParameter('modulegenerator_models', '');
-        modConfig::setRequestParameter('modulegenerator_lists', 'Offer');
+        $this->setRequestParameter('modulegenerator_module_name', 'Special');
+        $this->setRequestParameter('modulegenerator_extend_classes', '');
+        $this->setRequestParameter('modulegenerator_controllers', '');
+        $this->setRequestParameter('modulegenerator_models', '');
+        $this->setRequestParameter('modulegenerator_lists', 'Offer');
 
         $this->SUT->init();
         $this->SUT->generateModule();
@@ -734,11 +724,11 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     public function testGenerateModule_listAndSameItemModelSet_generateModuleSkeletonWithListAndItemModels()
     {
         // Config mock
-        modConfig::setRequestParameter('modulegenerator_module_name', 'Special');
-        modConfig::setRequestParameter('modulegenerator_extend_classes', '');
-        modConfig::setRequestParameter('modulegenerator_controllers', '');
-        modConfig::setRequestParameter('modulegenerator_models', 'Offer');
-        modConfig::setRequestParameter('modulegenerator_lists', 'Offer');
+        $this->setRequestParameter('modulegenerator_module_name', 'Special');
+        $this->setRequestParameter('modulegenerator_extend_classes', '');
+        $this->setRequestParameter('modulegenerator_controllers', '');
+        $this->setRequestParameter('modulegenerator_models', 'Offer');
+        $this->setRequestParameter('modulegenerator_lists', 'Offer');
 
         $this->SUT->init();
         $this->SUT->generateModule();
@@ -778,12 +768,12 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     public function testGenerateModule_widgetsSet_generateModuleSkeletonWithWidgetsClasses()
     {
         // Config mock
-        modConfig::setRequestParameter('modulegenerator_module_name', 'Wi');
-        modConfig::setRequestParameter('modulegenerator_extend_classes', '');
-        modConfig::setRequestParameter('modulegenerator_controllers', '');
-        modConfig::setRequestParameter('modulegenerator_models', '');
-        modConfig::setRequestParameter('modulegenerator_lists', '');
-        modConfig::setRequestParameter('modulegenerator_widgets', 'Bar');
+        $this->setRequestParameter('modulegenerator_module_name', 'Wi');
+        $this->setRequestParameter('modulegenerator_extend_classes', '');
+        $this->setRequestParameter('modulegenerator_controllers', '');
+        $this->setRequestParameter('modulegenerator_models', '');
+        $this->setRequestParameter('modulegenerator_lists', '');
+        $this->setRequestParameter('modulegenerator_widgets', 'Bar');
 
         $this->SUT->init();
         $this->SUT->generateModule();
@@ -829,13 +819,13 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     public function testGenerateModule_blocksSet_generateModuleSkeletonWithBlocks()
     {
         // Config mock
-        modConfig::setRequestParameter('modulegenerator_module_name', 'Block');
-        modConfig::setRequestParameter('modulegenerator_extend_classes', '');
-        modConfig::setRequestParameter('modulegenerator_controllers', '');
-        modConfig::setRequestParameter('modulegenerator_models', '');
-        modConfig::setRequestParameter('modulegenerator_lists', '');
-        modConfig::setRequestParameter('modulegenerator_widgets', '');
-        modConfig::setRequestParameter('modulegenerator_blocks', 'my_block@page.tpl');
+        $this->setRequestParameter('modulegenerator_module_name', 'Block');
+        $this->setRequestParameter('modulegenerator_extend_classes', '');
+        $this->setRequestParameter('modulegenerator_controllers', '');
+        $this->setRequestParameter('modulegenerator_models', '');
+        $this->setRequestParameter('modulegenerator_lists', '');
+        $this->setRequestParameter('modulegenerator_widgets', '');
+        $this->setRequestParameter('modulegenerator_blocks', 'my_block@page.tpl');
 
         $this->SUT->init();
         $this->SUT->generateModule();
@@ -871,13 +861,13 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     public function testGenerateModule_blocksDefinitionIsInvalid_generateModuleSkeletonWithNoBlocks()
     {
         // Config mock
-        modConfig::setRequestParameter('modulegenerator_module_name', 'Block');
-        modConfig::setRequestParameter('modulegenerator_extend_classes', '');
-        modConfig::setRequestParameter('modulegenerator_controllers', '');
-        modConfig::setRequestParameter('modulegenerator_models', '');
-        modConfig::setRequestParameter('modulegenerator_lists', '');
-        modConfig::setRequestParameter('modulegenerator_widgets', '');
-        modConfig::setRequestParameter('modulegenerator_blocks', ' @page.tpl');
+        $this->setRequestParameter('modulegenerator_module_name', 'Block');
+        $this->setRequestParameter('modulegenerator_extend_classes', '');
+        $this->setRequestParameter('modulegenerator_controllers', '');
+        $this->setRequestParameter('modulegenerator_models', '');
+        $this->setRequestParameter('modulegenerator_lists', '');
+        $this->setRequestParameter('modulegenerator_widgets', '');
+        $this->setRequestParameter('modulegenerator_blocks', ' @page.tpl');
 
         $this->SUT->init();
         $this->SUT->generateModule();
@@ -904,14 +894,14 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     public function testGenerateModule_SettingsSet_generateModuleSkeletonWithSettings()
     {
         // Config mock
-        modConfig::setRequestParameter('modulegenerator_module_name', 'Conf');
-        modConfig::setRequestParameter('modulegenerator_extend_classes', '');
-        modConfig::setRequestParameter('modulegenerator_controllers', '');
-        modConfig::setRequestParameter('modulegenerator_models', '');
-        modConfig::setRequestParameter('modulegenerator_lists', '');
-        modConfig::setRequestParameter('modulegenerator_widgets', '');
-        modConfig::setRequestParameter('modulegenerator_blocks', '');
-        modConfig::setRequestParameter(
+        $this->setRequestParameter('modulegenerator_module_name', 'Conf');
+        $this->setRequestParameter('modulegenerator_extend_classes', '');
+        $this->setRequestParameter('modulegenerator_controllers', '');
+        $this->setRequestParameter('modulegenerator_models', '');
+        $this->setRequestParameter('modulegenerator_lists', '');
+        $this->setRequestParameter('modulegenerator_widgets', '');
+        $this->setRequestParameter('modulegenerator_blocks', '');
+        $this->setRequestParameter(
             'modulegenerator_settings',
             array(
                 0 => array(
@@ -993,14 +983,14 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     public function testGenerateModule_settingsAreInvalid_generateModuleSkeletonWithNoSettings()
     {
         // Config mock
-        modConfig::setRequestParameter('modulegenerator_module_name', 'Conf');
-        modConfig::setRequestParameter('modulegenerator_extend_classes', '');
-        modConfig::setRequestParameter('modulegenerator_controllers', '');
-        modConfig::setRequestParameter('modulegenerator_models', '');
-        modConfig::setRequestParameter('modulegenerator_lists', '');
-        modConfig::setRequestParameter('modulegenerator_widgets', '');
-        modConfig::setRequestParameter('modulegenerator_blocks', '');
-        modConfig::setRequestParameter(
+        $this->setRequestParameter('modulegenerator_module_name', 'Conf');
+        $this->setRequestParameter('modulegenerator_extend_classes', '');
+        $this->setRequestParameter('modulegenerator_controllers', '');
+        $this->setRequestParameter('modulegenerator_models', '');
+        $this->setRequestParameter('modulegenerator_lists', '');
+        $this->setRequestParameter('modulegenerator_widgets', '');
+        $this->setRequestParameter('modulegenerator_blocks', '');
+        $this->setRequestParameter(
             'modulegenerator_settings',
             array(
                 0 => array(
@@ -1056,15 +1046,15 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     public function testGenerateModule_versionSet_generateModuleSkeletonWithThatVersion()
     {
         // Config mock
-        modConfig::setRequestParameter('modulegenerator_module_name', 'Version');
-        modConfig::setRequestParameter('modulegenerator_extend_classes', '');
-        modConfig::setRequestParameter('modulegenerator_controllers', '');
-        modConfig::setRequestParameter('modulegenerator_models', '');
-        modConfig::setRequestParameter('modulegenerator_lists', '');
-        modConfig::setRequestParameter('modulegenerator_widgets', '');
-        modConfig::setRequestParameter('modulegenerator_blocks', '');
-        modConfig::setRequestParameter('modulegenerator_settings', array());
-        modConfig::setRequestParameter('modulegenerator_init_version', '0.1.0 beta');
+        $this->setRequestParameter('modulegenerator_module_name', 'Version');
+        $this->setRequestParameter('modulegenerator_extend_classes', '');
+        $this->setRequestParameter('modulegenerator_controllers', '');
+        $this->setRequestParameter('modulegenerator_models', '');
+        $this->setRequestParameter('modulegenerator_lists', '');
+        $this->setRequestParameter('modulegenerator_widgets', '');
+        $this->setRequestParameter('modulegenerator_blocks', '');
+        $this->setRequestParameter('modulegenerator_settings', array());
+        $this->setRequestParameter('modulegenerator_init_version', '0.1.0 beta');
 
         $this->SUT->init();
         $this->SUT->generateModule();
@@ -1093,16 +1083,16 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     /*public function testGenerateModule_unitTestsChecked_generateModuleSkeletonWithFilledTestFolder()
     {
         // Config mock
-        modConfig::setRequestParameter('modulegenerator_module_name', 'UnitTests');
-        modConfig::setRequestParameter('modulegenerator_extend_classes', '');
-        modConfig::setRequestParameter('modulegenerator_controllers', '');
-        modConfig::setRequestParameter('modulegenerator_models', '');
-        modConfig::setRequestParameter('modulegenerator_lists', '');
-        modConfig::setRequestParameter('modulegenerator_widgets', '');
-        modConfig::setRequestParameter('modulegenerator_blocks', '');
-        modConfig::setRequestParameter('modulegenerator_settings', array());
-        modConfig::setRequestParameter('modulegenerator_init_version', '1.0.0');
-        modConfig::setRequestParameter('modulegenerator_fetch_unit_tests', true);
+        $this->setRequestParameter('modulegenerator_module_name', 'UnitTests');
+        $this->setRequestParameter('modulegenerator_extend_classes', '');
+        $this->setRequestParameter('modulegenerator_controllers', '');
+        $this->setRequestParameter('modulegenerator_models', '');
+        $this->setRequestParameter('modulegenerator_lists', '');
+        $this->setRequestParameter('modulegenerator_widgets', '');
+        $this->setRequestParameter('modulegenerator_blocks', '');
+        $this->setRequestParameter('modulegenerator_settings', array());
+        $this->setRequestParameter('modulegenerator_init_version', '1.0.0');
+        $this->setRequestParameter('modulegenerator_fetch_unit_tests', true);
 
         $this->SUT->init();
         $this->SUT->generateModule();
@@ -1130,18 +1120,18 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     public function testGenerateModule_learningTipsAndInstructionsChecked_generateModuleSkeletonWithHintsComments()
     {
         // Config mock
-        modConfig::setRequestParameter('modulegenerator_module_name', 'Learning');
-        modConfig::setRequestParameter('modulegenerator_extend_classes', '');
-        modConfig::setRequestParameter('modulegenerator_controllers', '');
-        modConfig::setRequestParameter('modulegenerator_models', '');
-        modConfig::setRequestParameter('modulegenerator_lists', '');
-        modConfig::setRequestParameter('modulegenerator_widgets', '');
-        modConfig::setRequestParameter('modulegenerator_blocks', '');
-        modConfig::setRequestParameter('modulegenerator_settings', array());
-        modConfig::setRequestParameter('modulegenerator_init_version', '1.0.0');
-        modConfig::setRequestParameter('modulegenerator_fetch_unit_tests', false);
-        modConfig::setRequestParameter('modulegenerator_render_tasks', true);
-        modConfig::setRequestParameter('modulegenerator_render_samples', true);
+        $this->setRequestParameter('modulegenerator_module_name', 'Learning');
+        $this->setRequestParameter('modulegenerator_extend_classes', '');
+        $this->setRequestParameter('modulegenerator_controllers', '');
+        $this->setRequestParameter('modulegenerator_models', '');
+        $this->setRequestParameter('modulegenerator_lists', '');
+        $this->setRequestParameter('modulegenerator_widgets', '');
+        $this->setRequestParameter('modulegenerator_blocks', '');
+        $this->setRequestParameter('modulegenerator_settings', array());
+        $this->setRequestParameter('modulegenerator_init_version', '1.0.0');
+        $this->setRequestParameter('modulegenerator_fetch_unit_tests', false);
+        $this->setRequestParameter('modulegenerator_render_tasks', true);
+        $this->setRequestParameter('modulegenerator_render_samples', true);
 
         $this->SUT->init();
         $this->SUT->generateModule();
@@ -1164,14 +1154,14 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
     public function testGenerateModule_allOptionsSet_generateModuleSkeletonWithAllFeatres()
     {
         // Config mock
-        modConfig::setRequestParameter('modulegenerator_module_name', 'AllThings');
-        modConfig::setRequestParameter('modulegenerator_extend_classes', 'oxbasket' . PHP_EOL . 'oxList');
-        modConfig::setRequestParameter('modulegenerator_controllers', 'View' . PHP_EOL . 'Preview');
-        modConfig::setRequestParameter('modulegenerator_models', 'Item' . PHP_EOL . 'Model');
-        modConfig::setRequestParameter('modulegenerator_lists', 'Model');
-        modConfig::setRequestParameter('modulegenerator_widgets', 'Bar' . PHP_EOL . 'Menu');
-        modConfig::setRequestParameter('modulegenerator_blocks', 'block@page.tpl' . PHP_EOL . 'footer@layout.tpl');
-        modConfig::setRequestParameter(
+        $this->setRequestParameter('modulegenerator_module_name', 'AllThings');
+        $this->setRequestParameter('modulegenerator_extend_classes', 'oxbasket' . PHP_EOL . 'oxList');
+        $this->setRequestParameter('modulegenerator_controllers', 'View' . PHP_EOL . 'Preview');
+        $this->setRequestParameter('modulegenerator_models', 'Item' . PHP_EOL . 'Model');
+        $this->setRequestParameter('modulegenerator_lists', 'Model');
+        $this->setRequestParameter('modulegenerator_widgets', 'Bar' . PHP_EOL . 'Menu');
+        $this->setRequestParameter('modulegenerator_blocks', 'block@page.tpl' . PHP_EOL . 'footer@layout.tpl');
+        $this->setRequestParameter(
             'modulegenerator_settings',
             array(
                 0 => array(
@@ -1186,10 +1176,10 @@ class Admin_oxpsModuleGeneratorTest extends OxidTestCase
                 )
             )
         );
-        modConfig::setRequestParameter('modulegenerator_init_version', '1.0.1');
-        modConfig::setRequestParameter('modulegenerator_fetch_unit_tests', false); //NOTE: This test takes very long.
-        modConfig::setRequestParameter('modulegenerator_render_tasks', true);
-        modConfig::setRequestParameter('modulegenerator_render_samples', true);
+        $this->setRequestParameter('modulegenerator_init_version', '1.0.1');
+        $this->setRequestParameter('modulegenerator_fetch_unit_tests', false); //NOTE: This test takes very long.
+        $this->setRequestParameter('modulegenerator_render_tasks', true);
+        $this->setRequestParameter('modulegenerator_render_samples', true);
 
         $this->SUT->init();
         $this->SUT->generateModule();

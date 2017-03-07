@@ -167,9 +167,9 @@ class oxpsModuleGeneratorRenderTest extends OxidTestCase
             ->will($this->returnValue('_processed_item_content_'));
 
         // View utils mock
-        $oViewUtils = $this->getMock('oxUtilsView', array('__call', 'getSmarty'));
+        $oViewUtils = $this->getMock(\OxidEsales\Eshop\Core\UtilsView::class, array('__call', 'getSmarty'));
         $oViewUtils->expects($this->once())->method('getSmarty')->will($this->returnValue($oSmarty));
-        oxRegistry::set('oxUtilsView', $oViewUtils);
+        \OxidEsales\Eshop\Core\Registry::set(\OxidEsales\Eshop\Core\UtilsView::class, $oViewUtils, null);
 
         $this->SUT->init($oModule);
 
@@ -198,9 +198,9 @@ class oxpsModuleGeneratorRenderTest extends OxidTestCase
             ->will($this->returnValue('_processed_comment_content_'));
 
         // View utils mock
-        $oViewUtils = $this->getMock('oxUtilsView', array('__call', 'getSmarty'));
+        $oViewUtils = $this->getMock(\OxidEsales\Eshop\Core\UtilsView::class, array('__call', 'getSmarty'));
         $oViewUtils->expects($this->once())->method('getSmarty')->will($this->returnValue($oSmarty));
-        oxRegistry::set('oxUtilsView', $oViewUtils);
+        \OxidEsales\Eshop\Core\Registry::set(\OxidEsales\Eshop\Core\UtilsView::class, $oViewUtils, null);
 
         $this->SUT->init($oModule);
 
@@ -221,9 +221,9 @@ class oxpsModuleGeneratorRenderTest extends OxidTestCase
             ->will($this->returnValue('_processed_comment_content_'));
 
         // View utils mock
-        $oViewUtils = $this->getMock('oxUtilsView', array('__call', 'getSmarty'));
+        $oViewUtils = $this->getMock(\OxidEsales\Eshop\Core\UtilsView::class, array('__call', 'getSmarty'));
         $oViewUtils->expects($this->once())->method('getSmarty')->will($this->returnValue($oSmarty));
-        oxRegistry::set('oxUtilsView', $oViewUtils);
+        \OxidEsales\Eshop\Core\Registry::set(\OxidEsales\Eshop\Core\UtilsView::class, $oViewUtils, null);
 
         $this->SUT->init($oModule);
 

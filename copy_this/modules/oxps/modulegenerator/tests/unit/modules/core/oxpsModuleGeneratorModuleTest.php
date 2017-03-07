@@ -51,21 +51,6 @@ class oxpsModuleGeneratorModuleTest extends OxidTestCase
         $this->SUT = new oxpsModuleGeneratorModule();
     }
 
-    public static function setUpBeforeClass()
-    {
-        parent::setUpBeforeClass();
-
-        importTestdataFile('testdata_remove.sql');
-        importTestdataFile('testdata_add.sql');
-    }
-
-    public static function tearDownAfterClass()
-    {
-        parent::tearDownAfterClass();
-
-        importTestdataFile('testdata_remove.sql');
-    }
-
 
     public function testConstructor_loadModuleData()
     {

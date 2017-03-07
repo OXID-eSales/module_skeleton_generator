@@ -110,9 +110,15 @@ class oxpsModuleGeneratorModuleTest extends OxidTestCase
 
     public function testClearTmp_argumentDirProvided_clearsOnlyInsideProvidedDirectory()
     {
-        $sTestFilePath = oxRegistry::getConfig()->getConfigParam('sCompileDir') . DIRECTORY_SEPARATOR . 'test.file';
-        $sSmartyFilePath = oxRegistry::getConfig()->getConfigParam('sCompileDir') . DIRECTORY_SEPARATOR .
-                           'smarty' . DIRECTORY_SEPARATOR . 'test.file';
+        $sTestFilePath = oxRegistry::getConfig()->getConfigParam('sCompileDir') . 'test.file';
+        $sSmartyDirPath = oxRegistry::getConfig()->getConfigParam('sCompileDir') . 'smarty';
+
+        // since this is a test, the smarty subdir might not yet exist
+        if(!is_dir($sSmartyDirPath)) {
+            mkdir($sSmartyDirPath);
+        }
+
+        $sSmartyFilePath = $sSmartyDirPath . DIRECTORY_SEPARATOR . 'test.file';
 
         file_put_contents($sTestFilePath, 'TEST' . PHP_EOL);
         file_put_contents($sSmartyFilePath, 'TEST' . PHP_EOL);
@@ -126,6 +132,7 @@ class oxpsModuleGeneratorModuleTest extends OxidTestCase
         $this->assertFileExists($sTestFilePath);
         $this->assertFileNotExists($sSmartyFilePath);
     }
+
 
     public function testClearTmp_noArguments_clearsTempFolder()
     {
@@ -147,6 +154,7 @@ class oxpsModuleGeneratorModuleTest extends OxidTestCase
         $this->assertSame('OXPS_MODULEGENERATOR_SOME_CODE', $this->SUT->translate('SOME_CODE'));
     }
 
+
     public function testTranslate_secondArgumentIsFalse_returnGlobalTranslationStringByCode()
     {
         $this->assertSame('SOME_CODE', $this->SUT->translate('SOME_CODE', false));
@@ -158,10 +166,12 @@ class oxpsModuleGeneratorModuleTest extends OxidTestCase
         $this->assertSame('', $this->SUT->getCmsContent('oxps_non_existing_ident!'));
     }
 
+
     public function testGetCmsContent_noSecondArgument_returnCmsSnippetContentByIdentWithNoHtml()
     {
         $this->assertSame('Hello, World! ', $this->SUT->getCmsContent('oxpstestident'));
     }
+
 
     public function testGetCmsContent_secondArgumentIsFalse_returnCmsSnippetContentByIdentInHtml()
     {
@@ -175,6 +185,7 @@ class oxpsModuleGeneratorModuleTest extends OxidTestCase
 
         $this->assertSame('test', $this->SUT->getSetting('VendorPrefix'));
     }
+
 
     public function testGetSetting_secondArgumentIsFalse_returnModuleSettingByItsNameWithNoModulePrefix()
     {

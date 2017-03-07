@@ -1,18 +1,27 @@
 <?php
-// whether to use the original "aModules" chain from the shop
-// methods like "initFromMetadata" and "addChain" will append data to the original chain
-oxTestModuleLoader::useOriginalChain(false);
+// Test data creation
 
-// Loads other module classes as dependencies
+$oDb = oxDb::getDb();
 
-// oxTestModuleLoader::addDependencies(array(
-//     "path/to/the/module"
-// ));
+// Sample CMS snippet insertion
+$oDb->execute(
+    "REPLACE INTO `oxcontents` (
+        `OXID`, `OXLOADID`, `OXSHOPID`, `OXSNIPPET`, `OXTYPE`, `OXACTIVE`, `OXACTIVE_1`, `OXPOSITION`, `OXTITLE`, 
+        `OXCONTENT`, `OXTITLE_1`, `OXCONTENT_1`, `OXACTIVE_2`, `OXTITLE_2`, 
+        `OXCONTENT_2`, `OXACTIVE_3`, `OXTITLE_3`, `OXCONTENT_3`, 
+        `OXCATID`, `OXFOLDER`, `OXTERMVERSION`, `OXTIMESTAMP`
+    ) VALUES (
+        'oxpstestident', 'oxpstestident', '1', '1', '0', '1', '1', '', 'Test', 
+        '<p>Hello,</p> <p><i>World!</i></p> ', 'Test', '<p>Hello,</p> <p><i>World!</i></p> ', '1', 'Test', 
+        '<p>Hello,</p> <p><i>World!</i></p> ', '1', '', '<p>Hello,</p> <p><i>World!</i></p> ', 
+        '30e44ab83fdee7564.23264141', '', '', CURRENT_TIMESTAMP
+    );"
+);
 
-// initiates the module from the metadata file
-// does nothing if metadata file is not found
-oxTestModuleLoader::initFromMetadata();
-
-// appends the module extension chain with the given module files
-oxTestModuleLoader::append(array(//"oxarticle" => "vendor/mymodule/core/myarticle.php",
-));
+// Model related test table
+$oDb->execute(
+    "CREATE TABLE IF NOT EXISTS `testspecial_offer` (
+      `OXID` char(32) COLLATE latin1_general_ci NOT NULL,
+      PRIMARY KEY (`OXID`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;"
+);

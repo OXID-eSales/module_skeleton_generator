@@ -44,6 +44,11 @@ class oxpsModuleGeneratorValidator extends Base
      *
      * @var oxpsModuleGeneratorOxModule
      */
+    protected $_oOxModule;
+
+    /**
+     * @var oxpsModuleGeneratorModule
+     */
     protected $_oModule;
 
     /**
@@ -65,10 +70,24 @@ class oxpsModuleGeneratorValidator extends Base
      *
      * @return oxpsModuleGeneratorOxModule
      */
+    public function getOxModule()
+    {
+        if (null === $this->_oOxModule) {
+            $this->_oOxModule = oxNew('oxpsModuleGeneratorOxModule');
+        }
+
+        return $this->_oOxModule;
+    }
+
+    /**
+     * Get Module instance or set it if not available.
+     *
+     * @return oxpsModuleGeneratorModule
+     */
     public function getModule()
     {
         if (null === $this->_oModule) {
-            $this->_oModule = oxNew('oxModule');
+            $this->_oModule = oxNew('oxpsModuleGeneratorModule');
         }
 
         return $this->_oModule;
@@ -251,14 +270,20 @@ class oxpsModuleGeneratorValidator extends Base
      *
      * @param string $sModuleName
      *
-     * @return boolean
+     * @param bool   $blInitOxModule
+     *
+     * @return bool
      */
-    public function moduleExists($sModuleName)
+    public function moduleExists($sModuleName, $blInitOxModule = false)
     {
+        if($blInitOxModule) {
+            $this->getOxModule()->init($sModuleName, [], $this->getModule()->getSetting('VendorPrefix'));
+        }
+
         /** @var oxpsModuleGeneratorFileSystem $oFileSystemHelper */
         $oFileSystemHelper = Registry::get('oxpsModuleGeneratorFileSystem');
 
-        return $oFileSystemHelper->isDir($this->getModule()->getVendorPath() . $sModuleName)
+        return $oFileSystemHelper->isDir($this->getOxModule()->getVendorPath() . $sModuleName)
                && !empty($sModuleName);
     }
 

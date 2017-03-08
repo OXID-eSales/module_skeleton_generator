@@ -56,6 +56,7 @@
                                     <input type="text" name="modulegenerator_module_name" value="[{$oValues->name}]"
                                            maxlength="20"/>
                                     [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_MODULE_NAME_HINT"}]
+                                    <span id="noticeModuleName" class="notice notice-hidden"></span>
                                 </td>
                             </tr>
                             <tr>
@@ -69,6 +70,7 @@
                                     <textarea name="modulegenerator_extend_classes" cols="20"
                                               rows="3">[{$oValues->extend}]</textarea>
                                     [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_OVERRIDE_CLASSES_HINT"}]
+                                    <span id="noticeExtendClasses" class="notice notice-hidden"></span>
                                 </td>
                             </tr>
                             <tr>
@@ -79,6 +81,7 @@
                                     <textarea name="modulegenerator_controllers" cols="20"
                                               rows="1">[{$oValues->controllers}]</textarea>
                                     [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_CONTROLLERS_HINT"}]
+                                    <span id="noticeControllers" class="notice notice-hidden"></span>
                                 </td>
                             </tr>
                             <tr>
@@ -89,6 +92,7 @@
                                     <textarea name="modulegenerator_models" cols="20"
                                               rows="1">[{$oValues->models}]</textarea>
                                     [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_MODELS_HINT"}]
+                                    <span id="noticeModels" class="notice notice-hidden"></span>
                                 </td>
                             </tr>
                             <tr>
@@ -99,6 +103,7 @@
                                     <textarea name="modulegenerator_lists" cols="20"
                                               rows="1">[{$oValues->lists}]</textarea>
                                     [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_LISTS_HINT"}]
+                                    <span id="noticeLists" class="notice notice-hidden"></span>
                                 </td>
                             </tr>
                             <tr>
@@ -109,6 +114,7 @@
                                     <textarea name="modulegenerator_widgets" cols="20"
                                               rows="1">[{$oValues->widgets}]</textarea>
                                     [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_WIDGETS_HINT"}]
+                                    <span id="noticeWidgets" class="notice notice-hidden"></span>
                                 </td>
                             </tr>
                             <tr>
@@ -119,6 +125,7 @@
                                     <textarea class="wider" name="modulegenerator_blocks" cols="20"
                                               rows="2">[{$oValues->blocks}]</textarea>
                                     [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_BLOCKS_HINT"}]
+                                    <span id="noticeBlocks" class="notice notice-hidden"></span>
                                 </td>
                             </tr>
                             <tr>
@@ -179,6 +186,7 @@
                                     </tbody>
                                 </table>
                                 [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_SETTINGS_HINT"}]
+                                <span id="noticeSettings" class="notice notice-hidden"></span>
                             </td>
                             <tr>
                                 <td colspan="2">&nbsp;</td>

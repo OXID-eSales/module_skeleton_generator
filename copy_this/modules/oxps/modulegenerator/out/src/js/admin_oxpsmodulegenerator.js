@@ -212,10 +212,15 @@ jQuery.widget(
          */
         _validateBlocksFieldEntry: function (element) {
             if (/^(\w+)(@)(\w+)$/.test(jQuery(element).val())) {
-                console.log('BLOCK: TRUE');
-                return true;
+                jQuery('#noticeBlocks')
+                    .removeClass('notice-hidden notice-error')
+                    .addClass('notice-visible notice-success');
             }
-            console.log('BLOCK: FALSE');
+            else {
+                jQuery('#noticeBlocks')
+                    .removeClass('notice-hidden notice-success')
+                    .addClass('notice-visible notice-error');
+            }
         }
     }
 );

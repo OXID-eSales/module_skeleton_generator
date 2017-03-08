@@ -64,3 +64,32 @@ div#oxpsmodulegenerator span.req {
 div#oxpsmodulegenerator input[type="submit"] {
     padding: 6px 20px;
 }
+/**
+Notifications
+ */
+div#oxpsmodulegenerator span.notice  {
+    margin-left: 5px;
+    padding: 4px 10px;
+}
+
+div#oxpsmodulegenerator span.notice-error  {
+    background-color: red;
+}
+
+div#oxpsmodulegenerator span.notice-warning  {
+    background-color: #ffcc33;
+}
+
+div#oxpsmodulegenerator span.notice-success  {
+    background-color: #009a22;
+}
+
+div#oxpsmodulegenerator span.notice-hidden  {
+    visibility: hidden;
+}
+
+div#oxpsmodulegenerator span.notice-visible  {
+    visibility: visible;
+}
+
+

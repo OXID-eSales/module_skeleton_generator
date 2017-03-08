@@ -78,7 +78,7 @@ $aLang = array(
     'OXPS_MODULEGENERATOR_ADMIN_HAS_ADMINISTRATION_HINT'       => 'Select this option if module requires administration interface.',
     'OXPS_MODULEGENERATOR_ADMIN_CHECKOUT_UNIT_TESTS'           => 'Generate Unit tests',
     'OXPS_MODULEGENERATOR_ADMIN_CHECKOUT_UNIT_TESTS_HINT'      => 'Create empty test class for each generated module class with configured relations and proper naming.',
-    'OXPS_MODULEGENERATOR_ADMIN_MODULE_GENERATE'               => 'Create New Module',
+    'OXPS_MODULEGENERATOR_ADMIN_MODULE_GENERATE'               => 'Generate Module',
 
     // Module generation form errors and messages
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_ERROR_NO_VENDOR'        => 'Attention! Vendor or author parameters are not configured.<br/>' .

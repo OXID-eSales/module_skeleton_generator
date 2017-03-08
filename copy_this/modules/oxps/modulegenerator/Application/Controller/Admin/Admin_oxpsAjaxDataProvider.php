@@ -30,7 +30,6 @@ use OxidEsales\Eshop\Application\Controller\Admin\AdminController;
  * Class Admin_oxpsAjaxDataProvider.
  * Module Generator Ajax Data Provider for data validation in form and data provision for Edit Mode.
  */
-// TODO: Refactor field names to be short
 class Admin_oxpsAjaxDataProvider extends AdminController
 {
 
@@ -53,32 +52,6 @@ class Admin_oxpsAjaxDataProvider extends AdminController
      * @var oxpsModuleGeneratorValidator
      */
     protected $_oValidator;
-
-    /**
-     * @var string
-     */
-    protected $_sModuleName;
-
-    /**
-     * Fill Module object with required content before other interactions
-     */
-    public function init()
-    {
-        $this->_init_parent();
-
-        $this->_sModuleName = $this->getConfig()->getRequestParameter('moduleName');
-
-        // Set vendor prefix from settings as it can only be set through oxpsModuleGenerator Controller
-        $this->setVendorPrefix(
-            $this->getModule()->getSetting('VendorPrefix')
-        );
-
-        $this->getOxModule()->init(
-            $this->_sModuleName,
-            [],
-            $this->getVendorPrefix()
-        );
-    }
 
     /**
      * @return string
@@ -137,15 +110,20 @@ class Admin_oxpsAjaxDataProvider extends AdminController
      */
     public function validateModuleName()
     {
-        if ($this->_moduleExists()) {
-            $aExistingModuleSettings = $this->getOxModule()->readGenerationOptions($this->_sModuleName);
+        $sModuleName = $this->_getParameter('moduleName');
+
+        $this->setVendorPrefix($this->getModule()->getSetting('VendorPrefix'));
+        $this->getOxModule()->init($sModuleName, [], $this->getVendorPrefix());
+
+        if ($this->_moduleExists($sModuleName)) {
+            $aExistingModuleSettings = $this->getOxModule()->readGenerationOptions($sModuleName);
             $this->_encodeToJson($aExistingModuleSettings);
         }
     }
 
     public function validateExtendClassNames()
     {
-        $sExtendClasses = $this->getConfig()->getRequestParameter('extendClasses');
+        $sExtendClasses = $this->_getParameter('extendClasses');
 
         $aValidLinkedClasses = $this->getValidator()->validateAndLinkClasses($sExtendClasses);
         $this->_encodeToJson($aValidLinkedClasses);
@@ -154,13 +132,15 @@ class Admin_oxpsAjaxDataProvider extends AdminController
     /**
      * Check module availability
      *
+     * @param string $sModuleName
+     *
      * @return bool
      */
-    protected function _moduleExists()
+    protected function _moduleExists($sModuleName)
     {
         return (
-            $this->getValidator()->moduleExists($this->_sModuleName)
-            && !empty($this->_sModuleName)
+            $this->getValidator()->moduleExists($sModuleName, true)
+            && !empty($sModuleName)
         );
     }
 
@@ -175,8 +155,13 @@ class Admin_oxpsAjaxDataProvider extends AdminController
         );
     }
 
-    protected function _init_parent()
+    /**
+     * @param string $sName
+     *
+     * @return string
+     */
+    protected function _getParameter($sName)
     {
-        parent::init();
+        return (string) $this->getConfig()->getRequestParameter($sName);
     }
 }

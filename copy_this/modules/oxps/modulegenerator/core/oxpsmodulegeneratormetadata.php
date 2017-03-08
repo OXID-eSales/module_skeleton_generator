@@ -94,22 +94,22 @@ class oxpsModuleGeneratorMetadata extends Base
     /**
      * Keep instance of Admin_oxpsModuleGenerator controller
      *
-     * @var null|Admin_oxpsModuleGenerator
+     * @var null|oxpsModuleGeneratorValidator
      */
-    protected $oValidationController;
+    protected $oValidator;
 
     /**
      *
-     * @return Admin_oxpsModuleGenerator
+     * @return oxpsModuleGeneratorValidator
      */
     protected function _getValidationController()
     {
-        if (null === $this->oValidationController) {
-            /** @var Admin_oxpsModuleGenerator oValidationController */
-            $this->oValidationController = oxNew('Admin_oxpsModuleGenerator');
+        if (null === $this->oValidator) {
+            /** @var oxpsModuleGeneratorValidator oValidator */
+            $this->oValidator = oxNew('oxpsModuleGeneratorValidator');
         }
 
-        return $this->oValidationController;
+        return $this->oValidator;
     }
 
     /**

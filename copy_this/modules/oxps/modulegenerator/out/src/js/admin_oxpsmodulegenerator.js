@@ -53,6 +53,10 @@ jQuery.widget(
             jQuery(this._moduleWidgetsSelector).keyup(function () {
                 self._validateCamelCaseName(this);
             });
+
+            jQuery(this._moduleBlocksSelector).keyup(function () {
+                self._validateBlocksFieldEntry(this);
+            });
         },
 
         /**
@@ -193,11 +197,25 @@ jQuery.widget(
          * @returns {boolean}
          */
         _validateCamelCaseName: function (element) {
-            if (new RegExp(/^([A-Z])([a-zA-Z0-9]{1,63})$/).test(jQuery(element).val())) {
+            if (/^([A-Z])([a-zA-Z0-9]{1,63})$/.test(jQuery(element).val())) {
                 console.log(jQuery(element).attr('name') + ': TRUE');
                 return true;
             }
             console.log(jQuery(element).attr('name') + ': FALSE');
+        },
+
+        /**
+         * Simple block field validation.
+         *
+         * @param {object} element
+         * @returns {boolean}
+         */
+        _validateBlocksFieldEntry: function (element) {
+            if (/^(\w+)(@)(\w+)$/.test(jQuery(element).val())) {
+                console.log('BLOCK: TRUE');
+                return true;
+            }
+            console.log('BLOCK: FALSE');
         }
     }
 );

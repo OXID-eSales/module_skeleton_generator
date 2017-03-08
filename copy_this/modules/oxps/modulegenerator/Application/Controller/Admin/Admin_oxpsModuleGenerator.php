@@ -252,7 +252,7 @@ class Admin_oxpsModuleGenerator extends AdminController
                 $this->_getTextParam('modulegenerator_module_name')
             ),
             'aModuleSettings'  => (array) $oRequest->getRequestParameter('modulegenerator_settings'),
-            'lbThemesNone'     => (bool) $oRequest->getRequestParameter('modulegenerator_theme_none'),
+            'blThemesNone'     => (bool) $oRequest->getRequestParameter('modulegenerator_theme_none'),
             'aThemesList'      => $this->getValidator()->parseMultiLineInput(
                 $this->_getTextParam('modulegenerator_theme_list'),
                 'not_empty'
@@ -291,7 +291,7 @@ class Admin_oxpsModuleGenerator extends AdminController
             'widgets'     => $this->_toString($oValidator->getArrayValue($aOptions, 'aNewWidgets', 'array')),
             'blocks'      => $this->_getBlocksFieldValue($oValidator->getArrayValue($aOptions, 'aNewBlocks', 'array')),
             'settings'    => $oValidator->getArrayValue($aOptions, 'aModuleSettings', 'array'),
-            'theme_none'  => $blFormSubmitted ? $oValidator->getArrayValue($aOptions, 'lbThemesNone', 'boolean') : true,
+            'theme_none'  => $blFormSubmitted ? $oValidator->getArrayValue($aOptions, 'blThemesNone', 'boolean') : true,
             'theme_list'  => $sThemeList,
             'version'     => $this->_getFormVersionFieldValue($oValidator->getArrayValue($aOptions, 'sInitialVersion')),
             'tests'       => $blFormSubmitted ? $oValidator->getArrayValue($aOptions, 'blFetchUnitTests', 'boolean') : true,

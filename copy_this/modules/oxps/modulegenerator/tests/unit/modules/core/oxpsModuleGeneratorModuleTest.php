@@ -54,6 +54,8 @@ class oxpsModuleGeneratorModuleTest extends OxidTestCase
 
     public function testConstructor_loadModuleData()
     {
+        $this->setLanguage(1);
+
         $this->assertSame('oxpsmodulegenerator', $this->SUT->getId());
         $this->assertSame('OXID Module Skeleton Generator', $this->SUT->getTitle());
         $this->assertSame(
@@ -173,7 +175,7 @@ class oxpsModuleGeneratorModuleTest extends OxidTestCase
     {
         $sPath = $this->SUT->getPath();
 
-        $this->assertStringEndsWith('/oxps/modulegenerator/', $sPath);
+        $this->assertStringEndsWith('/oxps/ModuleGenerator/', $sPath);
         $this->assertFileExists($sPath);
     }
 }

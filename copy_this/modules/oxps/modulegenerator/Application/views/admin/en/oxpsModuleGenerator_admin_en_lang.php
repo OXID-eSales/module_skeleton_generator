@@ -31,6 +31,7 @@ $aLang = array(
     'oxpsmodulegenerator'                                      => 'Module Generator',
     'oxpsmodulegeneratormodule'                                => 'Wizard',
     'OXPS_MODULEGENERATOR_ADMIN_TITLE'                         => 'Module Skeleton Generator',
+    'OXPS_MODULEGENERATOR_ADMIN_EDIT_MODE'                     => 'Edit Mode Activated',
 
     // Settings
     'SHOP_MODULE_GROUP_oxpsModuleGeneratorVendor'              => 'Vendor and Copyright Settings',
@@ -87,4 +88,10 @@ $aLang = array(
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_ERROR_INVALID_VENDOR'   => 'ERROR! Module vendor prefix configured in settings is invalid. It should contain two to four lowercase latin letters.',
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_ERROR_INVALID_NAME'     => 'ERROR! Module name is invalid or module exists already. Use unique capitalized camel case name, e.g. "MyModule"',
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_MSG_GENERATION_SUCCESS' => 'Success! New module have been generated! Please check in <i>Extensions -> Modules</i> and the source code in Your vendor sub-folder.',
+
+    // Module generation form JavaScript notifications
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_SUCCESS'             => 'SUCCESS: Entered value is valid!',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_ERROR'               => 'ERROR: Entered value is invalid!',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_WARNING'             => 'WARNING: Entered value is invalid!',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_VALID_CLASSES'       => 'INFO: Valid classes: ',
 );

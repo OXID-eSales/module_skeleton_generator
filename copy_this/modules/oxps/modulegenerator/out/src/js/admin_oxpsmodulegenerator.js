@@ -7,7 +7,12 @@ jQuery.widget(
     {
         options: {
             moduleNameValidationUrl: '',
-            extendClassesValidationUrl: ''
+            extendClassesValidationUrl: '',
+
+            notificationSuccessText: '',
+            notificationErrorText: '',
+            notificationWarningText: '',
+            notificationValidClassesText: ''
         },
 
         _moduleNameSelector: "input[name='modulegenerator_module_name']",
@@ -26,11 +31,10 @@ jQuery.widget(
             var self = this;
 
             jQuery(this._moduleNameSelector).keyup(function () {
-
-                if (self._validateModuleName(this)) {
+                if (self._validateCamelCaseName(this)) {
                     self._requestModuleNameJsonResponse(this);
                 } else {
-                    console.log('CamelCase Name False');
+                    self._showNotification(this, 'error', self.options.notificationErrorText);
                 }
             });
 
@@ -60,99 +64,94 @@ jQuery.widget(
         },
 
         /**
-         * Validate JSON data response
-         *
-         * @param {object} element
-         *
-         * @returns {boolean}
+         * @param {object} oElement
          */
-        _validateModuleName: function (element) {
-            return this._validateCamelCaseName(element);
-        },
-
-        /**
-         * @param {object} element
-         * @private
-         */
-        _requestModuleNameJsonResponse: function (element) {
+        _requestModuleNameJsonResponse: function (oElement) {
             var self = this;
 
             jQuery.ajax({
                 dataType: 'json',
                 type: 'post',
                 url: self.options.moduleNameValidationUrl,
-                data: {moduleName: jQuery(element).val()},
+                data: {moduleName: jQuery(oElement).val()},
                 success: function (data) {
                     if (null != data) {
                         self._showModuleNameHtmlResponse(data);
                     }
+                },
+                error: function () {
+                        jQuery('.editMode').css('display', 'none');
                 }
+
             });
         },
 
-        // TODO: remove hardcoded stuff with createElement function
+        // TODO: remove hardcoded stuff
         /**
-         * @param {object} data
+         * @param {object} oData
          */
-        _showModuleNameHtmlResponse: function (data) {
+        _showModuleNameHtmlResponse: function (oData) {
             var self = this;
-
-            console.log(data);
-            jQuery(self._moduleClassesSelector).before('<div><b>' + self._buildHtmlResponse(data['aExtendClasses'], true) + '</b></div>');
-            jQuery(self._moduleControllersSelector).before('<div><b>' + self._buildHtmlResponse(data['aNewControllers'], false) + '</b></div>');
-            jQuery(self._moduleModelsSelector).before('<div><b>' + self._buildHtmlResponse(data['aNewModels'], false) + '</b></div>');
-            jQuery(self._moduleListsSelector).before('<div><b>' + self._buildHtmlResponse(data['aNewLists'], false) + '</b></div>');
-            jQuery(self._moduleWidgetsSelector).before('<div><b>' + self._buildHtmlResponse(data['aNewWidgets'], false) + '</b></div>');
-            jQuery(self._moduleBlocksSelector).before('<div><b>' + self._buildSelectiveHtmlResponse(data['aNewBlocks'], true) + '</b></div>');
-            jQuery(self._moduleBlocksSelector).after('<div><b>' + self._buildSelectiveHtmlResponse(data['aModuleSettings'], false) + '</b></div>');
+            jQuery('.editMode').css('display', 'block');
+            // TODO: DELETE LOG
+            console.log(oData);
+            jQuery(self._moduleClassesSelector).before('<div><b>' + self._buildHtmlResponse(oData['aExtendClasses'], true, '<br />') + '</b></div>');
+            jQuery(self._moduleControllersSelector).before('<div><b>' + self._buildHtmlResponse(oData['aNewControllers'], false, '<br />') + '</b></div>');
+            jQuery(self._moduleModelsSelector).before('<div><b>' + self._buildHtmlResponse(oData['aNewModels'], false, '<br />') + '</b></div>');
+            jQuery(self._moduleListsSelector).before('<div><b>' + self._buildHtmlResponse(oData['aNewLists'], false, '<br />') + '</b></div>');
+            jQuery(self._moduleWidgetsSelector).before('<div><b>' + self._buildHtmlResponse(oData['aNewWidgets'], false, '<br />') + '</b></div>');
+            jQuery(self._moduleBlocksSelector).before('<div><b>' + self._buildSelectiveHtmlResponse(oData['aNewBlocks'], true) + '</b></div>');
+            jQuery(self._moduleBlocksSelector).after('<div><b>' + self._buildSelectiveHtmlResponse(oData['aModuleSettings'], false) + '</b></div>');
         },
 
         /**
-         * @param {object} element
+         * @param {object} oElement
          */
-        _requestExtendClassesJsonResponse: function (element) {
+        _requestExtendClassesJsonResponse: function (oElement) {
             var self = this;
 
             jQuery.ajax({
                 dataType: 'json',
                 type: 'post',
                 url: self.options.extendClassesValidationUrl,
-                data: {extendClasses: jQuery(element).val()},
+                data: {extendClasses: jQuery(oElement).val()},
                 success: function (data) {
                     if (null != data) {
-                        self._showExtendClassesHtmlResponse(data);
+                        self._showExtendClassesHtmlResponse(oElement, data);
                     }
                 }
             });
         },
 
         /**
-         * @param {object} data
+         * @param {object} oElement
+         * @param {object} oData
          */
-        _showExtendClassesHtmlResponse: function (data) {
-            var self = this;
+        _showExtendClassesHtmlResponse: function (oElement, oData) {
+            var response = this.options.notificationValidClassesText + this._buildHtmlResponse(oData, true, ', ');
 
-            console.log(data);
+            this._showNotification(oElement, 'info', response);
         },
 
         /**
          * @param {object} oMetaObject
-         * @param {boolean} keys
+         * @param {boolean} blKeys
+         * @param {string} sSpaceType
          *
          * @returns {string}
          */
-        _buildHtmlResponse: function (oMetaObject, keys) {
+        _buildHtmlResponse: function (oMetaObject, blKeys, sSpaceType) {
             var aObjectData = [];
             var sFormattedValue = '';
 
-            if (true == keys) {
+            if (true === blKeys) {
                 aObjectData = Object.keys(oMetaObject);
             } else {
                 aObjectData = Object.values(oMetaObject);
             }
-
+            // TODO: Remove last spaceType as it is not required
             for (var i in aObjectData) {
-                sFormattedValue += aObjectData[i] + "<br />";
+                sFormattedValue += aObjectData[i] + sSpaceType;
             }
 
             return sFormattedValue;
@@ -162,16 +161,16 @@ jQuery.widget(
          * Different logic of Html Response required for Settings and Blocks objects of Metadata.
          *
          * @param {object} oMetaObject
-         * @param {boolean} blocks
+         * @param {boolean} blBlock
          *
          * @returns {string}
          */
-        _buildSelectiveHtmlResponse: function (oMetaObject, blocks) {
+        _buildSelectiveHtmlResponse: function (oMetaObject, blBlock) {
             var sFormattedValue = '';
             var aObjectData = Object.keys(oMetaObject);
 
             for (var i in aObjectData) {
-                if (blocks) {
+                if (blBlock) {
                     sFormattedValue += oMetaObject[aObjectData[i]]['block']
                         + "@"
                         + oMetaObject[aObjectData[i]]['template']
@@ -192,35 +191,43 @@ jQuery.widget(
         /**
          * Same backend validation in \oxpsModuleGeneratorValidator::validateCamelCaseName
          *
-         * @param {object} element
+         * @param {object} oElement
          *
          * @returns {boolean}
          */
-        _validateCamelCaseName: function (element) {
-            if (/^([A-Z])([a-zA-Z0-9]{1,63})$/.test(jQuery(element).val())) {
-                console.log(jQuery(element).attr('name') + ': TRUE');
+        _validateCamelCaseName: function (oElement) {
+            var self = this;
+            if (/^([A-Z])([a-zA-Z0-9]{1,63})$/.test(jQuery(oElement).val())) {
+                self._showNotification(oElement, 'success', self.options.notificationSuccessText);
                 return true;
             }
-            console.log(jQuery(element).attr('name') + ': FALSE');
+            self._showNotification(oElement, 'error', self.options.notificationErrorText);
         },
 
         /**
          * Simple block field validation.
          *
-         * @param {object} element
-         * @returns {boolean}
+         * @param {object} oElement
          */
-        _validateBlocksFieldEntry: function (element) {
-            if (/^(\w+)(@)(\w+)$/.test(jQuery(element).val())) {
-                jQuery('#noticeBlocks')
-                    .removeClass('notice-hidden notice-error')
-                    .addClass('notice-visible notice-success');
+        _validateBlocksFieldEntry: function (oElement) {
+            var self = this;
+            if (/^(\w+)(@)(\w+)$/.test(jQuery(oElement).val())) {
+                self._showNotification(oElement, 'success', self.options.notificationSuccessText);
+            } else {
+                self._showNotification(oElement, 'error', self.options.notificationErrorText);
             }
-            else {
-                jQuery('#noticeBlocks')
-                    .removeClass('notice-hidden notice-success')
-                    .addClass('notice-visible notice-error');
-            }
+        },
+
+        /**
+         * @param {object} oElement
+         * @param {string} sNoticeType
+         * @param {string} sNoticeText
+         */
+        _showNotification: function (oElement, sNoticeType, sNoticeText) {
+            jQuery(oElement).siblings('.notice')
+                .attr('class', 'notice')
+                .addClass('notice-visible notice-' + sNoticeType)
+                .text(sNoticeText);
         }
     }
 );

@@ -31,6 +31,7 @@ $aLang = array(
     'oxpsmodulegenerator'                                      => 'Modul Generator',
     'oxpsmodulegeneratormodule'                                => 'Wizard',
     'OXPS_MODULEGENERATOR_ADMIN_TITLE'                         => 'Modul Skeleton Generator',
+    'OXPS_MODULEGENERATOR_ADMIN_EDIT_MODE'                     => '[TR - Edit Mode Activated]',
 
     // Settings
     'SHOP_MODULE_GROUP_oxpsModuleGeneratorVendor'              => 'Hersteller und Copyright Einstellungen',
@@ -87,5 +88,11 @@ $aLang = array(
                                                                   'und geben Sie Hersteller, Copyright und Autor an.',
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_ERROR_INVALID_VENDOR'   => 'ERROR! Hersteller-Präfix ist ungültig. Es sollte aus zwei bis vier lateinischen Kleinbuchstaben bestehen.',
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_ERROR_INVALID_NAME'     => 'ERROR! Module Name ist ungültig oder existiert bereits. Bitte nur eindeutige Großbuchstaben (camel case) verwenden, z.B. "MyModule"',
-    'OXPS_MODULEGENERATOR_ADMIN_MODULE_MSG_GENERATION_SUCCESS' => 'Ihr Modul wurde erfolgreich generiert! Bitte prüfen Sie in <i>Erweiterungen -> Module</i> und den Source-Code in Ihrem Hersteller-Verzeichnis.'
+    'OXPS_MODULEGENERATOR_ADMIN_MODULE_MSG_GENERATION_SUCCESS' => 'Ihr Modul wurde erfolgreich generiert! Bitte prüfen Sie in <i>Erweiterungen -> Module</i> und den Source-Code in Ihrem Hersteller-Verzeichnis.',
+
+    // Module generation form JavaScript notifications
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_SUCCESS'             => '[TR - SUCCESS: Entered value is valid!]',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_ERROR'               => '[TR - ERROR: Entered value is invalid!]',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_WARNING'             => '[TR - WARNING: Entered value is invalid!]',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_VALID_CLASSES'       => '[TR - INFO: Valid classes: ]',
 );

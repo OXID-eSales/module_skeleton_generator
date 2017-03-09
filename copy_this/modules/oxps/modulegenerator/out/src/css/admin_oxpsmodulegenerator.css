@@ -15,6 +15,19 @@ div#oxpsmodulegenerator div.export span {
     margin: 0 10px;
 }
 
+div#oxpsmodulegenerator div.editMode {
+    width: 99%;
+    background-color: #22cd41;
+    padding: 10px 0;
+    display: none;
+}
+
+div#oxpsmodulegenerator div.editMode span {
+    margin: 0 10px;
+    font-weight: bold;
+    color: white;
+}
+
 table.oxpsmodulegenerator-wrapper {
     border: 1px solid #000000;
     border-top: none;
@@ -64,24 +77,28 @@ div#oxpsmodulegenerator span.req {
 div#oxpsmodulegenerator input[type="submit"] {
     padding: 6px 20px;
 }
+
 /**
 Notifications
  */
 div#oxpsmodulegenerator span.notice  {
     margin-left: 5px;
     padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    color: white;
 }
 
 div#oxpsmodulegenerator span.notice-error  {
     background-color: red;
 }
 
-div#oxpsmodulegenerator span.notice-warning  {
-    background-color: #ffcc33;
-}
-
 div#oxpsmodulegenerator span.notice-success  {
     background-color: #009a22;
+}
+
+div#oxpsmodulegenerator span.notice-info  {
+    background-color: #008fcd;
 }
 
 div#oxpsmodulegenerator span.notice-hidden  {

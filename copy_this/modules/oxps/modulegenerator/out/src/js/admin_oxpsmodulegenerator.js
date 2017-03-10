@@ -22,6 +22,15 @@ jQuery.widget(
         _moduleListsSelector: "textarea[name='modulegenerator_lists']",
         _moduleWidgetsSelector: "textarea[name='modulegenerator_widgets']",
         _moduleBlocksSelector: "textarea[name='modulegenerator_blocks']",
+        _moduleSettingsNameSelector: "input[name^='modulegenerator_settings']",
+
+        _cssEditModeSelectorClass: ".editMode",
+        _cssNoticeSelectorClass: ".notice",
+        _cssAddSettingsLineButtonId: "#addNewSettingsLine",
+        _cssSettingsBodyId: "#settingsBody",
+        _cssSettingsLineClass: ".settingsLine",
+        _cssSettingsLineId: "settingsLine",
+        _cssRemoveSettingsLineButtonClass: ".removeLineButton",
 
         _create: function () {
             this._bindEvents();
@@ -30,36 +39,82 @@ jQuery.widget(
         _bindEvents: function () {
             var self = this;
 
-            jQuery(this._moduleNameSelector).keyup(function () {
-                if (self._validateCamelCaseName(this)) {
+            // From jQuery 1.7+ live() is deprecated and should be changed to on() method after jQuery version update.
+
+            jQuery(this._moduleNameSelector).live('keyup',function () {
+                if (self._isEmptyField(this)) {
+                    self._hideNotification(this);
+                }
+                else if (self._validateCamelCaseName(this)) {
                     self._requestModuleNameJsonResponse(this);
                 } else {
                     self._showNotification(this, 'error', self.options.notificationErrorText);
+                    jQuery(self._cssEditModeSelectorClass).slideUp();
                 }
             });
 
-            jQuery(this._moduleClassesSelector).keyup(function () {
+            jQuery(this._moduleClassesSelector).live('keyup',function () {
                 self._requestExtendClassesJsonResponse(this);
             });
 
-            jQuery(this._moduleControllersSelector).keyup(function () {
+            jQuery(this._moduleControllersSelector).live('keyup',function () {
                 self._validateCamelCaseName(this);
             });
 
-            jQuery(this._moduleModelsSelector).keyup(function () {
+            jQuery(this._moduleModelsSelector).live('keyup',function () {
                 self._validateCamelCaseName(this);
             });
 
-            jQuery(this._moduleListsSelector).keyup(function () {
+            jQuery(this._moduleListsSelector).live('keyup',function () {
                 self._validateCamelCaseName(this);
             });
 
-            jQuery(this._moduleWidgetsSelector).keyup(function () {
+            jQuery(this._moduleWidgetsSelector).live('keyup',function () {
                 self._validateCamelCaseName(this);
             });
 
-            jQuery(this._moduleBlocksSelector).keyup(function () {
+            jQuery(this._moduleBlocksSelector).live('keyup',function () {
                 self._validateBlocksFieldEntry(this);
+            });
+
+            // TODO: Refactor THIS!!!
+            jQuery(this._moduleSettingsNameSelector).live('keyup', function () {
+                if (self._isEmptyField(this)) {
+                    jQuery(this).css('backgroundColor','white');
+                }
+                else if (/^([A-Z])([a-zA-Z0-9]{1,63})$/.test(jQuery(this).val())) {
+                    jQuery(this).css('backgroundColor','#EBFFDE');
+                } else {
+                    jQuery(this).css('backgroundColor','#FFE2DE');
+                }
+            });
+
+            // TODO: Refactor THIS!!!
+            jQuery(this._cssAddSettingsLineButtonId).live('click', function () {
+                // Get last settings line's ID
+                var sLastLineId = jQuery(self._cssSettingsLineClass + ':last').attr('id');
+
+                // Subtract text leaving only number
+                var iCleanId = parseInt(sLastLineId.replace(self._cssSettingsLineId, ''));
+
+                // Adding +1 to last ID for new line
+                iCleanId++;
+
+                // Clone, append new id and clearing existing values from last line
+                jQuery(self._cssSettingsLineClass + ':last')
+                    .clone()
+                    .attr('id', self._cssSettingsLineId + iCleanId)
+                    .find(self._cssRemoveSettingsLineButtonClass).remove()
+                    .end()
+                    .appendTo(self._cssSettingsBodyId)
+                    .append('<input type="button" value="REMOVE" class="removeLineButton" id="' + iCleanId + '">')
+                    .find("input[type='text'], textarea").val('').css('backgroundColor', 'white')
+                ;
+            });
+
+            // TODO: Refactor THIS!!!
+            jQuery(self._cssRemoveSettingsLineButtonClass).live('click', function () {
+                jQuery(this).closest('tr').remove();
             });
         },
 
@@ -80,9 +135,8 @@ jQuery.widget(
                     }
                 },
                 error: function () {
-                        jQuery('.editMode').css('display', 'none');
+                    jQuery(self._cssEditModeSelectorClass).slideUp();
                 }
-
             });
         },
 
@@ -92,7 +146,7 @@ jQuery.widget(
          */
         _showModuleNameHtmlResponse: function (oData) {
             var self = this;
-            jQuery('.editMode').css('display', 'block');
+            jQuery(self._cssEditModeSelectorClass).slideDown();
             // TODO: DELETE LOG
             console.log(oData);
             jQuery(self._moduleClassesSelector).before('<div><b>' + self._buildHtmlResponse(oData['aExtendClasses'], true, '<br />') + '</b></div>');
@@ -128,9 +182,13 @@ jQuery.widget(
          * @param {object} oData
          */
         _showExtendClassesHtmlResponse: function (oElement, oData) {
-            var response = this.options.notificationValidClassesText + this._buildHtmlResponse(oData, true, ', ');
+            if (this._isEmptyField(oElement)) {
+                this._hideNotification(oElement);
+            } else {
+                var response = this.options.notificationValidClassesText + this._buildHtmlResponse(oData, true, ', ');
 
-            this._showNotification(oElement, 'info', response);
+                this._showNotification(oElement, 'info', response);
+            }
         },
 
         /**
@@ -197,11 +255,15 @@ jQuery.widget(
          */
         _validateCamelCaseName: function (oElement) {
             var self = this;
-            if (/^([A-Z])([a-zA-Z0-9]{1,63})$/.test(jQuery(oElement).val())) {
+            if (self._isEmptyField(oElement)) {
+                self._hideNotification(oElement);
+            }
+            else if (/^([A-Z])([a-zA-Z0-9]{1,63})$/.test(jQuery(oElement).val())) {
                 self._showNotification(oElement, 'success', self.options.notificationSuccessText);
                 return true;
+            } else {
+                self._showNotification(oElement, 'error', self.options.notificationErrorText);
             }
-            self._showNotification(oElement, 'error', self.options.notificationErrorText);
         },
 
         /**
@@ -211,10 +273,24 @@ jQuery.widget(
          */
         _validateBlocksFieldEntry: function (oElement) {
             var self = this;
-            if (/^(\w+)(@)(\w+)$/.test(jQuery(oElement).val())) {
+            if (self._isEmptyField(oElement)) {
+                self._hideNotification(oElement);
+            }
+            else if (/^(\w+)(@)(\w+)$/.test(jQuery(oElement).val())) {
                 self._showNotification(oElement, 'success', self.options.notificationSuccessText);
             } else {
                 self._showNotification(oElement, 'error', self.options.notificationErrorText);
+            }
+        },
+
+        /**
+         * Validate if input field or textarea is empty
+         *
+         * @param oElement
+         */
+        _isEmptyField: function (oElement) {
+            if ('' == jQuery(oElement).val()) {
+                return true;
             }
         },
 
@@ -224,10 +300,16 @@ jQuery.widget(
          * @param {string} sNoticeText
          */
         _showNotification: function (oElement, sNoticeType, sNoticeText) {
-            jQuery(oElement).siblings('.notice')
+            jQuery(oElement).siblings(this._cssNoticeSelectorClass)
+                .fadeIn(1000)
                 .attr('class', 'notice')
-                .addClass('notice-visible notice-' + sNoticeType)
-                .text(sNoticeText);
+                .addClass('notice-' + sNoticeType)
+                .text(sNoticeText)
+            ;
+        },
+
+        _hideNotification: function (oElement) {
+            jQuery(oElement).siblings(this._cssNoticeSelectorClass).fadeOut(500);
         }
     }
 );

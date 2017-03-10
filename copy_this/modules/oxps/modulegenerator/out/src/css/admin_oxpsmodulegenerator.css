@@ -78,6 +78,13 @@ div#oxpsmodulegenerator input[type="submit"] {
     padding: 6px 20px;
 }
 
+div#oxpsmodulegenerator input.removeLineButton  {
+    background-color: maroon;
+    color: white;
+    font-weight: bold;
+    font-size: 10px;
+}
+
 /**
 Notifications
  */
@@ -102,11 +109,5 @@ div#oxpsmodulegenerator span.notice-info  {
 }
 
 div#oxpsmodulegenerator span.notice-hidden  {
-    visibility: hidden;
+    display: none;
 }
-
-div#oxpsmodulegenerator span.notice-visible  {
-    visibility: visible;
-}
-
-

@@ -160,15 +160,15 @@
                                         </th>
                                     </tr>
                                     </thead>
-                                    <tbody>
-                                    [{section name=settings start=0 loop=5}]
+                                    <tbody id="settingsBody">
+                                    [{section name=settings start=0 loop=2}]
                                         [{assign var='i' value=$smarty.section.settings.index}]
                                         [{assign var='aSetting' value=$oValues->settings.$i}]
                                         [{assign var='sType' value=$aSetting.type}]
                                         [{if not $sType}]
                                             [{assign var='sType' value='str'}]
                                         [{/if}]
-                                        <tr>
+                                        <tr class="settingsLine" id="settingsLine[{$i}]">
                                             <td>
                                                 <input type="text" name="modulegenerator_settings[[{$i}]][name]"
                                                        value="[{$aSetting.name}]" maxlength="12"/>
@@ -198,6 +198,8 @@
                                         [{/section}]
                                     </tbody>
                                 </table>
+                                <input type="button" name="modulegenerator_addNewSettingsLine" id="addNewSettingsLine"
+                                       value="[{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_MODULE_ADD_SETTINGS_LINE"}]"/>
                                 [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_SETTINGS_HINT"}]
                                 <span class="notice notice-hidden"></span>
                             </td>

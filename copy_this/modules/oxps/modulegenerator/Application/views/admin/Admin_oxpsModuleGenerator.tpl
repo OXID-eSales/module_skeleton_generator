@@ -80,6 +80,7 @@
                                     [{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_OVERRIDE_CLASSES"}]
                                 </td>
                                 <td class="edittext">
+                                    <div class="component component-existing-classes component-hidden"></div>
                                     <textarea name="modulegenerator_extend_classes" cols="20"
                                               rows="3">[{$oValues->extend}]</textarea>
                                     [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_OVERRIDE_CLASSES_HINT"}]
@@ -91,6 +92,7 @@
                                     [{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_CONTROLLERS"}]
                                 </td>
                                 <td class="edittext">
+                                    <div class="component component-existing-controllers component-hidden"></div>
                                     <textarea name="modulegenerator_controllers" cols="20"
                                               rows="1">[{$oValues->controllers}]</textarea>
                                     [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_CONTROLLERS_HINT"}]
@@ -102,6 +104,7 @@
                                     [{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_MODELS"}]
                                 </td>
                                 <td class="edittext">
+                                    <div class="component component-existing-models component-hidden"></div>
                                     <textarea name="modulegenerator_models" cols="20"
                                               rows="1">[{$oValues->models}]</textarea>
                                     [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_MODELS_HINT"}]
@@ -113,6 +116,7 @@
                                     [{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_LISTS"}]
                                 </td>
                                 <td class="edittext">
+                                    <div class="component component-existing-lists component-hidden"></div>
                                     <textarea name="modulegenerator_lists" cols="20"
                                               rows="1">[{$oValues->lists}]</textarea>
                                     [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_LISTS_HINT"}]
@@ -124,6 +128,7 @@
                                     [{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_WIDGETS"}]
                                 </td>
                                 <td class="edittext">
+                                    <div class="component component-existing-widgets component-hidden"></div>
                                     <textarea name="modulegenerator_widgets" cols="20"
                                               rows="1">[{$oValues->widgets}]</textarea>
                                     [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_WIDGETS_HINT"}]
@@ -135,6 +140,7 @@
                                     [{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_BLOCKS"}]
                                 </td>
                                 <td class="edittext">
+                                    <div class="component component-existing-blocks component-hidden"></div>
                                     <textarea class="wider" name="modulegenerator_blocks" cols="20"
                                               rows="2">[{$oValues->blocks}]</textarea>
                                     [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_BLOCKS_HINT"}]

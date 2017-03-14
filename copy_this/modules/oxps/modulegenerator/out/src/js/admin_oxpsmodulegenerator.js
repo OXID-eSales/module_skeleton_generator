@@ -41,51 +41,54 @@ jQuery.widget(
 
             // From jQuery 1.7+ live() is deprecated and should be changed to on() method after jQuery version update.
 
-            jQuery(this._moduleNameSelector).live('keyup',function () {
+            jQuery(this._moduleNameSelector).live('keyup', function () {
                 if (self._isEmptyField(this)) {
                     self._hideNotification(this);
+                    jQuery(self._cssEditModeSelectorClass).slideUp();
+                    self._hideExistingComponentNotification();
                 }
                 else if (self._validateCamelCaseName(this)) {
                     self._requestModuleNameJsonResponse(this);
                 } else {
                     self._showNotification(this, 'error', self.options.notificationErrorText);
                     jQuery(self._cssEditModeSelectorClass).slideUp();
+                    self._hideExistingComponentNotification();
                 }
             });
 
-            jQuery(this._moduleClassesSelector).live('keyup',function () {
+            jQuery(this._moduleClassesSelector).live('keyup', function () {
                 self._requestExtendClassesJsonResponse(this);
             });
 
-            jQuery(this._moduleControllersSelector).live('keyup',function () {
+            jQuery(this._moduleControllersSelector).live('keyup', function () {
                 self._validateCamelCaseName(this);
             });
 
-            jQuery(this._moduleModelsSelector).live('keyup',function () {
+            jQuery(this._moduleModelsSelector).live('keyup', function () {
                 self._validateCamelCaseName(this);
             });
 
-            jQuery(this._moduleListsSelector).live('keyup',function () {
+            jQuery(this._moduleListsSelector).live('keyup', function () {
                 self._validateCamelCaseName(this);
             });
 
-            jQuery(this._moduleWidgetsSelector).live('keyup',function () {
+            jQuery(this._moduleWidgetsSelector).live('keyup', function () {
                 self._validateCamelCaseName(this);
             });
 
-            jQuery(this._moduleBlocksSelector).live('keyup',function () {
+            jQuery(this._moduleBlocksSelector).live('keyup', function () {
                 self._validateBlocksFieldEntry(this);
             });
 
             // TODO: Refactor THIS!!!
             jQuery(this._moduleSettingsNameSelector).live('keyup', function () {
                 if (self._isEmptyField(this)) {
-                    jQuery(this).css('backgroundColor','white');
+                    jQuery(this).css('backgroundColor', 'white');
                 }
                 else if (/^([A-Z])([a-zA-Z0-9]{1,63})$/.test(jQuery(this).val())) {
-                    jQuery(this).css('backgroundColor','#EBFFDE');
+                    jQuery(this).css('backgroundColor', '#EBFFDE');
                 } else {
-                    jQuery(this).css('backgroundColor','#FFE2DE');
+                    jQuery(this).css('backgroundColor', '#FFE2DE');
                 }
             });
 
@@ -112,7 +115,6 @@ jQuery.widget(
                 ;
             });
 
-            // TODO: Refactor THIS!!!
             jQuery(self._cssRemoveSettingsLineButtonClass).live('click', function () {
                 jQuery(this).closest('tr').remove();
             });
@@ -136,6 +138,7 @@ jQuery.widget(
                 },
                 error: function () {
                     jQuery(self._cssEditModeSelectorClass).slideUp();
+                    self._hideExistingComponentNotification();
                 }
             });
         },
@@ -147,15 +150,37 @@ jQuery.widget(
         _showModuleNameHtmlResponse: function (oData) {
             var self = this;
             jQuery(self._cssEditModeSelectorClass).slideDown();
-            // TODO: DELETE LOG
-            console.log(oData);
-            jQuery(self._moduleClassesSelector).before('<div><b>' + self._buildHtmlResponse(oData['aExtendClasses'], true, '<br />') + '</b></div>');
-            jQuery(self._moduleControllersSelector).before('<div><b>' + self._buildHtmlResponse(oData['aNewControllers'], false, '<br />') + '</b></div>');
-            jQuery(self._moduleModelsSelector).before('<div><b>' + self._buildHtmlResponse(oData['aNewModels'], false, '<br />') + '</b></div>');
-            jQuery(self._moduleListsSelector).before('<div><b>' + self._buildHtmlResponse(oData['aNewLists'], false, '<br />') + '</b></div>');
-            jQuery(self._moduleWidgetsSelector).before('<div><b>' + self._buildHtmlResponse(oData['aNewWidgets'], false, '<br />') + '</b></div>');
-            jQuery(self._moduleBlocksSelector).before('<div><b>' + self._buildSelectiveHtmlResponse(oData['aNewBlocks'], true) + '</b></div>');
-            jQuery(self._moduleBlocksSelector).after('<div><b>' + self._buildSelectiveHtmlResponse(oData['aModuleSettings'], false) + '</b></div>');
+            // jQuery(self._moduleClassesSelector).before('<div><b>' + self._buildHtmlResponse(oData['aExtendClasses'], true, '<br />') + '</b></div>');
+            // jQuery(self._moduleControllersSelector).before('<div><b>' + self._buildHtmlResponse(oData['aNewControllers'], false, '<br />') + '</b></div>');
+            // jQuery(self._moduleModelsSelector).before('<div><b>' + self._buildHtmlResponse(oData['aNewModels'], false, '<br />') + '</b></div>');
+            // jQuery(self._moduleListsSelector).before('<div><b>' + self._buildHtmlResponse(oData['aNewLists'], false, '<br />') + '</b></div>');
+            // jQuery(self._moduleWidgetsSelector).before('<div><b>' + self._buildHtmlResponse(oData['aNewWidgets'], false, '<br />') + '</b></div>');
+            // jQuery(self._moduleBlocksSelector).before('<div><b>' + self._buildSelectiveHtmlResponse(oData['aNewBlocks'], true) + '</b></div>');
+            // jQuery(self._moduleBlocksSelector).after('<div><b>' + self._buildSelectiveHtmlResponse(oData['aModuleSettings'], false) + '</b></div>');
+            jQuery('.component-existing-classes')
+                .html(self._buildHtmlResponse(oData['aExtendClasses'], true, '<br />'))
+                .slideDown()
+            ;
+            jQuery('.component-existing-controllers')
+                .html(self._buildHtmlResponse(oData['aNewControllers'], false, '<br />'))
+                .slideDown()
+            ;
+            jQuery('.component-existing-models')
+                .html(self._buildHtmlResponse(oData['aNewModels'], false, '<br />'))
+                .slideDown()
+            ;
+            jQuery('.component-existing-lists')
+                .html(self._buildHtmlResponse(oData['aNewLists'], false, '<br />'))
+                .slideDown()
+            ;
+            jQuery('.component-existing-widgets')
+                .html(self._buildHtmlResponse(oData['aNewWidgets'], false, '<br />'))
+                .slideDown()
+            ;
+            jQuery('.component-existing-blocks')
+                .html(self._buildSelectiveHtmlResponse(oData['aNewBlocks'], true))
+                .slideDown()
+            ;
         },
 
         /**
@@ -200,7 +225,7 @@ jQuery.widget(
          */
         _buildHtmlResponse: function (oMetaObject, blKeys, sSpaceType) {
             var aObjectData = [];
-            var sFormattedValue = '';
+            var aFormattedValue = [];
 
             if (true === blKeys) {
                 aObjectData = Object.keys(oMetaObject);
@@ -209,10 +234,10 @@ jQuery.widget(
             }
             // TODO: Remove last spaceType as it is not required
             for (var i in aObjectData) {
-                sFormattedValue += aObjectData[i] + sSpaceType;
+                aFormattedValue.push(aObjectData[i]);
             }
 
-            return sFormattedValue;
+            return aFormattedValue.join(sSpaceType);
         },
 
         /**
@@ -253,13 +278,32 @@ jQuery.widget(
          *
          * @returns {boolean}
          */
+        // TODO: Refactor THIS!!!
         _validateCamelCaseName: function (oElement) {
             var self = this;
+            var sEnteredInput = jQuery(oElement).val();
+            var aValidatedInput = {};
+
             if (self._isEmptyField(oElement)) {
                 self._hideNotification(oElement);
-            }
-            else if (/^([A-Z])([a-zA-Z0-9]{1,63})$/.test(jQuery(oElement).val())) {
+            } else if ((sEnteredInput.match(/\n/g) || []).length > 0) {
+                var aSplitInput = sEnteredInput.split(/\n/);
+                aSplitInput.forEach(function (sInput) {
+                    if (sInput.trim() != '') {
+                        aValidatedInput[sInput] = !(!(self._camelCaseRegex(sInput)));
+                    }
+                });
+
+                if (Object.values(aValidatedInput).indexOf(false) > -1) {
+                    self._showNotification(oElement, 'error', self.options.notificationErrorText);
+                } else {
+                    self._showNotification(oElement, 'success', self.options.notificationSuccessText);
+
+                    return true;
+                }
+            } else if (self._camelCaseRegex(jQuery(oElement).val())) {
                 self._showNotification(oElement, 'success', self.options.notificationSuccessText);
+
                 return true;
             } else {
                 self._showNotification(oElement, 'error', self.options.notificationErrorText);
@@ -273,10 +317,12 @@ jQuery.widget(
          */
         _validateBlocksFieldEntry: function (oElement) {
             var self = this;
+            var sEnteredInput = jQuery(oElement).val();
+
             if (self._isEmptyField(oElement)) {
                 self._hideNotification(oElement);
             }
-            else if (/^(\w+)(@)(\w+)$/.test(jQuery(oElement).val())) {
+            else if (/^(\w+)(@)(\w+)$/.test(sEnteredInput)) {
                 self._showNotification(oElement, 'success', self.options.notificationSuccessText);
             } else {
                 self._showNotification(oElement, 'error', self.options.notificationErrorText);
@@ -310,6 +356,17 @@ jQuery.widget(
 
         _hideNotification: function (oElement) {
             jQuery(oElement).siblings(this._cssNoticeSelectorClass).fadeOut(500);
+        },
+
+        _camelCaseRegex: function (sInput) {
+            return /^([A-Z])([a-zA-Z0-9]{1,63})$/.test(sInput);
+        },
+
+        _hideExistingComponentNotification: function () {
+            jQuery('div').filter( function () {
+                return this.className.match(/\bcomponent-existing/);
+            }).slideUp();
+
         }
     }
 );

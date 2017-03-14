@@ -117,7 +117,7 @@ class Admin_oxpsAjaxDataProvider extends AdminController
 
         if ($this->_moduleExists($sModuleName)) {
             $aExistingModuleSettings = $this->getOxModule()->readGenerationOptions($sModuleName);
-            $this->_encodeToJson($aExistingModuleSettings);
+            $this->_returnJsonResponse($aExistingModuleSettings);
         }
     }
 
@@ -126,7 +126,7 @@ class Admin_oxpsAjaxDataProvider extends AdminController
         $sExtendClasses = $this->_getParameter('extendClasses');
 
         $aValidLinkedClasses = $this->getValidator()->validateAndLinkClasses($sExtendClasses);
-        $this->_encodeToJson($aValidLinkedClasses);
+        $this->_returnJsonResponse($aValidLinkedClasses);
     }
 
     /**
@@ -147,7 +147,7 @@ class Admin_oxpsAjaxDataProvider extends AdminController
     /**
      * @param array $aExistingModuleSettings
      */
-    protected function _encodeToJson(array $aExistingModuleSettings)
+    protected function _returnJsonResponse(array $aExistingModuleSettings)
     {
         header('Content-Type: application/json');
         OxidEsales\Eshop\Core\Registry::getUtils()->showMessageAndExit(

@@ -154,6 +154,7 @@
                                 [{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_MODULE_SETTINGS"}]
                             </td>
                             <td class="edittext">
+                                <div class="component component-existing-settings component-hidden"></div>
                                 <table>
                                     <thead>
                                     <tr>
@@ -167,7 +168,7 @@
                                     </tr>
                                     </thead>
                                     <tbody id="settingsBody">
-                                    [{section name=settings start=0 loop=2}]
+                                    [{section name=settings start=0 loop=1}]
                                         [{assign var='i' value=$smarty.section.settings.index}]
                                         [{assign var='aSetting' value=$oValues->settings.$i}]
                                         [{assign var='sType' value=$aSetting.type}]
@@ -176,11 +177,11 @@
                                         [{/if}]
                                         <tr class="settingsLine" id="settingsLine[{$i}]">
                                             <td>
-                                                <input type="text" name="modulegenerator_settings[[{$i}]][name]"
+                                                <input type="text" name="modulegenerator_settings[][name]"
                                                        value="[{$aSetting.name}]" maxlength="12"/>
                                             </td>
                                             <td>
-                                                <select name="modulegenerator_settings[[{$i}]][type]">
+                                                <select name="modulegenerator_settings[][type]">
                                                     [{* todo (nice2have) get possible options as array from view *}]
                                                     <option value="bool"
                                                             [{if $sType eq 'bool'}]selected[{/if}]>Checkbox</option>
@@ -197,7 +198,7 @@
                                                 </select>
                                             </td>
                                             <td>
-                                                <textarea name="modulegenerator_settings[[{$i}]][value]" cols="10"
+                                                <textarea name="modulegenerator_settings[][value]" cols="10"
                                                           rows="1">[{$aSetting.value}]</textarea>
                                             </td>
                                         </tr>

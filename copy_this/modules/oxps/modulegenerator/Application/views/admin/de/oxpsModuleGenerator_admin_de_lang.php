@@ -87,7 +87,8 @@ $aLang = array(
                                                                   'Bitte öffnen Sie <i>Erweiterungen -> Module -> OXID Module Skeleton Generator -> Einstell. -> Hersteller und Copyright Einstellungen</i> ' .
                                                                   'und geben Sie Hersteller, Copyright und Autor an.',
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_ERROR_INVALID_VENDOR'   => 'ERROR! Hersteller-Präfix ist ungültig. Es sollte aus zwei bis vier lateinischen Kleinbuchstaben bestehen.',
-    'OXPS_MODULEGENERATOR_ADMIN_MODULE_ERROR_INVALID_NAME'     => 'ERROR! Module Name ist ungültig oder existiert bereits. Bitte nur eindeutige Großbuchstaben (camel case) verwenden, z.B. "MyModule"',
+    //'OXPS_MODULEGENERATOR_ADMIN_MODULE_ERROR_INVALID_NAME'     => 'ERROR! Module Name ist ungültig oder existiert bereits. Bitte nur eindeutige Großbuchstaben (camel case) verwenden, z.B. "MyModule"',
+    'OXPS_MODULEGENERATOR_ADMIN_MODULE_ERROR_INVALID_NAME'     => '[TR - ERROR! Module name is invalid. Use unique capitalized camel case name, e.g. "MyModule"]',
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_MSG_GENERATION_SUCCESS' => 'Ihr Modul wurde erfolgreich generiert! Bitte prüfen Sie in <i>Erweiterungen -> Module</i> und den Source-Code in Ihrem Hersteller-Verzeichnis.',
 
     // Module generation form JavaScript notifications

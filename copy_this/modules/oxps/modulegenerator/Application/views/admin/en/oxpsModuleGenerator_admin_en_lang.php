@@ -87,7 +87,7 @@ $aLang = array(
                                                                   'Please open <i>Extensions -> Modules -> OXID Module Skeleton Generator -> Settings -> Vendor and Copyright Settings</i> ' .
                                                                   'and enter Your vendor, copyright and author data.',
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_ERROR_INVALID_VENDOR'   => 'ERROR! Module vendor prefix configured in settings is invalid. It should contain two to four lowercase latin letters.',
-    'OXPS_MODULEGENERATOR_ADMIN_MODULE_ERROR_INVALID_NAME'     => 'ERROR! Module name is invalid or module exists already. Use unique capitalized camel case name, e.g. "MyModule"',
+    'OXPS_MODULEGENERATOR_ADMIN_MODULE_ERROR_INVALID_NAME'     => 'ERROR! Module name is invalid. Use unique capitalized camel case name, e.g. "MyModule"',
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_MSG_GENERATION_SUCCESS' => 'Success! New module have been generated! Please check in <i>Extensions -> Modules</i> and the source code in Your vendor sub-folder.',
 
     // Module generation form JavaScript notifications

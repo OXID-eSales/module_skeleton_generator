@@ -24,6 +24,14 @@ jQuery.widget(
         _moduleBlocksSelector: "textarea[name='modulegenerator_blocks']",
         _moduleSettingsNameSelector: "input[name^='modulegenerator_settings']",
 
+        _moduleClassesSelectorNoticeDiv: ".component-existing-classes",
+        _moduleControllersSelectorNoticeDiv: ".component-existing-controllers",
+        _moduleModelsSelectorNoticeDiv: ".component-existing-models",
+        _moduleListsSelectorNoticeDiv: ".component-existing-lists",
+        _moduleWidgetsSelectorNoticeDiv: ".component-existing-widgets",
+        _moduleBlocksSelectorNoticeDiv: ".component-existing-blocks",
+        _moduleSettingsNameSelectorNoticeDiv: ".component-existing-settings",
+
         _cssEditModeSelectorClass: ".editMode",
         _cssNoticeSelectorClass: ".notice",
         _cssAddSettingsLineButtonId: "#addNewSettingsLine",
@@ -80,19 +88,18 @@ jQuery.widget(
                 self._validateBlocksFieldEntry(this);
             });
 
-            // TODO: Refactor THIS!!!
+            // TODO: Extract CSS values to css file
             jQuery(this._moduleSettingsNameSelector).live('keyup', function () {
                 if (self._isEmptyField(this)) {
                     jQuery(this).css('backgroundColor', 'white');
                 }
-                else if (/^([A-Z])([a-zA-Z0-9]{1,63})$/.test(jQuery(this).val())) {
+                else if (self._camelCaseRegex(jQuery(this).val())) {
                     jQuery(this).css('backgroundColor', '#EBFFDE');
                 } else {
                     jQuery(this).css('backgroundColor', '#FFE2DE');
                 }
             });
 
-            // TODO: Refactor THIS!!!
             jQuery(this._cssAddSettingsLineButtonId).live('click', function () {
                 // Get last settings line's ID
                 var sLastLineId = jQuery(self._cssSettingsLineClass + ':last').attr('id');
@@ -143,44 +150,49 @@ jQuery.widget(
             });
         },
 
-        // TODO: remove hardcoded stuff
         /**
          * @param {object} oData
          */
         _showModuleNameHtmlResponse: function (oData) {
             var self = this;
+
+            var sExtendClasses = self._buildHtmlResponse(oData['aExtendClasses'], true, '<br />');
+            var sNewControllers = self._buildHtmlResponse(oData['aNewControllers'], false, '<br />');
+            var sNewModels = self._buildHtmlResponse(oData['aNewModels'], false, '<br />');
+            var sNewLists = self._buildHtmlResponse(oData['aNewLists'], false, '<br />');
+            var sNewWidgets = self._buildHtmlResponse(oData['aNewWidgets'], false, '<br />');
+            var sNewBlocks = self._buildSelectiveHtmlResponse(oData['aNewBlocks'], true);
+            var sNewSettings = self._buildSelectiveHtmlResponse(oData['aModuleSettings'], false);
+
             jQuery(self._cssEditModeSelectorClass).slideDown();
-            // jQuery(self._moduleClassesSelector).before('<div><b>' + self._buildHtmlResponse(oData['aExtendClasses'], true, '<br />') + '</b></div>');
-            // jQuery(self._moduleControllersSelector).before('<div><b>' + self._buildHtmlResponse(oData['aNewControllers'], false, '<br />') + '</b></div>');
-            // jQuery(self._moduleModelsSelector).before('<div><b>' + self._buildHtmlResponse(oData['aNewModels'], false, '<br />') + '</b></div>');
-            // jQuery(self._moduleListsSelector).before('<div><b>' + self._buildHtmlResponse(oData['aNewLists'], false, '<br />') + '</b></div>');
-            // jQuery(self._moduleWidgetsSelector).before('<div><b>' + self._buildHtmlResponse(oData['aNewWidgets'], false, '<br />') + '</b></div>');
-            // jQuery(self._moduleBlocksSelector).before('<div><b>' + self._buildSelectiveHtmlResponse(oData['aNewBlocks'], true) + '</b></div>');
-            // jQuery(self._moduleBlocksSelector).after('<div><b>' + self._buildSelectiveHtmlResponse(oData['aModuleSettings'], false) + '</b></div>');
-            jQuery('.component-existing-classes')
-                .html(self._buildHtmlResponse(oData['aExtendClasses'], true, '<br />'))
-                .slideDown()
-            ;
-            jQuery('.component-existing-controllers')
-                .html(self._buildHtmlResponse(oData['aNewControllers'], false, '<br />'))
-                .slideDown()
-            ;
-            jQuery('.component-existing-models')
-                .html(self._buildHtmlResponse(oData['aNewModels'], false, '<br />'))
-                .slideDown()
-            ;
-            jQuery('.component-existing-lists')
-                .html(self._buildHtmlResponse(oData['aNewLists'], false, '<br />'))
-                .slideDown()
-            ;
-            jQuery('.component-existing-widgets')
-                .html(self._buildHtmlResponse(oData['aNewWidgets'], false, '<br />'))
-                .slideDown()
-            ;
-            jQuery('.component-existing-blocks')
-                .html(self._buildSelectiveHtmlResponse(oData['aNewBlocks'], true))
-                .slideDown()
-            ;
+
+            if (sExtendClasses) {
+                jQuery(self._moduleClassesSelectorNoticeDiv).html(sExtendClasses).slideDown();
+            }
+
+            if (sNewControllers) {
+                jQuery(self._moduleControllersSelectorNoticeDiv).html(sNewControllers).slideDown();
+            }
+
+            if (sNewModels) {
+                jQuery(self._moduleModelsSelectorNoticeDiv).html(sNewModels).slideDown();
+            }
+
+            if (sNewLists) {
+                jQuery(self._moduleListsSelectorNoticeDiv).html(sNewLists).slideDown();
+            }
+
+            if (sNewWidgets) {
+                jQuery(self._moduleWidgetsSelectorNoticeDiv).html(sNewWidgets).slideDown();
+            }
+
+            if (sNewBlocks) {
+                jQuery(self._moduleBlocksSelectorNoticeDiv).html(sNewBlocks).slideDown();
+            }
+
+            if (sNewSettings) {
+                jQuery(self._moduleSettingsNameSelectorNoticeDiv).html(sNewSettings).slideDown();
+            }
         },
 
         /**
@@ -232,7 +244,7 @@ jQuery.widget(
             } else {
                 aObjectData = Object.values(oMetaObject);
             }
-            // TODO: Remove last spaceType as it is not required
+
             for (var i in aObjectData) {
                 aFormattedValue.push(aObjectData[i]);
             }
@@ -272,58 +284,51 @@ jQuery.widget(
         },
 
         /**
-         * Same backend validation in \oxpsModuleGeneratorValidator::validateCamelCaseName
-         *
          * @param {object} oElement
          *
          * @returns {boolean}
          */
-        // TODO: Refactor THIS!!!
         _validateCamelCaseName: function (oElement) {
-            var self = this;
-            var sEnteredInput = jQuery(oElement).val();
-            var aValidatedInput = {};
-
-            if (self._isEmptyField(oElement)) {
-                self._hideNotification(oElement);
-            } else if ((sEnteredInput.match(/\n/g) || []).length > 0) {
-                var aSplitInput = sEnteredInput.split(/\n/);
-                aSplitInput.forEach(function (sInput) {
-                    if (sInput.trim() != '') {
-                        aValidatedInput[sInput] = !(!(self._camelCaseRegex(sInput)));
-                    }
-                });
-
-                if (Object.values(aValidatedInput).indexOf(false) > -1) {
-                    self._showNotification(oElement, 'error', self.options.notificationErrorText);
-                } else {
-                    self._showNotification(oElement, 'success', self.options.notificationSuccessText);
-
-                    return true;
-                }
-            } else if (self._camelCaseRegex(jQuery(oElement).val())) {
-                self._showNotification(oElement, 'success', self.options.notificationSuccessText);
-
-                return true;
-            } else {
-                self._showNotification(oElement, 'error', self.options.notificationErrorText);
-            }
+            return this._showCorrectNotification(oElement, '_camelCaseRegex');
         },
 
         /**
          * Simple block field validation.
          *
          * @param {object} oElement
+         *
+         * @returns {boolean}
          */
         _validateBlocksFieldEntry: function (oElement) {
+            return this._showCorrectNotification(oElement, '_blocksRegex');
+        },
+
+        /**
+         * TODO: This logic could be refactored to smaller parts
+         *
+         * @param oElement
+         * @param sRegexFunction
+         *
+         * @returns {boolean}
+         */
+        _showCorrectNotification: function (oElement, sRegexFunction) {
             var self = this;
             var sEnteredInput = jQuery(oElement).val();
 
             if (self._isEmptyField(oElement)) {
                 self._hideNotification(oElement);
-            }
-            else if (/^(\w+)(@)(\w+)$/.test(sEnteredInput)) {
+            } else if ((self._countNewLines(sEnteredInput)) > 0) {
+                if (Object.values(self._splitNewLines(sEnteredInput, sRegexFunction)).indexOf(false) > -1) {
+                    self._showNotification(oElement, 'error', self.options.notificationErrorText);
+                } else {
+                    self._showNotification(oElement, 'success', self.options.notificationSuccessText);
+
+                    return true;
+                }
+            } else if (self[sRegexFunction](sEnteredInput)) {
                 self._showNotification(oElement, 'success', self.options.notificationSuccessText);
+
+                return true;
             } else {
                 self._showNotification(oElement, 'error', self.options.notificationErrorText);
             }
@@ -358,12 +363,60 @@ jQuery.widget(
             jQuery(oElement).siblings(this._cssNoticeSelectorClass).fadeOut(500);
         },
 
+        /**
+         * Same backend validation in \oxpsModuleGeneratorValidator::validateCamelCaseName
+         *
+         * @param sInput
+         *
+         * @returns {boolean}
+         */
         _camelCaseRegex: function (sInput) {
             return /^([A-Z])([a-zA-Z0-9]{1,63})$/.test(sInput);
         },
 
+        /**
+         * Checks if @ exists inside string and allows any word character including "_", "/" and "-" symbols from
+         * both sides.
+         *
+         * @param sInput
+         *
+         * @returns {boolean}
+         */
+        _blocksRegex: function (sInput) {
+            return /^([\w\/\-]+)(@)([\w\/\-]+)$/.test(sInput);
+        },
+
+        /**
+         * @param sEnteredInput
+         * @param {string} regexFunction
+         *
+         * @returns {object}
+         */
+        _splitNewLines: function (sEnteredInput, regexFunction) {
+            var self = this;
+            var aValidatedInput = {};
+            var aSplitInput = sEnteredInput.split(/\n/);
+
+            aSplitInput.forEach(function (sInput) {
+                if (sInput.trim() != '') {
+                    aValidatedInput[sInput] = !(!(self[regexFunction](sInput)));
+                }
+            });
+
+            return aValidatedInput;
+        },
+
+        /**
+         * @param sEnteredInput
+         *
+         * @returns {int}
+         */
+        _countNewLines: function (sEnteredInput) {
+            return (sEnteredInput.match(/\n/g) || []).length;
+        },
+
         _hideExistingComponentNotification: function () {
-            jQuery('div').filter( function () {
+            jQuery('div').filter(function () {
                 return this.className.match(/\bcomponent-existing/);
             }).slideUp();
 

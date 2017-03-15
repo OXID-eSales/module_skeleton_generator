@@ -66,8 +66,11 @@ $aLang = array(
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_SETTING_NAME'           => 'Name',
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_SETTING_TYPE'           => 'Typ',
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_SETTING_VALUE'          => 'Standardwert',
-    'OXPS_MODULEGENERATOR_ADMIN_CREATE_SETTINGS_HINT'          => 'Initialwert (z.B. Checkbox - "0" or "1", String - "my value", Nummer - "7.88", usw. - Ein Wert pro Zeile.<br/>' .
-                                                                  'Alte Shop Versionen unterstützen nicht den Einstellungs-Typ "Number"',
+//    'OXPS_MODULEGENERATOR_ADMIN_CREATE_SETTINGS_HINT'          => 'Initialwert (z.B. Checkbox - "0" or "1", String - "my value", Nummer - "7.88", usw. - Ein Wert pro Zeile.<br/>' .
+//                                                                  'Alte Shop Versionen unterstützen nicht den Einstellungs-Typ "Number"',
+    'OXPS_MODULEGENERATOR_ADMIN_CREATE_SETTINGS_HINT'          => '[TR - Enter short, capitalized camel case name of new setting, e.g. "MySetting".<br/>' .
+                                                                  'Enter initial values like in examples: Checkbox - "0" or "1", String - "my value", Number - "7.88", for other types - each value from new line.<br/>' .
+                                                                  'NOTE: Older eShop versions don\'t support "Number" setting type.]',
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_THEMES'                 => '[TR - Multi-theme support]',
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_THEMES_HINT'            => '[TR - If a list on theme IDs is specified, multi-theme feature will be used to create separate templates for each theme.' .
                                                                   'Else standard functionality is used - same templates for all themes.]',

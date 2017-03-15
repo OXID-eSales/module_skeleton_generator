@@ -375,7 +375,7 @@ jQuery.widget(
         },
 
         /**
-         * Checks if @ exists inside string and allows any word character including "_", "/" and "-" symbols from
+         * Checks if @ exists inside string and allows any word character including "_", "/", "." and "-" symbols from
          * both sides.
          *
          * @param sInput
@@ -383,7 +383,7 @@ jQuery.widget(
          * @returns {boolean}
          */
         _blocksRegex: function (sInput) {
-            return /^([\w\/\-]+)(@)([\w\/\-]+)$/.test(sInput);
+            return /^([\w\/\-.]+)(@)([\w\/\-.]+)$/.test(sInput);
         },
 
         /**

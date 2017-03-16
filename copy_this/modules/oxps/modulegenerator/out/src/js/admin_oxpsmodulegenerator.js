@@ -23,6 +23,7 @@ jQuery.widget(
         _moduleWidgetsSelector: "textarea[name='modulegenerator_widgets']",
         _moduleBlocksSelector: "textarea[name='modulegenerator_blocks']",
         _moduleSettingsNameSelector: "input[name^='modulegenerator_settings']",
+        _moduleSettingsAllInputSelector: "[name^='modulegenerator_settings[']",
 
         _moduleClassesSelectorNoticeDiv: ".component-existing-classes",
         _moduleControllersSelectorNoticeDiv: ".component-existing-controllers",
@@ -114,8 +115,11 @@ jQuery.widget(
                 jQuery(self._cssSettingsLineClass + ':last')
                     .clone()
                     .attr('id', self._cssSettingsLineId + iCleanId)
-                    .find(self._cssRemoveSettingsLineButtonClass).remove()
-                    .end()
+                    .find(self._moduleSettingsAllInputSelector)
+                    .each(function () {
+                        jQuery(this).attr('name', jQuery(this).attr("name").replace(/\d+/, iCleanId))
+                    }).end()
+                    .find(self._cssRemoveSettingsLineButtonClass).remove().end()
                     .appendTo(self._cssSettingsBodyId)
                     .append('<input type="button" value="REMOVE" class="removeLineButton" id="' + iCleanId + '">')
                     .find("input[type='text'], textarea").val('').css('backgroundColor', 'white')

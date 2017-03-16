@@ -177,11 +177,11 @@
                                         [{/if}]
                                         <tr class="settingsLine" id="settingsLine[{$i}]">
                                             <td>
-                                                <input type="text" name="modulegenerator_settings[][name]"
+                                                <input type="text" name="modulegenerator_settings[[{$i}]][name]"
                                                        value="[{$aSetting.name}]" maxlength="12"/>
                                             </td>
                                             <td>
-                                                <select name="modulegenerator_settings[][type]">
+                                                <select name="modulegenerator_settings[[{$i}]][type]">
                                                     [{* todo (nice2have) get possible options as array from view *}]
                                                     <option value="bool"
                                                             [{if $sType eq 'bool'}]selected[{/if}]>Checkbox</option>
@@ -198,7 +198,7 @@
                                                 </select>
                                             </td>
                                             <td>
-                                                <textarea name="modulegenerator_settings[][value]" cols="10"
+                                                <textarea name="modulegenerator_settings[[{$i}]][value]" cols="10"
                                                           rows="1">[{$aSetting.value}]</textarea>
                                             </td>
                                         </tr>

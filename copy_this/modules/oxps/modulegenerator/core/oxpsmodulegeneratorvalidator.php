@@ -270,15 +270,11 @@ class oxpsModuleGeneratorValidator extends Base
      *
      * @param string $sModuleName
      *
-     * @param bool   $blInitOxModule
-     *
      * @return bool
      */
-    public function moduleExists($sModuleName, $blInitOxModule = false)
+    public function moduleExists($sModuleName)
     {
-        if($blInitOxModule) {
-            $this->getOxModule()->init($sModuleName, [], $this->getModule()->getSetting('VendorPrefix'));
-        }
+        $this->getOxModule()->init($sModuleName, [], $this->getModule()->getSetting('VendorPrefix'));
 
         /** @var oxpsModuleGeneratorFileSystem $oFileSystemHelper */
         $oFileSystemHelper = Registry::get('oxpsModuleGeneratorFileSystem');

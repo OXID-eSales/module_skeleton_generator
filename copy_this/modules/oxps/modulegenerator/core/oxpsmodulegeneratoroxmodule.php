@@ -415,18 +415,6 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
 
         // Set field for Generation Options from Generator submitted form
         $this->_aGenerationOptions = $aGenerationOptions;
-
-        // Initialize helpers
-        /** @var oxpsModuleGeneratorHelper $oHelper */
-        $this->_oHelper = Registry::get('oxpsModuleGeneratorHelper');
-        $this->_oHelper->init($this);
-
-        /** @var oxpsModuleGeneratorRender $oRenderHelper */
-        $this->_oRenderHelper = Registry::get('oxpsModuleGeneratorRender');
-        $this->_oRenderHelper->init($this);
-
-        // Set module data - initializes it with new module info
-        $this->setNewModuleData();
     }
 
     /**
@@ -456,6 +444,16 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
     public function generateModule($sModuleName, array $aGenerationOptions = array())
     {
         $this->init($sModuleName, $aGenerationOptions);
+
+        // Initialize helpers
+        /** @var oxpsModuleGeneratorHelper $oHelper */
+        $this->_oHelper = Registry::get('oxpsModuleGeneratorHelper');
+        $this->_oHelper->init($this);
+
+        /** @var oxpsModuleGeneratorRender $oRenderHelper */
+        $this->_oRenderHelper = Registry::get('oxpsModuleGeneratorRender');
+        $this->_oRenderHelper->init($this);
+
         $this->_moduleGeneration($this->_oHelper, $this->_oRenderHelper);
 
         return true;
@@ -482,7 +480,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
                 }
             }
         }
-
+        
         // Set module data - initializes it with new module info
         $this->_setNewModuleData($this->_sModuleName, $aOptionsToSet);
     }
@@ -721,11 +719,16 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     protected function _moduleGeneration($oHelper, $oRenderHelper)
     {
+        $blAppendMetadata = false;
+
         // Check if Edit Mode is activated
         if ($this->isEditMode()) {
             $this->_aParsedMetadataOptions = $this->readGenerationOptions($this->_sModuleName);
+            $blAppendMetadata = true;
             $this->backupFiles();
         }
+        // Set module data - initializes it with new module info
+        $this->setNewModuleData($blAppendMetadata);
 
         // Get new module and module generation template full paths
         $sModuleGeneratorPath = Registry::get('oxpsModuleGeneratorModule')->getPath();

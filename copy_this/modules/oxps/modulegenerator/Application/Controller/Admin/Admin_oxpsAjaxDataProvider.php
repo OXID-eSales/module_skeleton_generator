@@ -139,7 +139,7 @@ class Admin_oxpsAjaxDataProvider extends AdminController
     protected function _moduleExists($sModuleName)
     {
         return (
-            $this->getValidator()->moduleExists($sModuleName, true)
+            $this->getValidator()->moduleExists($sModuleName)
             && !empty($sModuleName)
         );
     }

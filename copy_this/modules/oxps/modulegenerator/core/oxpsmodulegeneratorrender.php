@@ -47,7 +47,7 @@ class oxpsModuleGeneratorRender extends Base
      *
      * @param oxpsModuleGeneratorOxModule $oModule
      */
-    public function init(oxpsModuleGeneratorOxModule $oModule)
+    public function init($oModule)
     {
         $this->setModule($oModule);
     }
@@ -57,7 +57,7 @@ class oxpsModuleGeneratorRender extends Base
      *
      * @param oxpsModuleGeneratorOxModule $oModule
      */
-    public function setModule(oxpsModuleGeneratorOxModule $oModule)
+    public function setModule($oModule)
     {
         $this->_oModule = $oModule;
     }

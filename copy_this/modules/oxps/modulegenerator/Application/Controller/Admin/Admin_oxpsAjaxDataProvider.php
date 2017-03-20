@@ -54,22 +54,8 @@ class Admin_oxpsAjaxDataProvider extends AdminController
     protected $_oValidator;
 
     /**
-     * @return string
-     */
-    public function getVendorPrefix()
-    {
-        return $this->_sVendorPrefix;
-    }
-
-    /**
-     * @param string $sVendorPrefix
-     */
-    public function setVendorPrefix($sVendorPrefix)
-    {
-        $this->_sVendorPrefix = $sVendorPrefix;
-    }
-
-    /**
+     * Get oxModule instance to access generated module data.
+     *
      * @return oxpsModuleGeneratorOxModule
      */
     public function getOxModule()
@@ -82,6 +68,8 @@ class Admin_oxpsAjaxDataProvider extends AdminController
     }
 
     /**
+     * Get Generator module instance to access modules settings.
+     *
      * @return oxpsModuleGeneratorModule
      */
     public function getModule()
@@ -108,19 +96,21 @@ class Admin_oxpsAjaxDataProvider extends AdminController
     /**
      * Get Module Settings if exists. Returns metadata.php module file information rendered like form input.
      */
-    public function validateModuleName()
+    public function getModuleData()
     {
         $sModuleName = $this->_getParameter('moduleName');
 
-        $this->setVendorPrefix($this->getModule()->getSetting('VendorPrefix'));
-        $this->getOxModule()->init($sModuleName, [], $this->getVendorPrefix());
-
-        if ($this->_moduleExists($sModuleName)) {
+        if ($this->_validateModuleName($sModuleName)) {
             $aExistingModuleSettings = $this->getOxModule()->readGenerationOptions($sModuleName);
             $this->_returnJsonResponse($aExistingModuleSettings);
+        } else {
+            $this->_returnJsonResponse([]);
         }
     }
 
+    /**
+     * Validate extended classes names and return JSON with module's metadata.
+     */
     public function validateExtendClassNames()
     {
         $sExtendClasses = $this->_getParameter('extendClasses');
@@ -136,11 +126,13 @@ class Admin_oxpsAjaxDataProvider extends AdminController
      *
      * @return bool
      */
-    protected function _moduleExists($sModuleName)
+    protected function _validateModuleName($sModuleName)
     {
+        $this->getOxModule()->init($sModuleName, [], $this->getModule()->getSetting('VendorPrefix'));
+
         return (
-            $this->getValidator()->moduleExists($sModuleName)
-            && !empty($sModuleName)
+            !empty($sModuleName)
+            && $this->getValidator()->moduleExists($sModuleName)
         );
     }
 

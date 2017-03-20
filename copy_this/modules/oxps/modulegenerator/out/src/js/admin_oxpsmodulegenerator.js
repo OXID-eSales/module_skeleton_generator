@@ -41,26 +41,33 @@ jQuery.widget(
         _cssSettingsLineId: "settingsLine",
         _cssRemoveSettingsLineButtonClass: ".removeLineButton",
 
+        /**
+         * Widget Constructor
+         */
         _create: function () {
             this._bindEvents();
         },
 
+        /**
+         * Bind all events required for input fields with different logic.
+         *
+         * TODO: Would be nice to split it into several methods:
+         * TODO: e.g. move out module name event, setting name and setting button events.
+         */
         _bindEvents: function () {
             var self = this;
 
             // From jQuery 1.7+ live() is deprecated and should be changed to on() method after jQuery version update.
 
-            jQuery(this._moduleNameSelector).live('keyup', function () {
+            jQuery(this._moduleNameSelector).live('keyup change', function () {
                 if (self._isEmptyField(this)) {
                     self._hideNotification(this);
-                    jQuery(self._cssEditModeSelectorClass).slideUp();
                     self._hideExistingComponentNotification();
                 }
                 else if (self._validateCamelCaseName(this)) {
                     self._requestModuleNameJsonResponse(this);
                 } else {
                     self._showNotification(this, 'error', self.options.notificationErrorText);
-                    jQuery(self._cssEditModeSelectorClass).slideUp();
                     self._hideExistingComponentNotification();
                 }
             });
@@ -92,12 +99,21 @@ jQuery.widget(
             // TODO: Extract CSS values to css file
             jQuery(this._moduleSettingsNameSelector).live('keyup', function () {
                 if (self._isEmptyField(this)) {
-                    jQuery(this).css('backgroundColor', 'white');
+                    jQuery(this).css({
+                        'background-color': 'white',
+                        'color': 'black'
+                    });
                 }
                 else if (self._camelCaseRegex(jQuery(this).val())) {
-                    jQuery(this).css('backgroundColor', '#EBFFDE');
+                    jQuery(this).css({
+                        'background-color': '#EBFFDE',
+                        'color': 'green'
+                    });
                 } else {
-                    jQuery(this).css('backgroundColor', '#FFE2DE');
+                    jQuery(this).css({
+                        'background-color': '#FFE2DE',
+                        'color': 'red'
+                    });
                 }
             });
 
@@ -111,7 +127,7 @@ jQuery.widget(
                 // Adding +1 to last ID for new line
                 iCleanId++;
 
-                // Clone, append new id and clearing existing values from last line
+                // Clone, replace unique id, append below and clear existing values from last line.
                 jQuery(self._cssSettingsLineClass + ':last')
                     .clone()
                     .attr('id', self._cssSettingsLineId + iCleanId)
@@ -132,6 +148,8 @@ jQuery.widget(
         },
 
         /**
+         * Return AJAX response with metadata depending on module name entered.
+         *
          * @param {object} oElement
          */
         _requestModuleNameJsonResponse: function (oElement) {
@@ -143,18 +161,21 @@ jQuery.widget(
                 url: self.options.moduleNameValidationUrl,
                 data: {moduleName: jQuery(oElement).val()},
                 success: function (data) {
-                    if (null != data) {
+                    if (!jQuery.isEmptyObject(data)) {
                         self._showModuleNameHtmlResponse(data);
+                    } else {
+                        self._hideExistingComponentNotification();
                     }
                 },
                 error: function () {
-                    jQuery(self._cssEditModeSelectorClass).slideUp();
                     self._hideExistingComponentNotification();
                 }
             });
         },
 
         /**
+         * Method for showing notifications with existing module metadata.
+         *
          * @param {object} oData
          */
         _showModuleNameHtmlResponse: function (oData) {
@@ -200,6 +221,8 @@ jQuery.widget(
         },
 
         /**
+         * Return JSON response with extendable classes if exist.
+         *
          * @param {object} oElement
          */
         _requestExtendClassesJsonResponse: function (oElement) {
@@ -233,6 +256,8 @@ jQuery.widget(
         },
 
         /**
+         * Build proper HTML response depending on requested object and notification space requirement in between.
+         *
          * @param {object} oMetaObject
          * @param {boolean} blKeys
          * @param {string} sSpaceType
@@ -308,6 +333,8 @@ jQuery.widget(
         },
 
         /**
+         * Show notification depending on various states of input field.
+         *
          * TODO: This logic could be refactored to smaller parts
          *
          * @param oElement
@@ -391,6 +418,8 @@ jQuery.widget(
         },
 
         /**
+         * Split lines of entered data if more than one component name have been entered.
+         *
          * @param sEnteredInput
          * @param {string} regexFunction
          *
@@ -419,7 +448,13 @@ jQuery.widget(
             return (sEnteredInput.match(/\n/g) || []).length;
         },
 
+        /**
+         * Hide notifications with metadada if module name was not found.
+         */
         _hideExistingComponentNotification: function () {
+            var self = this;
+
+            jQuery(self._cssEditModeSelectorClass).slideUp();
             jQuery('div').filter(function () {
                 return this.className.match(/\bcomponent-existing/);
             }).slideUp();

@@ -3,7 +3,7 @@
 [{oxscript include="js/libs/jquery-ui.min.js"}]
 [{oxscript include=$oViewConf->getModuleUrl('oxps/ModuleGenerator', 'out/src/js/admin_oxpsmodulegenerator.js')}]
 [{oxscript add="$.noConflict();" priority=10}]
-[{assign var="sModuleNameValidationUrl" value=$oView->generateAjaxResponseUrl('validateModuleName')}]
+[{assign var="sModuleNameValidationUrl" value=$oView->generateAjaxResponseUrl('getModuleData')}]
 [{assign var="sExtendClassesNamesValidationUrl" value=$oView->generateAjaxResponseUrl('validateExtendClassNames')}]
 
 [{assign var="sNotificationSuccessText" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_SUCCESS"|oxmultilangassign}]

@@ -110,7 +110,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     protected $_aIgnoreOnEdit = array(
         'oxpsModule_lang.php.tpl',
-        'oxpsModule.php.tpl',
+        'oxpsmodule.php.tpl',
         'install.sql',
         'README.txt',
         'uninstall.sql',
@@ -454,7 +454,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         $this->_oRenderHelper = Registry::get('oxpsModuleGeneratorRender');
         $this->_oRenderHelper->init($this);
 
-        $this->_moduleGeneration($this->_oHelper, $this->_oRenderHelper);
+        $this->_moduleGeneration();
 
         return true;
     }
@@ -713,11 +713,8 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
 
     /**
      * Module generation action.
-     *
-     * @param oxpsModuleGeneratorHelper $oHelper
-     * @param oxpsModuleGeneratorRender $oRenderHelper
      */
-    protected function _moduleGeneration($oHelper, $oRenderHelper)
+    protected function _moduleGeneration()
     {
         $blAppendMetadata = false;
 
@@ -735,30 +732,35 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         $sModulePath = $this->getFullPath();
 
         // Copy the module from a folder structure with templates to a new module path
-        $oHelper->createVendorMetadata($this->getVendorPath());
-        $oHelper->getFileSystemHelper()->copyFolder(
+        $this->_oHelper->createVendorMetadata($this->getVendorPath());
+        $this->_oHelper->getFileSystemHelper()->copyFolder(
             $sModuleGeneratorPath . 'Core/module.tpl/module/',
             $sModulePath,
             $this->isEditMode() ? (array) $this->_aIgnoreOnEdit : array()
         );
 
         // Create classes to overload (extend)
-        $aClassesToExtend = (array) $oHelper->createClassesToExtend(
+        $aClassesToExtend = (array) $this->_oHelper->createClassesToExtend(
             $sModuleGeneratorPath . 'Core/module.tpl/oxpsExtendClass.php.tpl'
         );
 
         // Create new module classes and templates
-        $aNewClasses = (array) $oHelper->createNewClassesAndTemplates($sModuleGeneratorPath);
+        $aNewClasses = (array) $this->_oHelper->createNewClassesAndTemplates($sModuleGeneratorPath);
 
         // Create blocks templates
-        $oHelper->createBlock($sModulePath);
+        $this->_oHelper->createBlock($sModulePath);
 
         // Process copied module files as Smarty templates to fill them with the real module data
-        $oRenderHelper->renderModuleFiles($aClassesToExtend, $aNewClasses);
+        $this->_oRenderHelper->renderModuleFiles($aClassesToExtend, $aNewClasses);
 
         // Clone PHP Unit tests libraries if the option is checked and configured
         if ($this->getArrayValue($this->_aGenerationOptions, 'blFetchUnitTests')) {
-            $oHelper->fillTestsFolder($oRenderHelper, $sModuleGeneratorPath, $aClassesToExtend, $aNewClasses);
+            $this->_oHelper->fillTestsFolder(
+                $this->_oRenderHelper,
+                $sModuleGeneratorPath,
+                $aClassesToExtend,
+                $aNewClasses
+            );
         }
     }
 }

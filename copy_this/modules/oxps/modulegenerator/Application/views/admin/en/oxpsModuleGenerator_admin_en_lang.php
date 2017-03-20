@@ -89,7 +89,7 @@ $aLang = array(
                                                                   'and enter Your vendor, copyright and author data.',
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_ERROR_INVALID_VENDOR'   => 'ERROR! Module vendor prefix configured in settings is invalid. It should contain two to four lowercase latin letters.',
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_ERROR_INVALID_NAME'     => 'ERROR! Module name is invalid. Use unique capitalized camel case name, e.g. "MyModule"',
-    'OXPS_MODULEGENERATOR_ADMIN_MODULE_MSG_GENERATION_SUCCESS' => 'Success! New module have been generated! Please check in <i>Extensions -> Modules</i> and the source code in Your vendor sub-folder.',
+    'OXPS_MODULEGENERATOR_ADMIN_MODULE_MSG_GENERATION_SUCCESS' => 'Success! Module have been generated! Please check in <i>Extensions -> Modules</i> and the source code in Your vendor sub-folder.',
 
     // Module generation form JavaScript notifications
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_SUCCESS'             => 'SUCCESS: Entered value is valid!',

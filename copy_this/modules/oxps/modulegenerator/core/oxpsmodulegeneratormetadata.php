@@ -150,8 +150,6 @@ class oxpsModuleGeneratorMetadata extends Base
         $aMetadataExtendClasses = [];
         if ($this->_isValidMetadataKey($sMetadataArrayKey)) {
             $aMetadataExtendClassKeys = array_keys($this->_aMetadata[$sMetadataArrayKey]);
-            // TODO: Extract validateAndLinkClasses() method together with parseBlocksData()
-            // TODO: to AJAX controller to make it possible to reuse.
             $aMetadataExtendClasses = $this->_getValidationController()->validateAndLinkClasses(
                 implode(PHP_EOL, $aMetadataExtendClassKeys)
             );
@@ -257,8 +255,6 @@ class oxpsModuleGeneratorMetadata extends Base
                 }
             }
 
-            // TODO: Extract validateAndLinkClasses() method together with parseBlocksData()
-            // TODO: to AJAX controller to make it possible to reuse.
             $aParsedBlocks = $this->_getValidationController()->parseBlocksData(
                 implode(PHP_EOL, $aMetadataBlocks),
                 $sVendorPrefix,

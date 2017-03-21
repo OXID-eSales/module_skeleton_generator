@@ -53,6 +53,12 @@ class Admin_oxpsAjaxDataProvider extends AdminController
      */
     protected $_oValidator;
 
+    public function init()
+    {
+        // Parent call
+        $this->_Admin_oxpsAjaxDataProvider_init_parent();
+    }
+
     /**
      * Get oxModule instance to access generated module data.
      *
@@ -156,4 +162,17 @@ class Admin_oxpsAjaxDataProvider extends AdminController
     {
         return (string) $this->getConfig()->getRequestParameter($sName);
     }
+
+    /**
+     * Parent `init` call. Method required for mocking.
+     *
+     * @codeCoverageIgnore
+     *
+     * @return null
+     */
+    protected function _Admin_oxpsAjaxDataProvider_init_parent()
+    {
+        return parent::init();
+    }
+
 }

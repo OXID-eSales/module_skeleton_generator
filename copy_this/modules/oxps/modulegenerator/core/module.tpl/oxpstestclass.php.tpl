@@ -55,55 +55,59 @@ class [{$sClassFullName}]Test extends OxidTestCase
         //  - Write as many tests as needed to test all conditions
 
         // TODO: For mocking use techniques like this:
+        // TODO: All generated code below is a set of examples. Use it and/or delete!
         // Create mock object and define its expected behavior
-        $oMyMock = $this->getMock('[someClass]', array('[someMethod]', '[otherClassMethod]'));
-        $oMyMock->expects($this->once()/exactly($i[x])/never()/at($i[x])/atLeastOnce())
+        $myMockObject = $this->getMock('[someClass]', array('[someMethod]', '[otherMethod]'));
+        $myMockObject->expects($this->once()/exactly($i)/never()/at($i)/atLeastOnce())
                 ->method('[otherClassMethod]')
-                ->with('[Val1]', '[Val2]' / $this->equalTo($m[Val])/anything()/isTrue/False/Null/Json/Type/InstanceOf...()/contains/arrayHasKey/...)
-                ->will($this->returnValue($m[Val])/returnArgument($i[x])/throwException($o[Exc])/returnValueMap($a[Val])/returnSelf/...);
+                ->with('[Val1]', '[Val2]' / $this->equalTo($val])/anything()/isTrue/False/Null/Json/Type/InstanceOf...()/contains/arrayHasKey/...)
+                ->will($this->returnValue($val)/returnArgument($i)/throwException($exception)/returnValueMap($array])/returnSelf/...);
 
         // You can set mock inside mock
-        $oMyClassMock->expects($this->any())->method('myMethod')->with($this->equalTo('argument'))->will(
+        $myMockObject->expects($this->any())->method('myMethod')->with($this->equalTo('argument'))->will(
             $this->returnValue($this->getMock(…))
         );
 
         // Also create mocks for protected methods access
         $this->getProxyClass('MyClass');
-        $this->getMock($this->getProxyClassName('MyClass'), array(…));
+        $this->getMock($this->getProxyClassName('MyClass'), […]);
 
         // Mock request, config and session data
-        modConfig::setParameter('param', 'value');
-        modConfig::getInstance()->setConfigParam('setting', 'value');
-        modSession::getInstance()->setVar('key', 'value');
+        $this->setRequestParameter('param', 'value');
+        $this->setConfigParam('setting', 'value');
+        $this->setSessionParam('key', 'value');
 
         // Set mocks instead of real objects
-        oxTestModules::addModuleObject('MyClass', $oMyClassMock);
-        oxRegistry::set('MyClass', $oMyClassMock);
+        \OxidEsales\Eshop\Core\Registry::set('MyClass', $myMockObject);
 
         // Use all the variety of PHPUnit assertions
         $this->assert...
 
+        // Use other helpers of OXID Test Case
+        $this->setTime/setShopId/setAdminMode/cleanTmpDir/etc..
+
         // Create tearDown() method to clear state, reset test data, etc.
     [{/if}]
-        $this->asset[...](..., $this->SUT->myMethod());
+
+        $this->assetSame('...', $this->SUT->myMethod());
     } */
 
     // An example of data provider used for testing
     /* public function myDataProvider()
     {
-        return array(
-            array([val1], [val2]),
-            array([valA], [valB]),
-            ...
-        );
+        return [
+            ['val1', 'val2'],
+            ['valA', 'valB'],
+            // ...
+        ];
     } */
 
     /**
      * @dataProvider myDataProvider
      */
-    /* public function testSomeMethod($mArg, $mExpectedResult)
+    /* public function testSomeMethod($arg, $expectedResult)
     {
-        $this->assertSame($mExpectedResult, $this->SUT->someMethod($mArg));
+        $this->assertSame($expectedResult, $this->SUT->someMethod($arg));
     } */
 [{/if}]
 }

@@ -234,6 +234,17 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
     }
 
     /**
+     * Get module name. An alias for getTitle method with own string format logic.
+     *
+     * @return string
+     */
+    public function getModuleTitle()
+    {
+        $aExplodedTitle = explode(' ', $this->getTitle(), 2);
+        return implode(' :: ', $aExplodedTitle);
+    }
+
+    /**
      * Get a list of classes to overload (extend).
      *
      * @return array

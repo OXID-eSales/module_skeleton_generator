@@ -34,7 +34,7 @@ $sMetadataVersion = '1.3';
  */
 $aModule = array(
     'id'          => 'oxpsmodulegenerator',
-    'title'       => 'OXID Module Skeleton Generator',
+    'title'       => 'OXID :: Module Skeleton Generator',
     'description' => array(
         'de' => 'Die Erzeugung von Ordner-Struktur, leere Klassen und Metadata-Datei für neue OXID eShop Module',
         'en' => 'Folders structure, empty classes and metadata generation for new OXID eShop modules.',

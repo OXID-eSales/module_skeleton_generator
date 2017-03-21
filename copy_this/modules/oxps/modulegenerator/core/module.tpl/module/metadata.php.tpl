@@ -31,8 +31,8 @@ $sMetadataVersion = '1.3';
 $aModule = array(
     'id'          => '[{$sModuleId}]',
     'title'       => array(
-        'de' => '[TR - [{$oModule->getTitle()}]]',
-        'en' => '[{$oModule->getTitle()}]',
+        'de' => '[TR - [{$oModule->getModuleTitle()}]]',
+        'en' => '[{$oModule->getModuleTitle()}]',
     ),
     'description' => array(
         'de' => '[TR - [{$oModule->getDescription()}]]',

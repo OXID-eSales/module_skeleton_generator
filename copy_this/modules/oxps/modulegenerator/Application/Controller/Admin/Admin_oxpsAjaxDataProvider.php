@@ -32,7 +32,6 @@ use OxidEsales\Eshop\Application\Controller\Admin\AdminController;
  */
 class Admin_oxpsAjaxDataProvider extends AdminController
 {
-
     /**
      * @var string
      */

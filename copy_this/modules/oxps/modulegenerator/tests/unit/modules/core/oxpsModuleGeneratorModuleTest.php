@@ -57,7 +57,7 @@ class oxpsModuleGeneratorModuleTest extends OxidTestCase
         $this->setLanguage(1);
 
         $this->assertSame('oxpsmodulegenerator', $this->SUT->getId());
-        $this->assertSame('OXID Module Skeleton Generator', $this->SUT->getTitle());
+        $this->assertSame('OXID :: Module Skeleton Generator', $this->SUT->getTitle());
         $this->assertSame(
             'Folders structure, empty classes and metadata generation for new OXID eShop modules.',
             $this->SUT->getDescription()

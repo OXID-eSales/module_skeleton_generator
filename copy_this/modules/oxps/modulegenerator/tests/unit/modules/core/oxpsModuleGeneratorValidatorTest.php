@@ -30,13 +30,13 @@
  *
  * @see oxpsModuleGeneratorValidator
  */
-class oxpsModuleGeneratorValidatorTest extends OxidTestCase
+class oxpsModuleGeneratorValidatorTest extends OxidEsales\TestingLibrary\UnitTestCase
 {
 
     /**
      * Subject under the test.
      *
-     * @var oxpsModuleGeneratorValidator
+     * @var oxpsModuleGeneratorValidator|PHPUnit_Framework_MockObject_MockObject
      */
     protected $SUT;
 
@@ -51,6 +51,15 @@ class oxpsModuleGeneratorValidatorTest extends OxidTestCase
         $this->SUT = $this->getMock('oxpsModuleGeneratorValidator', array('__call'));
     }
 
+    public function testGetOxModule()
+    {
+        $this->assertInstanceOf('oxpsModuleGeneratorOxModule', $this->SUT->getOxModule());
+    }
+
+    public function testGetModule()
+    {
+        $this->assertInstanceOf('oxpsModuleGeneratorModule', $this->SUT->getModule());
+    }
 
     /**
      * @dataProvider vendorPrefixDataProvider
@@ -83,7 +92,6 @@ class oxpsModuleGeneratorValidatorTest extends OxidTestCase
             array('abcd', true),
         );
     }
-
 
     /**
      * @dataProvider camelCaseNameDataProvider
@@ -128,6 +136,36 @@ class oxpsModuleGeneratorValidatorTest extends OxidTestCase
 
 
     /**
+     * @dataProvider validateSettingsTypeDataProvider
+     */
+    public function testValidateSettingsType($mValue, $blExpectedResult)
+    {
+        $this->assertSame($blExpectedResult, $this->SUT->validateSettingsType($mValue));
+    }
+
+    public function validateSettingsTypeDataProvider()
+    {
+        return [
+            // Invalid values
+            ['notValid', false],
+            [null, false],
+            ['', false],
+            [' ', false],
+            [0, false],
+            [1, false],
+            [[], false],
+
+            // Valid values
+            ['bool', true],
+            ['str', true],
+            ['num', true],
+            ['arr', true],
+            ['aarr', true],
+            ['select', true],
+        ];
+    }
+
+    /**
      * @dataProvider camelCaseToHumanReadableDataProvider
      */
     public function testCamelCaseToHumanReadable($mValue, $sExpectedResult)
@@ -168,7 +206,6 @@ class oxpsModuleGeneratorValidatorTest extends OxidTestCase
         );
     }
 
-
     /**
      * @dataProvider arrayValuesDataProvider
      */
@@ -194,4 +231,26 @@ class oxpsModuleGeneratorValidatorTest extends OxidTestCase
             array(array('b' => 3, 'a' => 2), 'a', 'array', array(2)),
         );
     }
+
+    // TODO: finish test
+    public function testValidateAndLinkClasses()
+    {
+    }
+
+    // TODO: finish test
+    public function testParseMultiLineInput()
+    {
+    }
+
+    // TODO: finish test
+    public function testParseBlocksData()
+    {
+    }
+
+    // TODO: finish test
+    public function testModuleExists()
+    {
+    }
+
+
 }

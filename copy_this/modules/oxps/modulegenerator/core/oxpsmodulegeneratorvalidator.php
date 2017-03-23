@@ -130,7 +130,7 @@ class oxpsModuleGeneratorValidator extends Base
      */
     public function validateSettingsType($sSettingType)
     {
-        return in_array($sSettingType, $this->_aSettingTypes);
+        return in_array($sSettingType, $this->_aSettingTypes, true);
     }
 
     /**
@@ -170,7 +170,6 @@ class oxpsModuleGeneratorValidator extends Base
 
         return settype($mValue, $sType) ? $mValue : null;
     }
-
 
     /**
      * Check list of classes and link it with its relative path for each valid class.
@@ -232,8 +231,6 @@ class oxpsModuleGeneratorValidator extends Base
 
         return $aValidInput;
     }
-
-
 
     /**
      * Parse new blocks multi-line data to valid metadata blocks definition.

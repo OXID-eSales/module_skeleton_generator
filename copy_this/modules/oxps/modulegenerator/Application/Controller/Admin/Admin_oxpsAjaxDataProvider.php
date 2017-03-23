@@ -143,6 +143,8 @@ class Admin_oxpsAjaxDataProvider extends AdminController
 
     /**
      * @param array $aExistingModuleSettings
+     *
+     * @codeCoverageIgnore
      */
     protected function _returnJsonResponse(array $aExistingModuleSettings)
     {

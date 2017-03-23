@@ -35,7 +35,7 @@ class Admin_oxpsAjaxDataProviderTest extends OxidEsales\TestingLibrary\UnitTestC
     /**
      * Subject under the test.
      *
-     * @var Admin_oxpsAjaxDataProvider
+     * @var Admin_oxpsAjaxDataProvider|PHPUnit_Framework_MockObject_MockObject
      */
     protected $SUT;
 
@@ -47,29 +47,13 @@ class Admin_oxpsAjaxDataProviderTest extends OxidEsales\TestingLibrary\UnitTestC
     {
         parent::setUp();
 
-        $this->SUT = $this->getMock( 'Admin_oxpsAjaxDataProvider',
+        $this->SUT = $this->getMock(
+            'Admin_oxpsAjaxDataProvider',
             [
                 'Admin_oxpsAjaxDataProvider_init_parent',
+                '_returnJsonResponse',
             ]
         );
-
-        // Mock config for module settings
-        $this->setConfigParam('oxpsModuleGeneratorVendorPrefix', 'test');
-        $this->setConfigParam('oxpsModuleGeneratorModuleAuthor', 'TEST');
-        $this->setConfigParam('oxpsModuleGeneratorAuthorLink', 'www.example.com');
-        $this->setConfigParam('oxpsModuleGeneratorAuthorMail', 'test@example.com');
-        $this->setConfigParam('oxpsModuleGeneratorCopyright', 'TEST ');
-        $this->setConfigParam('oxpsModuleGeneratorComment', '* This is automatically generated test output.');
-
-        // Module instance mock for generation path only
-        $oModule = $this->getMock('oxpsModuleGeneratorOxModule', array('getVendorPath'));
-        $oModule->expects($this->any())->method('getVendorPath')->will(
-            $this->returnValue($this->_getTestPath('modules/test/'))
-        );
-        oxTestModules::addModuleObject('oxpsModuleGeneratorOxModule', $oModule);
-
-        @mkdir($this->_getTestPath());
-        @mkdir($this->_getTestPath('modules'));
     }
 
     /**
@@ -83,20 +67,167 @@ class Admin_oxpsAjaxDataProviderTest extends OxidEsales\TestingLibrary\UnitTestC
         parent::tearDown();
     }
 
-    public function testGetModule()
-    {
-        $this->assertInstanceOf('oxpsModuleGeneratorModule', $this->SUT->getModule());
-    }
-
     public function testGetOxModule()
     {
         $this->assertInstanceOf('oxpsModuleGeneratorOxModule', $this->SUT->getOxModule());
+    }
+
+    public function testGetModule()
+    {
+        $this->assertInstanceOf('oxpsModuleGeneratorModule', $this->SUT->getModule());
     }
 
     public function testGetValidator()
     {
         $this->assertInstanceOf('oxpsModuleGeneratorValidator', $this->SUT->getValidator());
     }
+
+    public function testGetModuleData_moduleNameEmpty_returnEmptyJsonResponse()
+    {
+        $this->setRequestParameter('moduleName', '');
+        $this->setConfigParam('oxpsModuleGeneratorVendorPrefix', 'test');
+        $oOxModule = $this->getMock(
+            'oxpsModuleGeneratorOxModule',
+            [
+                '__construct',
+                '__call',
+                'init',
+                'readGenerationOptions',
+            ]
+        );
+
+        $oOxModule->expects($this->once())->method('init')->with('', [], 'test');
+        $oOxModule->expects($this->never())->method('readGenerationOptions');
+
+        // TODO: Deprecaded solution. Need to use the way below:
+        // TODO: \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorOxModule', $oOxModule);
+        oxTestModules::addModuleObject('oxpsModuleGeneratorOxModule', $oOxModule);
+        $this->SUT->expects($this->once())->method('_returnJsonResponse')->with([]);
+
+        $this->SUT->getModuleData();
+    }
+
+    public function testGetModuleData_moduleDoesNotExist_returnEmptyJsonResponse()
+    {
+        $this->setRequestParameter('moduleName', 'NotExistingModuleName');
+        $this->setConfigParam('oxpsModuleGeneratorVendorPrefix', 'test');
+        $oOxModule = $this->getMock(
+            'oxpsModuleGeneratorOxModule',
+            [
+                '__construct',
+                '__call',
+                'init',
+                'readGenerationOptions',
+            ]
+        );
+
+        $oOxModule->expects($this->once())->method('init')->with('NotExistingModuleName', [], 'test');
+        $oOxModule->expects($this->never())->method('readGenerationOptions');
+
+        oxTestModules::addModuleObject('oxpsModuleGeneratorOxModule', $oOxModule);
+
+        $oValidator = $this->getMock(
+            'oxpsModuleGeneratorValidator',
+            [
+                '__construct',
+                '__call',
+                'moduleExists',
+            ]
+        );
+        $oValidator->expects($this->once())->method('moduleExists')
+            ->with('NotExistingModuleName')
+            ->will($this->returnValue(false));
+
+        oxTestModules::addModuleObject('oxpsModuleGeneratorValidator', $oValidator);
+
+        $this->SUT->expects($this->once())->method('_returnJsonResponse')->with([]);
+
+        $this->SUT->getModuleData();
+    }
+
+    public function testGetModuleData_moduleExists_returnGenerationOptionsAsJsonResponse()
+    {
+        $this->setRequestParameter('moduleName', 'existingModuleName');
+        $this->setConfigParam('oxpsModuleGeneratorVendorPrefix', 'test');
+        $oOxModule = $this->getMock(
+            'oxpsModuleGeneratorOxModule',
+            [
+                '__construct',
+                '__call',
+                'init',
+                'readGenerationOptions',
+            ]
+        );
+
+        $oOxModule->expects($this->once())->method('init')->with('existingModuleName', [], 'test');
+        $oOxModule->expects($this->once())->method('readGenerationOptions')
+            ->with('existingModuleName')
+            ->will(
+                $this->returnValue(
+                    [
+                        'name' => 'existingModuleName',
+                    ]
+                )
+            );
+
+        oxTestModules::addModuleObject('oxpsModuleGeneratorOxModule', $oOxModule);
+
+        $oValidator = $this->getMock(
+            'oxpsModuleGeneratorValidator',
+            [
+                '__construct',
+                '__call',
+                'moduleExists',
+            ]
+        );
+        $oValidator->expects($this->once())->method('moduleExists')
+            ->with('existingModuleName')
+            ->will($this->returnValue(true));
+
+        oxTestModules::addModuleObject('oxpsModuleGeneratorValidator', $oValidator);
+
+        $this->SUT->expects($this->once())->method('_returnJsonResponse')->with(
+            [
+                'name' => 'existingModuleName',
+            ]
+        );
+
+        $this->SUT->getModuleData();
+    }
+
+    public function testValidateExtendClassNames_enteredClassName_returnExistingExtensibleClass()
+    {
+        $this->setRequestParameter('extendClasses', 'existingClass');
+        $oValidator = $this->getMock(
+            'oxpsModuleGeneratorValidator',
+            [
+                '__construct',
+                '__call',
+                'validateAndLinkClasses',
+            ]
+        );
+
+        $oValidator->expects($this->once())->method('validateAndLinkClasses')
+            ->with('existingClass')
+            ->will(
+                $this->returnValue(
+                    [
+                        'className' => 'existingClass',
+                    ]
+                )
+            );
+
+        oxTestModules::addModuleObject('oxpsModuleGeneratorValidator', $oValidator);
+
+        $this->SUT->expects($this->once())->method('_returnJsonResponse')->with(
+            [
+                'className' => 'existingClass',
+            ]
+        );
+
+        $this->SUT->validateExtendClassNames();
+    }
+
 
     /**
      * Get a path inside test folder in temp directory.

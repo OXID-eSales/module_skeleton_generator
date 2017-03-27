@@ -510,8 +510,6 @@ class oxpsModuleGeneratorOxModuleTest extends OxidTestCase
 
     public function testGenerateModule()
     {
-        $this->markTestIncomplete('To be fixed later, when final v0.6.0 is implemented and structure is clear.'); // TODO DDR:
-
         // Config mock
         $oConfig = $this->getMock('oxConfig', array('getModulesDir'));
         $oConfig->expects($this->any())->method('getModulesDir')->will($this->returnValue('/path/to/modules/'));
@@ -519,15 +517,13 @@ class oxpsModuleGeneratorOxModuleTest extends OxidTestCase
 
         // The generator module main class mock
         $oGeneratorModule = $this->getMock('oxpsModuleGeneratorModule', array('__construct', '__call', 'getPath'));
-        $oGeneratorModule->expects($this->once())->method('getPath')->will(
-            $this->returnValue('/path/to/modules/oxps/modulegenerator/')
-        );
+
         oxRegistry::set('oxpsModuleGeneratorModule', $oGeneratorModule);
 
         // File system helper mock
         $oFileSystem = $this->getMock('oxpsModuleGeneratorFileSystem', array('__call', 'copyFolder'));
         $oFileSystem->expects($this->once())->method('copyFolder')->with(
-            '/path/to/modules/oxps/modulegenerator/Core/module.tpl/module/',
+            '/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/module/',
             '/path/to/modules/oxps/MyModule/'
         );
 
@@ -558,16 +554,15 @@ class oxpsModuleGeneratorOxModuleTest extends OxidTestCase
         $oHelper->expects($this->once())->method('createVendorMetadata')->with('/path/to/modules/oxps/');
         $oHelper->expects($this->once())->method('getFileSystemHelper')->will($this->returnValue($oFileSystem));
         $oHelper->expects($this->once())->method('createClassesToExtend')
-            ->with('/path/to/modules/oxps/modulegenerator/Core/module.tpl/oxpsExtendClass.php.tpl')
+            ->with('/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsExtendClass.php.tpl')
             ->will($this->returnValue(array('models/oxpsmymoduleoxarticle.php' => 'oxArticle')));
         $oHelper->expects($this->once())->method('createNewClassesAndTemplates')
-            ->with('/path/to/modules/oxps/modulegenerator/')
+            ->with('/path/to/modules/oxps/ModuleGenerator/')
             ->will($this->returnValue(array('models/oxpsmymoduleitem.php' => 'oxpsMyModuleItem')));
         $oHelper->expects($this->once())->method('createBlock')->with('/path/to/modules/oxps/MyModule/');
         $oHelper->expects($this->once())->method('fillTestsFolder')->with(
             $oRenderHelper,
-            '/path/to/modules/oxps/modulegenerator/',
-            '/path/to/modules/oxps/MyModule/',
+            '/path/to/modules/oxps/ModuleGenerator/',
             array('models/oxpsmymoduleoxarticle.php' => 'oxArticle'),
             array('models/oxpsmymoduleitem.php' => 'oxpsMyModuleItem')
         );
@@ -603,7 +598,7 @@ class oxpsModuleGeneratorOxModuleTest extends OxidTestCase
         $this->assertSame('oxps', $this->SUT->getVendorPrefix());
         $this->assertSame(array(), $this->SUT->getAuthorData());
         $this->assertSame('oxpsmymodule', $this->SUT->getModuleId(false));
-        $this->assertSame('mymodule', $this->SUT->getModuleFolderName());
+        $this->assertSame('MyModule', $this->SUT->getModuleFolderName());
         $this->assertSame('oxpsMyModule', $this->SUT->getModuleClassName());
         $this->assertSame('OXPS My Module', $this->SUT->getTitle());
         $this->assertSame(array('oxarticle' => 'models/'), $this->SUT->getClassesToExtend());
@@ -640,12 +635,13 @@ class oxpsModuleGeneratorOxModuleTest extends OxidTestCase
      */
     public function testGetFileNameSuffix($sFilePath, $sExpectedSuffix)
     {
-        // TODO DDR:
-        $this->markTestSkipped('Module data is not set. Try it in next v6 release.');
+        $SUT = $this->GetMock('oxpsModuleGeneratorOxModule', array('__call', 'getInfo'));
+        $SUT->expects($this->any())->method('getInfo')
+            ->will($this->returnValue('oxpsmymodule'))
+        ;
 
-        $this->SUT->setModuleData(array('id' => 'oxpsmymodule'));
-
-        $this->assertSame($sExpectedSuffix, $this->SUT->getFileNameSuffix($sFilePath));
+        /** @var oxpsModuleGeneratorOxModule $SUT */
+        $this->assertSame($sExpectedSuffix, $SUT->getFileNameSuffix($sFilePath));
     }
 
     public function filePathsDataProvider()

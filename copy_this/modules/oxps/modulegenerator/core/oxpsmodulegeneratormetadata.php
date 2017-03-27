@@ -96,20 +96,20 @@ class oxpsModuleGeneratorMetadata extends Base
      *
      * @var null|oxpsModuleGeneratorValidator
      */
-    protected $oValidator;
+    protected $_oValidator;
 
     /**
      *
      * @return oxpsModuleGeneratorValidator
      */
-    protected function _getValidationController()
+    protected function _getValidator()
     {
-        if (null === $this->oValidator) {
+        if (null === $this->_oValidator) {
             /** @var oxpsModuleGeneratorValidator oValidator */
-            $this->oValidator = oxNew('oxpsModuleGeneratorValidator');
+            $this->_oValidator = oxNew('oxpsModuleGeneratorValidator');
         }
 
-        return $this->oValidator;
+        return $this->_oValidator;
     }
 
     /**
@@ -150,7 +150,7 @@ class oxpsModuleGeneratorMetadata extends Base
         $aMetadataExtendClasses = [];
         if ($this->_isValidMetadataKey($sMetadataArrayKey)) {
             $aMetadataExtendClassKeys = array_keys($this->_aMetadata[$sMetadataArrayKey]);
-            $aMetadataExtendClasses = $this->_getValidationController()->validateAndLinkClasses(
+            $aMetadataExtendClasses = $this->_getValidator()->validateAndLinkClasses(
                 implode(PHP_EOL, $aMetadataExtendClassKeys)
             );
         }
@@ -255,7 +255,7 @@ class oxpsModuleGeneratorMetadata extends Base
                 }
             }
 
-            $aParsedBlocks = $this->_getValidationController()->parseBlocksData(
+            $aParsedBlocks = $this->_getValidator()->parseBlocksData(
                 implode(PHP_EOL, $aMetadataBlocks),
                 $sVendorPrefix,
                 $sModuleName

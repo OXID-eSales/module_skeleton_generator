@@ -27,7 +27,7 @@
 /**
  * Metadata version
  */
-$sMetadataVersion = '1.3';
+$sMetadataVersion = '1.1';
 
 /**
  * Module information
@@ -45,7 +45,7 @@ $aModule = array(
     'url'         => 'http://www.oxid-esales.com',
     'email'       => 'info@oxid-esales.com',
     'extend'      => array(
-        \OxidEsales\EshopCommunity\Core\Module::class => 'oxps/ModuleGenerator/Core/oxpsModuleGeneratorOxModule',
+        \OxidEsales\Eshop\Core\Module\Module::class => 'oxps/ModuleGenerator/Core/oxpsModuleGeneratorOxModule',
     ),
     'files'       => array(
         'Admin_oxpsModuleGenerator'     => 'oxps/ModuleGenerator/Application/Controller/Admin/Admin_oxpsModuleGenerator.php',

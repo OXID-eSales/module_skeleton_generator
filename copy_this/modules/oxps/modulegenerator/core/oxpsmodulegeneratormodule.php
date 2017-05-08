@@ -24,7 +24,7 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
-use \OxidEsales\Eshop\Core\Module;
+use \OxidEsales\Eshop\Core\Module\Module;
 use \OxidEsales\Eshop\Core\Registry;
 
 /**

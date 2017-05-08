@@ -287,24 +287,24 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
                 array(
                     'widgets'     => array(
                         'aClasses'       => array(),
-                        'sTemplateName'  => 'oxpswidgetclass.php.tpl',
+                        'sTemplateName'  => 'oxpsWidgetClass.php.tpl',
                         'sInModulePath'  => 'components/widgets/',
                         'sTemplatesPath' => 'widgets',
                     ),
                     'controllers' => array(
                         'aClasses'       => array(),
-                        'sTemplateName'  => 'oxpscontrollerclass.php.tpl',
+                        'sTemplateName'  => 'oxpsControllerClass.php.tpl',
                         'sInModulePath'  => 'controllers/',
                         'sTemplatesPath' => 'pages',
                     ),
                     'models'      => array(
                         'aClasses'      => array(),
-                        'sTemplateName' => 'oxpsmodelclass.php.tpl',
+                        'sTemplateName' => 'oxpsModelClass.php.tpl',
                         'sInModulePath' => 'models/',
                     ),
                     'list_models' => array(
                         'aClasses'      => array(),
-                        'sTemplateName' => 'oxpslistmodelclass.php.tpl',
+                        'sTemplateName' => 'oxpsListModelClass.php.tpl',
                         'sInModulePath' => 'models/',
                     ),
                 )
@@ -611,7 +611,7 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
             ->with('/path/to/modules/oxps/mymodule/tests/unit/')
             ->will($this->returnValue(true));
         $oFileSystem->expects($this->at(1))->method('isFile')
-            ->with('/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpstestclass.php.tpl')
+            ->with('/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsTestClass.php.tpl')
             ->will($this->returnValue(true));
         $oFileSystem->expects($this->at(2))->method('isDir')
             ->with('/path/to/modules/oxps/mymodule/tests/unit/modules/')
@@ -654,7 +654,7 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
             ->with('/path/to/modules/oxps/mymodule/tests/unit/')
             ->will($this->returnValue(true));
         $oFileSystem->expects($this->at(1))->method('isFile')
-            ->with('/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpstestclass.php.tpl')
+            ->with('/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsTestClass.php.tpl')
             ->will($this->returnValue(false));
         $oFileSystem->expects($this->never())->method('copyFile');
         oxRegistry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
@@ -711,7 +711,7 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
             ->with('/path/to/modules/oxps/mymodule/tests/unit/')
             ->will($this->returnValue(true));
         $oFileSystem->expects($this->at(1))->method('isFile')
-            ->with('/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpstestclass.php.tpl')
+            ->with('/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsTestClass.php.tpl')
             ->will($this->returnValue(true));
         $oFileSystem->expects($this->at(2))->method('isDir')
             ->with('/path/to/modules/oxps/mymodule/tests/unit/modules/')
@@ -722,7 +722,7 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
             '/path/to/modules/oxps/mymodule/tests/unit/modules/models/'
         );
         $oFileSystem->expects($this->at(4))->method('copyFile')->with(
-            '/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpstestclass.php.tpl',
+            '/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsTestClass.php.tpl',
             '/path/to/modules/oxps/mymodule/tests/unit/modules/models/oxpsmymoduleoxarticleTest.php'
         );
 
@@ -731,7 +731,7 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
             '/path/to/modules/oxps/mymodule/tests/unit/modules/controllers/'
         );
         $oFileSystem->expects($this->at(6))->method('copyFile')->with(
-            '/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpstestclass.php.tpl',
+            '/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsTestClass.php.tpl',
             '/path/to/modules/oxps/mymodule/tests/unit/modules/controllers/oxpsmymodulepageTest.php'
         );
 
@@ -740,7 +740,7 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
             '/path/to/modules/oxps/mymodule/tests/unit/modules/models/'
         );
         $oFileSystem->expects($this->at(8))->method('copyFile')->with(
-            '/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpstestclass.php.tpl',
+            '/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsTestClass.php.tpl',
             '/path/to/modules/oxps/mymodule/tests/unit/modules/models/oxpsmymoduleitemTest.php'
         );
 

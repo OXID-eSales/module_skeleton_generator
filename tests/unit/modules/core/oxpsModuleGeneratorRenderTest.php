@@ -82,7 +82,7 @@ class oxpsModuleGeneratorRenderTest extends OxidTestCase
      * ----------------------------------------------------------------------------------------------------------
      *  'oxpsmymodule_de_lang.php'       => 'translations/de/oxpsmodule_lang.php.tpl',   0-1         1-5
      *  'oxpsmymodule_en_lang.php'       => 'translations/en/oxpsmodule_lang.php.tpl',   2-3         6-10
-     *  'oxpsmymodulemodule.php'         => 'core/oxpsmodule.php.tpl',                   4-5         11-15
+     *  'oxpsmymodulemodule.php'         => 'core/oxpsModule.php.tpl',                   4-5         11-15
      *  'docs/install.sql',                                                              6           16-20
      *  'docs/README.txt',                                                               7           21-25
      *  'docs/uninstall.sql',                                                            8           26-30

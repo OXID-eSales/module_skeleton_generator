@@ -33,7 +33,7 @@
 /**
  * Class oxpsModuleGeneratorOxModule_parent
  */
-class oxpsModuleGeneratorOxModule_parent extends \OxidEsales\Eshop\Core\Module
+class oxpsModuleGeneratorOxModule_parent extends \OxidEsales\Eshop\Core\Module\Module
 {
 
 }

@@ -17,7 +17,7 @@ jQuery.widget(
         },
 
         _excludedModuleNames: [
-            'ModuleGenerator',
+            'ModuleGenerator'
         ],
         _moduleNameSelector: "input[name='modulegenerator_module_name']",
         _moduleClassesSelector: "textarea[name='modulegenerator_extend_classes']",

@@ -8,6 +8,7 @@
 
 [{assign var="sNotificationSuccessText" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_SUCCESS"|oxmultilangassign}]
 [{assign var="sNotificationErrorText" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_ERROR"|oxmultilangassign}]
+[{assign var="sNotificationErrorExcludedModuleText" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXCLUDED_MODULE_ERROR"|oxmultilangassign}]
 [{assign var="sNotificationWarningText" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_WARNING"|oxmultilangassign}]
 [{assign var="sNotificationValidClassesText" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_VALID_CLASSES"|oxmultilangassign}]
 
@@ -19,6 +20,7 @@
 
                     notificationSuccessText: '`$sNotificationSuccessText`',
                     notificationErrorText: '`$sNotificationErrorText`',
+                    notificationErrorExcludedModuleText: '`$sNotificationErrorExcludedModuleText`',
                     notificationWarningText: '`$sNotificationWarningText`',
                     notificationValidClassesText: '`$sNotificationValidClassesText`'
                 });

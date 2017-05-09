@@ -11,10 +11,14 @@ jQuery.widget(
 
             notificationSuccessText: '',
             notificationErrorText: '',
+            notificationErrorExcludedModuleText: '',
             notificationWarningText: '',
             notificationValidClassesText: ''
         },
 
+        _excludedModuleNames: [
+            'ModuleGenerator',
+        ],
         _moduleNameSelector: "input[name='modulegenerator_module_name']",
         _moduleClassesSelector: "textarea[name='modulegenerator_extend_classes']",
         _moduleControllersSelector: "textarea[name='modulegenerator_controllers']",
@@ -62,6 +66,10 @@ jQuery.widget(
             jQuery(this._moduleNameSelector).live('keyup change', function () {
                 if (self._isEmptyField(this)) {
                     self._hideNotification(this);
+                    self._hideExistingComponentNotification();
+                }
+                else if (self._isExcludedName(this)) {
+                    self._showNotification(this, 'error', self.options.notificationErrorExcludedModuleText);
                     self._hideExistingComponentNotification();
                 }
                 else if (self._validateCamelCaseName(this)) {
@@ -234,7 +242,7 @@ jQuery.widget(
                 url: self.options.extendClassesValidationUrl,
                 data: {extendClasses: jQuery(oElement).val()},
                 success: function (data) {
-                    if (null != data) {
+                    if (null !== data) {
                         self._showExtendClassesHtmlResponse(oElement, data);
                     }
                 }
@@ -371,7 +379,13 @@ jQuery.widget(
          * @param oElement
          */
         _isEmptyField: function (oElement) {
-            if ('' == jQuery(oElement).val()) {
+            if ('' === jQuery(oElement).val()) {
+                return true;
+            }
+        },
+
+        _isExcludedName: function (oElement) {
+            if (jQuery.inArray(jQuery(oElement).val(), this._excludedModuleNames) > -1) {
                 return true;
             }
         },
@@ -431,7 +445,7 @@ jQuery.widget(
             var aSplitInput = sEnteredInput.split(/\n/);
 
             aSplitInput.forEach(function (sInput) {
-                if (sInput.trim() != '') {
+                if (sInput.trim() !== '') {
                     aValidatedInput[sInput] = !(!(self[regexFunction](sInput)));
                 }
             });

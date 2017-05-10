@@ -1,7 +1,7 @@
 <?php
 [{$oModule->renderFileComment()}]
 
-use \OxidEsales\Eshop\Core\Module;
+use \OxidEsales\Eshop\Core\Module\Module;
 use \OxidEsales\Eshop\Core\Registry;
 
 [{assign var='sModuleClassName' value=$oModule->getModuleClassName()|cat:'Module'}]

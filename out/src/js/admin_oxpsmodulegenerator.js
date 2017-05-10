@@ -13,12 +13,26 @@ jQuery.widget(
             notificationErrorText: '',
             notificationErrorExcludedModuleText: '',
             notificationWarningText: '',
-            notificationValidClassesText: ''
+            notificationValidClassesText: '',
+
+            notificationExistingClasses: '',
+            notificationExistingControllers: '',
+            notificationExistingModels: '',
+            notificationExistingLists: '',
+            notificationExistingWidgets: '',
+            notificationExistingBlocks: '',
+            notificationExistingSettings: '',
+
+            notificationSlideDownSpeed: 800
         },
 
+        /**
+         * List of excluded modules from Edit Mode.
+         */
         _excludedModuleNames: [
             'ModuleGenerator'
         ],
+
         _moduleNameSelector: "input[name='modulegenerator_module_name']",
         _moduleClassesSelector: "textarea[name='modulegenerator_extend_classes']",
         _moduleControllersSelector: "textarea[name='modulegenerator_controllers']",
@@ -61,8 +75,10 @@ jQuery.widget(
         _bindEvents: function () {
             var self = this;
 
-            // From jQuery 1.7+ live() is deprecated and should be changed to on() method after jQuery version update.
 
+            this._clearFormInputValuesOnSuccessfulSubmit();
+
+            // From jQuery 1.7+ live() is deprecated and should be changed to on() method after jQuery version update.
             jQuery(this._moduleNameSelector).live('keyup change', function () {
                 if (self._isEmptyField(this)) {
                     self._hideNotification(this);
@@ -187,34 +203,48 @@ jQuery.widget(
             var sNewBlocks = self._buildSelectiveHtmlResponse(oData['aNewBlocks'], true);
             var sNewSettings = self._buildSelectiveHtmlResponse(oData['aModuleSettings'], false);
 
-            jQuery(self._cssEditModeSelectorClass).slideDown();
+            jQuery(self._cssEditModeSelectorClass).slideDown(self.options.notificationSlideDownSpeed);
 
             if (sExtendClasses) {
-                jQuery(self._moduleClassesSelectorNoticeDiv).html(sExtendClasses).slideDown();
+                jQuery(self._moduleClassesSelectorNoticeDiv)
+                    .html(self.options.notificationExistingClasses + sExtendClasses)
+                    .slideDown(self.options.notificationSlideDownSpeed);
             }
 
             if (sNewControllers) {
-                jQuery(self._moduleControllersSelectorNoticeDiv).html(sNewControllers).slideDown();
+                jQuery(self._moduleControllersSelectorNoticeDiv)
+                    .html(self.options.notificationExistingControllers + sNewControllers)
+                    .slideDown(self.options.notificationSlideDownSpeed);
             }
 
             if (sNewModels) {
-                jQuery(self._moduleModelsSelectorNoticeDiv).html(sNewModels).slideDown();
+                jQuery(self._moduleModelsSelectorNoticeDiv)
+                    .html(self.options.notificationExistingModels + sNewModels)
+                    .slideDown(self.options.notificationSlideDownSpeed);
             }
 
             if (sNewLists) {
-                jQuery(self._moduleListsSelectorNoticeDiv).html(sNewLists).slideDown();
+                jQuery(self._moduleListsSelectorNoticeDiv)
+                    .html(self.options.notificationExistingLists + sNewLists)
+                    .slideDown(self.options.notificationSlideDownSpeed);
             }
 
             if (sNewWidgets) {
-                jQuery(self._moduleWidgetsSelectorNoticeDiv).html(sNewWidgets).slideDown();
+                jQuery(self._moduleWidgetsSelectorNoticeDiv)
+                    .html(self.options.notificationExistingWidgets + sNewWidgets)
+                    .slideDown(self.options.notificationSlideDownSpeed);
             }
 
             if (sNewBlocks) {
-                jQuery(self._moduleBlocksSelectorNoticeDiv).html(sNewBlocks).slideDown();
+                jQuery(self._moduleBlocksSelectorNoticeDiv)
+                    .html(self.options.notificationExistingBlocks + sNewBlocks)
+                    .slideDown(self.options.notificationSlideDownSpeed);
             }
 
             if (sNewSettings) {
-                jQuery(self._moduleSettingsNameSelectorNoticeDiv).html(sNewSettings).slideDown();
+                jQuery(self._moduleSettingsNameSelectorNoticeDiv)
+                    .html(self.options.notificationExistingSettings + sNewSettings)
+                    .slideDown(self.options.notificationSlideDownSpeed);
             }
         },
 
@@ -483,9 +513,9 @@ jQuery.widget(
          *
          * @returns {int}
          */
-        _inArrayIn: function(elem, arr, i) {
+        _inArrayIn: function (elem, arr, i) {
             // not looking for a string anyways, use default method
-            if (typeof elem !== 'string'){
+            if (typeof elem !== 'string') {
                 return jQuery.inArray.apply(this, arguments);
             }
             // check if array is populated
@@ -493,14 +523,27 @@ jQuery.widget(
                 var len = arr.length;
                 i = i ? (i < 0 ? Math.max(0, len + i) : i) : 0;
                 elem = elem.toLowerCase();
-                for (i; i < len; i++){
-                    if (i in arr && arr[i].toLowerCase() === elem){
+                for (i; i < len; i++) {
+                    if (i in arr && arr[i].toLowerCase() === elem) {
                         return i;
                     }
                 }
             }
             // stick with inArray/indexOf and return -1 on no match
             return -1;
+        },
+
+        /**
+         * Check for 'messagebox' div (appears on form submit success) and clear input fields if true.
+         */
+        _clearFormInputValuesOnSuccessfulSubmit: function () {
+            if (jQuery('.messagebox').length) {
+                jQuery(':input', '#modulegenerator_form')
+                    .not(":button, :submit, :reset, [name='modulegenerator_module_name']")
+                    // .removeAttr('checked')
+                    // .removeAttr('selected')
+                    .val('');
+            }
         }
     }
 );

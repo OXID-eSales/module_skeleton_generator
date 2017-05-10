@@ -130,20 +130,13 @@ div#oxpsmodulegenerator .component-existing-classes,
 div#oxpsmodulegenerator .component-existing-controllers,
 div#oxpsmodulegenerator .component-existing-models,
 div#oxpsmodulegenerator .component-existing-lists,
-div#oxpsmodulegenerator .component-existing-widgets
-{
-    background-color: rgba(255, 204, 51, 0.58);
-    width: 182px;
-}
-
-div#oxpsmodulegenerator .component-existing-blocks {
-    background-color: rgba(255, 204, 51, 0.58);
-    width: 343px;
-}
-
+div#oxpsmodulegenerator .component-existing-widgets,
+div#oxpsmodulegenerator .component-existing-blocks,
 div#oxpsmodulegenerator .component-existing-settings {
-    background-color: rgba(255, 204, 51, 0.58);
-    width: 343px;
+    background-color: rgba(255, 204, 51, 0.30);
+    border: 1px solid rgba(255, 204, 51, 1);
+    margin: 0 0 3px 0;
+    line-height: 16px;
 }
 
 /**

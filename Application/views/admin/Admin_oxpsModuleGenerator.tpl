@@ -12,6 +12,15 @@
 [{assign var="sNotificationWarningText" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_WARNING"|oxmultilangassign}]
 [{assign var="sNotificationValidClassesText" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_VALID_CLASSES"|oxmultilangassign}]
 
+[{assign var="sNotificationExistingClasses" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXISTING_CLASSES"|oxmultilangassign}]
+[{assign var="sNotificationExistingControllers" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXISTING_CONTROLLERS"|oxmultilangassign}]
+[{assign var="sNotificationExistingModels" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXISTING_MODELS"|oxmultilangassign}]
+[{assign var="sNotificationExistingLists" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXISTING_LISTS"|oxmultilangassign}]
+[{assign var="sNotificationExistingWidgets" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXISTING_WIDGETS"|oxmultilangassign}]
+[{assign var="sNotificationExistingBlocks" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXISTING_BLOCKS"|oxmultilangassign}]
+[{assign var="sNotificationExistingSettings" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXISTING_SETTINGS"|oxmultilangassign}]
+
+
 [{oxscript add="
             jQuery(document).ready(function () {
                 jQuery('#oxpsmodulegenerator').wizard({
@@ -22,7 +31,15 @@
                     notificationErrorText: '`$sNotificationErrorText`',
                     notificationErrorExcludedModuleText: '`$sNotificationErrorExcludedModuleText`',
                     notificationWarningText: '`$sNotificationWarningText`',
-                    notificationValidClassesText: '`$sNotificationValidClassesText`'
+                    notificationValidClassesText: '`$sNotificationValidClassesText`',
+
+                    notificationExistingClasses: '`$sNotificationExistingClasses`',
+                    notificationExistingControllers: '`$sNotificationExistingClasses`',
+                    notificationExistingModels: '`$sNotificationExistingModels`',
+                    notificationExistingLists: '`$sNotificationExistingLists`',
+                    notificationExistingWidgets: '`$sNotificationExistingWidgets`',
+                    notificationExistingBlocks: '`$sNotificationExistingBlocks`',
+                    notificationExistingSettings: '`$sNotificationExistingSettings`'
                 });
             });"
            priority=10}]

@@ -108,6 +108,10 @@ div#oxpsmodulegenerator .notice-info  {
     background-color: #008fcd;
 }
 
+div#oxpsmodulegenerator .notice-notice  {
+    background-color: #ff8000;
+}
+
 div#oxpsmodulegenerator .notice-hidden,
 div#oxpsmodulegenerator .component-hidden
 {
@@ -140,5 +144,23 @@ div#oxpsmodulegenerator .component-existing-blocks {
 div#oxpsmodulegenerator .component-existing-settings {
     background-color: rgba(255, 204, 51, 0.58);
     width: 343px;
+}
+
+/**
+Module settings Name validation input text colors
+ */
+div#oxpsmodulegenerator .default-settings-color {
+    background-color: white;
+    color: black;
+}
+
+div#oxpsmodulegenerator .correct-settings-color {
+    background-color: #EBFFDE;
+    color: green;
+}
+
+div#oxpsmodulegenerator .invalid-settings-color {
+    background-color: #FFE2DE;
+    color: red;
 }
 

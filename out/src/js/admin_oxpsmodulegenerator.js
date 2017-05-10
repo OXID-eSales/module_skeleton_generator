@@ -11,10 +11,14 @@ jQuery.widget(
 
             notificationSuccessText: '',
             notificationErrorText: '',
+            notificationErrorExcludedModuleText: '',
             notificationWarningText: '',
             notificationValidClassesText: ''
         },
 
+        _excludedModuleNames: [
+            'ModuleGenerator'
+        ],
         _moduleNameSelector: "input[name='modulegenerator_module_name']",
         _moduleClassesSelector: "textarea[name='modulegenerator_extend_classes']",
         _moduleControllersSelector: "textarea[name='modulegenerator_controllers']",
@@ -64,6 +68,10 @@ jQuery.widget(
                     self._hideNotification(this);
                     self._hideExistingComponentNotification();
                 }
+                else if (self._isExcludedName(this)) {
+                    self._showNotification(this, 'notice', self.options.notificationErrorExcludedModuleText);
+                    self._hideExistingComponentNotification();
+                }
                 else if (self._validateCamelCaseName(this)) {
                     self._requestModuleNameJsonResponse(this);
                 } else {
@@ -96,24 +104,14 @@ jQuery.widget(
                 self._validateBlocksFieldEntry(this);
             });
 
-            // TODO: Extract CSS values to css file
             jQuery(this._moduleSettingsNameSelector).live('keyup', function () {
                 if (self._isEmptyField(this)) {
-                    jQuery(this).css({
-                        'background-color': 'white',
-                        'color': 'black'
-                    });
+                    jQuery(this).removeClass().addClass('default-settings-color');
                 }
                 else if (self._camelCaseRegex(jQuery(this).val())) {
-                    jQuery(this).css({
-                        'background-color': '#EBFFDE',
-                        'color': 'green'
-                    });
+                    jQuery(this).removeClass().addClass('correct-settings-color');
                 } else {
-                    jQuery(this).css({
-                        'background-color': '#FFE2DE',
-                        'color': 'red'
-                    });
+                    jQuery(this).removeClass().addClass('invalid-settings-color');
                 }
             });
 
@@ -138,7 +136,7 @@ jQuery.widget(
                     .find(self._cssRemoveSettingsLineButtonClass).remove().end()
                     .appendTo(self._cssSettingsBodyId)
                     .append('<input type="button" value="REMOVE" class="removeLineButton" id="' + iCleanId + '">')
-                    .find("input[type='text'], textarea").val('').css('backgroundColor', 'white')
+                    .find("input[type='text'], textarea").val('').removeClass()
                 ;
             });
 
@@ -234,7 +232,7 @@ jQuery.widget(
                 url: self.options.extendClassesValidationUrl,
                 data: {extendClasses: jQuery(oElement).val()},
                 success: function (data) {
-                    if (null != data) {
+                    if (null !== data) {
                         self._showExtendClassesHtmlResponse(oElement, data);
                     }
                 }
@@ -349,7 +347,7 @@ jQuery.widget(
             if (self._isEmptyField(oElement)) {
                 self._hideNotification(oElement);
             } else if ((self._countNewLines(sEnteredInput)) > 0) {
-                if (Object.values(self._splitNewLines(sEnteredInput, sRegexFunction)).indexOf(false) > -1) {
+                if (Object.values(self._splitNewLines(sEnteredInput, sRegexFunction)).indexOf(false) !== -1) {
                     self._showNotification(oElement, 'error', self.options.notificationErrorText);
                 } else {
                     self._showNotification(oElement, 'success', self.options.notificationSuccessText);
@@ -371,7 +369,18 @@ jQuery.widget(
          * @param oElement
          */
         _isEmptyField: function (oElement) {
-            if ('' == jQuery(oElement).val()) {
+            if ('' === jQuery(oElement).val()) {
+                return true;
+            }
+        },
+
+        /**
+         * @param oElement
+         *
+         * @returns {boolean}
+         */
+        _isExcludedName: function (oElement) {
+            if (this._inArrayIn(jQuery(oElement).val(), this._excludedModuleNames, 0) !== -1) {
                 return true;
             }
         },
@@ -390,6 +399,9 @@ jQuery.widget(
             ;
         },
 
+        /**
+         * @param oElement
+         */
         _hideNotification: function (oElement) {
             jQuery(oElement).siblings(this._cssNoticeSelectorClass).fadeOut(500);
         },
@@ -431,7 +443,7 @@ jQuery.widget(
             var aSplitInput = sEnteredInput.split(/\n/);
 
             aSplitInput.forEach(function (sInput) {
-                if (sInput.trim() != '') {
+                if (sInput.trim() !== '') {
                     aValidatedInput[sInput] = !(!(self[regexFunction](sInput)));
                 }
             });
@@ -459,6 +471,36 @@ jQuery.widget(
                 return this.className.match(/\bcomponent-existing/);
             }).slideUp();
 
+        },
+
+        /**
+         * Case insensitive $.inArray (http://api.jquery.com/jquery.inarray/)
+         * $.inArrayIn(value, array [, fromIndex])
+         *
+         * @param {string}  elem        The value to search for
+         * @param {Array}   arr         An array through which to search.
+         * @param {int}     i           The index of the array at which to begin the search. (Default: 0)
+         *
+         * @returns {int}
+         */
+        _inArrayIn: function(elem, arr, i) {
+            // not looking for a string anyways, use default method
+            if (typeof elem !== 'string'){
+                return jQuery.inArray.apply(this, arguments);
+            }
+            // check if array is populated
+            if (arr) {
+                var len = arr.length;
+                i = i ? (i < 0 ? Math.max(0, len + i) : i) : 0;
+                elem = elem.toLowerCase();
+                for (i; i < len; i++){
+                    if (i in arr && arr[i].toLowerCase() === elem){
+                        return i;
+                    }
+                }
+            }
+            // stick with inArray/indexOf and return -1 on no match
+            return -1;
         }
     }
 );

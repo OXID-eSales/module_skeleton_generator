@@ -98,18 +98,22 @@ div#oxpsmodulegenerator .notice {
 
 div#oxpsmodulegenerator .notice-error  {
     background-color: red;
+    border: 1px solid #a60000;
 }
 
 div#oxpsmodulegenerator .notice-success  {
     background-color: #009a22;
+    border: 1px solid #006500;
 }
 
 div#oxpsmodulegenerator .notice-info  {
     background-color: #008fcd;
+    border: 1px solid #054a91;
 }
 
 div#oxpsmodulegenerator .notice-notice  {
     background-color: #ff8000;
+    border: 1px solid #a44300;
 }
 
 div#oxpsmodulegenerator .notice-hidden,

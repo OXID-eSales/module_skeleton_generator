@@ -1,4 +1,27 @@
 /**
+ * This file is part of OXID Module Skeleton Generator module.
+ *
+ * OXID Module Skeleton Generator module is free software:
+ * you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ *
+ * OXID Module Skeleton Generator module is distributed in
+ * the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with OXID Module Skeleton Generator module.
+ * If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @category      module
+ * @package       ModuleGenerator
+ * @author        OXID Professional services
+ * @link          http://www.oxid-esales.com
+ * @copyright (C) OXID eSales AG 2003-2017
+ *
  * jQuery widget for Module Generation form.
  * Handles data validation, edited module data loading, etc.
  */
@@ -79,7 +102,11 @@ jQuery.widget(
         _bindEvents: function () {
             var self = this;
 
+            // Trigger Edit Mode if entered module name exists.
+            // setTimeout is required for updated Ajax response.
+            setTimeout( function() {self._validateEnteredModuleName(self._moduleNameSelector) }, 600);
 
+            // Clear input values on successful Module (re)generation.
             this._clearFormInputValuesOnSuccessfulSubmit();
 
             // From jQuery 1.7+ live() is deprecated and should be changed to on() method after jQuery version update.
@@ -181,6 +208,7 @@ jQuery.widget(
             var self = this;
 
             jQuery.ajax({
+                cache: false,
                 dataType: 'json',
                 type: 'post',
                 url: self.options.moduleNameValidationUrl,
@@ -218,43 +246,43 @@ jQuery.widget(
 
             if (sExtendClasses) {
                 jQuery(self._moduleClassesSelectorNoticeDiv)
-                    .html(self.options.notificationExistingClasses + sExtendClasses)
+                    .html(self.options.notificationExistingClasses + '<hr>' + sExtendClasses)
                     .slideDown(self.options.notificationSlideDownSpeed);
             }
 
             if (sNewControllers) {
                 jQuery(self._moduleControllersSelectorNoticeDiv)
-                    .html(self.options.notificationExistingControllers + sNewControllers)
+                    .html(self.options.notificationExistingControllers + '<hr>' + sNewControllers)
                     .slideDown(self.options.notificationSlideDownSpeed);
             }
 
             if (sNewModels) {
                 jQuery(self._moduleModelsSelectorNoticeDiv)
-                    .html(self.options.notificationExistingModels + sNewModels)
+                    .html(self.options.notificationExistingModels + '<hr>' + sNewModels)
                     .slideDown(self.options.notificationSlideDownSpeed);
             }
 
             if (sNewLists) {
                 jQuery(self._moduleListsSelectorNoticeDiv)
-                    .html(self.options.notificationExistingLists + sNewLists)
+                    .html(self.options.notificationExistingLists + '<hr>' + sNewLists)
                     .slideDown(self.options.notificationSlideDownSpeed);
             }
 
             if (sNewWidgets) {
                 jQuery(self._moduleWidgetsSelectorNoticeDiv)
-                    .html(self.options.notificationExistingWidgets + sNewWidgets)
+                    .html(self.options.notificationExistingWidgets + '<hr>' + sNewWidgets)
                     .slideDown(self.options.notificationSlideDownSpeed);
             }
 
             if (sNewBlocks) {
                 jQuery(self._moduleBlocksSelectorNoticeDiv)
-                    .html(self.options.notificationExistingBlocks + sNewBlocks)
+                    .html(self.options.notificationExistingBlocks + '<hr>' + sNewBlocks)
                     .slideDown(self.options.notificationSlideDownSpeed);
             }
 
             if (sNewSettings) {
                 jQuery(self._moduleSettingsNameSelectorNoticeDiv)
-                    .html(self.options.notificationExistingSettings + sNewSettings)
+                    .html(self.options.notificationExistingSettings + '<hr>' + sNewSettings)
                     .slideDown(self.options.notificationSlideDownSpeed);
             }
         },
@@ -268,6 +296,7 @@ jQuery.widget(
             var self = this;
 
             jQuery.ajax({
+                cache: false,
                 dataType: 'json',
                 type: 'post',
                 url: self.options.extendClassesValidationUrl,
@@ -533,7 +562,7 @@ jQuery.widget(
          */
         _inArrayIn: function (elem, arr, i) {
             // not looking for a string anyways, use default method
-            if (typeof elem !== 'string') {
+            if (typeof 'string' !== elem) {
                 return jQuery.inArray.apply(this, arguments);
             }
             // check if array is populated
@@ -559,9 +588,8 @@ jQuery.widget(
                 jQuery(':input', '#modulegenerator_form')
                     .not(":button, :submit, :reset, [name='modulegenerator_module_name']")
                     // .removeAttr('checked')
-                    // .removeAttr('selected')
+                    .removeAttr('selected')
                     .val('');
-                this._validateEnteredModuleName(this._moduleNameSelector);
             }
         }
     }

@@ -210,10 +210,10 @@
                                             <td>
                                                 <select name="modulegenerator_settings[[{$i}]][type]">
                                                     [{* todo (nice2have) get possible options as array from view *}]
-                                                    <option value="bool"
-                                                            [{if $sType eq 'bool'}]selected[{/if}]>Checkbox</option>
                                                     <option value="str"
                                                             [{if $sType eq 'str'}]selected[{/if}]>String</option>
+                                                    <option value="bool"
+                                                            [{if $sType eq 'bool'}]selected[{/if}]>Checkbox</option>
                                                     <option value="num"
                                                             [{if $sType eq 'num'}]selected[{/if}]>Number</option>
                                                     <option value="arr"

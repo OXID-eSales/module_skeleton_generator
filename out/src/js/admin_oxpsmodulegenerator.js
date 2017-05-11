@@ -23,6 +23,10 @@ jQuery.widget(
             notificationExistingBlocks: '',
             notificationExistingSettings: '',
 
+            notificationExistingSettingsName: '',
+            notificationExistingSettingsType: '',
+            notificationExistingSettingsValue: '',
+
             notificationSlideDownSpeed: 800
         },
 
@@ -80,20 +84,7 @@ jQuery.widget(
 
             // From jQuery 1.7+ live() is deprecated and should be changed to on() method after jQuery version update.
             jQuery(this._moduleNameSelector).live('keyup change', function () {
-                if (self._isEmptyField(this)) {
-                    self._hideNotification(this);
-                    self._hideExistingComponentNotification();
-                }
-                else if (self._isExcludedName(this)) {
-                    self._showNotification(this, 'notice', self.options.notificationErrorExcludedModuleText);
-                    self._hideExistingComponentNotification();
-                }
-                else if (self._validateCamelCaseName(this)) {
-                    self._requestModuleNameJsonResponse(this);
-                } else {
-                    self._showNotification(this, 'error', self.options.notificationErrorText);
-                    self._hideExistingComponentNotification();
-                }
+                self._validateEnteredModuleName(this);
             });
 
             jQuery(this._moduleClassesSelector).live('keyup', function () {
@@ -159,6 +150,26 @@ jQuery.widget(
             jQuery(self._cssRemoveSettingsLineButtonClass).live('click', function () {
                 jQuery(this).closest('tr').remove();
             });
+        },
+
+        /**
+         * Check if entered module exists and show appropriate notifications
+         *
+         * @param oElement
+         */
+        _validateEnteredModuleName: function (oElement) {
+            if (this._isEmptyField(oElement)) {
+                this._hideNotification(oElement);
+                this._hideExistingComponentNotification();
+            } else if (this._isExcludedName(oElement)) {
+                this._showNotification(oElement, 'notice', this.options.notificationErrorExcludedModuleText);
+                this._hideExistingComponentNotification();
+            } else if (this._validateCamelCaseName(oElement)) {
+                this._requestModuleNameJsonResponse(oElement);
+            } else {
+                this._showNotification(oElement, 'error', this.options.notificationErrorText);
+                this._hideExistingComponentNotification();
+            }
         },
 
         /**
@@ -321,20 +332,27 @@ jQuery.widget(
             var sFormattedValue = '';
             var aObjectData = Object.keys(oMetaObject);
 
-            for (var i in aObjectData) {
-                if (blBlock) {
-                    sFormattedValue += oMetaObject[aObjectData[i]]['block']
+            if (blBlock) {
+                for (var b in aObjectData) {
+                    sFormattedValue += oMetaObject[aObjectData[b]]['block']
                         + "@"
-                        + oMetaObject[aObjectData[i]]['template']
-                        + "<br />";
-                } else {
-                    sFormattedValue += oMetaObject[aObjectData[i]]['name']
-                        + " | "
-                        + oMetaObject[aObjectData[i]]['type']
-                        + " | "
-                        + oMetaObject[aObjectData[i]]['value']
+                        + oMetaObject[aObjectData[b]]['template']
                         + "<br />";
                 }
+            } else {
+                sFormattedValue += "<table class='settings-notification'>" +
+                    "<tr>" +
+                    "<td>" + this.options.notificationExistingSettingsName + "</td>" +
+                    "<td>" + this.options.notificationExistingSettingsType + "</td>" +
+                    "<td>" + this.options.notificationExistingSettingsValue + "</td>" +
+                    "</tr>";
+                for (var s in aObjectData) {
+                    sFormattedValue += "<tr><td>" + oMetaObject[aObjectData[s]]['name'] + "</td>"
+                        + "<td>" + oMetaObject[aObjectData[s]]['type'] + "</td>"
+                        + "<td>" + oMetaObject[aObjectData[s]]['value'] + "</td></tr>"
+                    ;
+                }
+                sFormattedValue += "</table>";
             }
 
             return sFormattedValue;
@@ -543,6 +561,7 @@ jQuery.widget(
                     // .removeAttr('checked')
                     // .removeAttr('selected')
                     .val('');
+                this._validateEnteredModuleName(this._moduleNameSelector);
             }
         }
     }

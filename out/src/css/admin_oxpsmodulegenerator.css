@@ -126,6 +126,27 @@ div#oxpsmodulegenerator .component {
     color: black;
 }
 
+div#oxpsmodulegenerator table.settings-notification {
+    width: 100%;
+}
+
+div#oxpsmodulegenerator table.settings-notification tr td:nth-child(2) {
+    min-width: 60px;
+    text-align: center;
+    color: #006699;
+}
+
+div#oxpsmodulegenerator table.settings-notification tr:first-child td {
+    color: maroon;
+    text-transform: uppercase;
+    border-bottom: 1px solid #AAA;
+    padding-bottom: 3px;
+}
+
+div#oxpsmodulegenerator table.settings-notification tr td {
+    font-weight: bold;
+}
+
 div#oxpsmodulegenerator .component-existing-classes,
 div#oxpsmodulegenerator .component-existing-controllers,
 div#oxpsmodulegenerator .component-existing-models,

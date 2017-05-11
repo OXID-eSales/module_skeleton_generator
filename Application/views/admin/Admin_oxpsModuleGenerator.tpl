@@ -20,6 +20,10 @@
 [{assign var="sNotificationExistingBlocks" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXISTING_BLOCKS"|oxmultilangassign}]
 [{assign var="sNotificationExistingSettings" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXISTING_SETTINGS"|oxmultilangassign}]
 
+[{assign var="sNotificationExistingSettingsName" value="OXPS_MODULEGENERATOR_ADMIN_MODULE_SETTING_NAME"|oxmultilangassign}]
+[{assign var="sNotificationExistingSettingsType" value="OXPS_MODULEGENERATOR_ADMIN_MODULE_SETTING_TYPE"|oxmultilangassign}]
+[{assign var="sNotificationExistingSettingsValue" value="OXPS_MODULEGENERATOR_ADMIN_MODULE_SETTING_VALUE"|oxmultilangassign}]
+
 
 [{oxscript add="
             jQuery(document).ready(function () {
@@ -34,12 +38,16 @@
                     notificationValidClassesText: '`$sNotificationValidClassesText`',
 
                     notificationExistingClasses: '`$sNotificationExistingClasses`',
-                    notificationExistingControllers: '`$sNotificationExistingClasses`',
+                    notificationExistingControllers: '`$sNotificationExistingControllers`',
                     notificationExistingModels: '`$sNotificationExistingModels`',
                     notificationExistingLists: '`$sNotificationExistingLists`',
                     notificationExistingWidgets: '`$sNotificationExistingWidgets`',
                     notificationExistingBlocks: '`$sNotificationExistingBlocks`',
-                    notificationExistingSettings: '`$sNotificationExistingSettings`'
+                    notificationExistingSettings: '`$sNotificationExistingSettings`',
+
+                    notificationExistingSettingsName: '`$sNotificationExistingSettingsName`',
+                    notificationExistingSettingsType: '`$sNotificationExistingSettingsType`',
+                    notificationExistingSettingsValue: '`$sNotificationExistingSettingsValue`'
                 });
             });"
            priority=10}]

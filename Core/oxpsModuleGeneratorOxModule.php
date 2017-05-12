@@ -241,6 +241,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
     public function getModuleTitle()
     {
         $aExplodedTitle = explode(' ', $this->getTitle(), 2);
+
         return implode(' :: ', $aExplodedTitle);
     }
 
@@ -491,7 +492,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
                 }
             }
         }
-        
+
         // Set module data - initializes it with new module info
         $this->_setNewModuleData($this->_sModuleName, $aOptionsToSet);
     }
@@ -680,9 +681,13 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         $aModule = [];
         if (file_exists($sMetadataPath)) {
             try {
+                // Required for correct fetch of updated metadata.
+                if (function_exists('opcache_reset')) {
+                    opcache_reset();
+                }
                 include $sMetadataPath;
             } catch (Exception $e) {
-                // Optionally it could log to eShop standard exceptions log
+                // TODO #SVO: Optionally it could log to eShop standard exceptions log
             }
         }
 

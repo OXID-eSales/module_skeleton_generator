@@ -95,59 +95,44 @@ jQuery.widget(
 
         /**
          * Bind all events required for input fields with different logic.
-         *
-         * TODO: Would be nice to split it into several methods:
-         * TODO: e.g. move out module name event, setting name and setting button events.
          */
         _bindEvents: function () {
             var self = this;
-
             // Trigger Edit Mode if entered module name exists.
-            // setTimeout is required for updated Ajax response.
-            setTimeout( function() {self._validateEnteredModuleName(self._moduleNameSelector) }, 600);
+            self._validateEnteredModuleName(self._moduleNameSelector)
 
             // Clear input values on successful Module (re)generation.
             this._clearFormInputValuesOnSuccessfulSubmit();
+            this._moduleSettingsButtonListener();
+            this._validateComponentName();
+            this._validateSettingsName();
+        },
 
-            // From jQuery 1.7+ live() is deprecated and should be changed to on() method after jQuery version update.
-            jQuery(this._moduleNameSelector).live('keyup change', function () {
-                self._validateEnteredModuleName(this);
-            });
+        /**
+         * Check if entered module exists and show appropriate notifications
+         *
+         * @param oElement
+         */
+        _validateEnteredModuleName: function (oElement) {
+            if (this._isEmptyField(oElement)) {
+                this._hideNotification(oElement);
+                this._hideExistingComponentNotification();
+            } else if (this._isExcludedName(oElement)) {
+                this._showNotification(oElement, 'notice', this.options.notificationErrorExcludedModuleText);
+                this._hideExistingComponentNotification();
+            } else if (this._validateCamelCaseName(oElement)) {
+                this._requestModuleNameJsonResponse(oElement);
+            } else {
+                this._showNotification(oElement, 'error', this.options.notificationErrorText);
+                this._hideExistingComponentNotification();
+            }
+        },
 
-            jQuery(this._moduleClassesSelector).live('keyup', function () {
-                self._requestExtendClassesJsonResponse(this);
-            });
-
-            jQuery(this._moduleControllersSelector).live('keyup', function () {
-                self._validateCamelCaseName(this);
-            });
-
-            jQuery(this._moduleModelsSelector).live('keyup', function () {
-                self._validateCamelCaseName(this);
-            });
-
-            jQuery(this._moduleListsSelector).live('keyup', function () {
-                self._validateCamelCaseName(this);
-            });
-
-            jQuery(this._moduleWidgetsSelector).live('keyup', function () {
-                self._validateCamelCaseName(this);
-            });
-
-            jQuery(this._moduleBlocksSelector).live('keyup', function () {
-                self._validateBlocksFieldEntry(this);
-            });
-
-            jQuery(this._moduleSettingsNameSelector).live('keyup', function () {
-                if (self._isEmptyField(this)) {
-                    jQuery(this).removeClass().addClass('default-settings-color');
-                }
-                else if (self._camelCaseRegex(jQuery(this).val())) {
-                    jQuery(this).removeClass().addClass('correct-settings-color');
-                } else {
-                    jQuery(this).removeClass().addClass('invalid-settings-color');
-                }
-            });
+        /**
+         * Listen for click action to add or remove new Settings line of input fields.
+         */
+        _moduleSettingsButtonListener: function () {
+            var self = this;
 
             jQuery(this._cssAddSettingsLineButtonId).live('click', function () {
                 // Get last settings line's ID
@@ -180,25 +165,59 @@ jQuery.widget(
         },
 
         /**
-         * Check if entered module exists and show appropriate notifications
-         *
-         * @param oElement
+         * Validate entered various components' names.
+         * (Module name, extended class, controller, model, list, widget and block)
          */
-        _validateEnteredModuleName: function (oElement) {
-            if (this._isEmptyField(oElement)) {
-                this._hideNotification(oElement);
-                this._hideExistingComponentNotification();
-            } else if (this._isExcludedName(oElement)) {
-                this._showNotification(oElement, 'notice', this.options.notificationErrorExcludedModuleText);
-                this._hideExistingComponentNotification();
-            } else if (this._validateCamelCaseName(oElement)) {
-                this._requestModuleNameJsonResponse(oElement);
-            } else {
-                this._showNotification(oElement, 'error', this.options.notificationErrorText);
-                this._hideExistingComponentNotification();
-            }
+        _validateComponentName: function () {
+            var self = this;
+
+            // From jQuery 1.7+ live() is deprecated and should be changed to on() method after jQuery version update.
+            jQuery(this._moduleNameSelector).live('keyup change', function () {
+                self._validateEnteredModuleName(this);
+            });
+
+            jQuery(this._moduleClassesSelector).live('keyup', function () {
+                self._requestExtendClassesJsonResponse(this);
+            });
+
+            jQuery(this._moduleControllersSelector).live('keyup', function () {
+                self._validateCamelCaseName(this);
+            });
+
+            jQuery(this._moduleModelsSelector).live('keyup', function () {
+                self._validateCamelCaseName(this);
+            });
+
+            jQuery(this._moduleListsSelector).live('keyup', function () {
+                self._validateCamelCaseName(this);
+            });
+
+            jQuery(this._moduleWidgetsSelector).live('keyup', function () {
+                self._validateCamelCaseName(this);
+            });
+
+            jQuery(this._moduleBlocksSelector).live('keyup', function () {
+                self._validateBlocksFieldEntry(this);
+            });
         },
 
+        /**
+         * Validate entered Settings name.
+         */
+        _validateSettingsName: function () {
+            var self = this;
+
+            jQuery(this._moduleSettingsNameSelector).live('keyup', function () {
+                if (self._isEmptyField(this)) {
+                    jQuery(this).removeClass().addClass('default-settings-color');
+                }
+                else if (self._camelCaseRegex(jQuery(this).val())) {
+                    jQuery(this).removeClass().addClass('correct-settings-color');
+                } else {
+                    jQuery(this).removeClass().addClass('invalid-settings-color');
+                }
+            });
+        },
         /**
          * Return AJAX response with metadata depending on module name entered.
          *
@@ -369,19 +388,21 @@ jQuery.widget(
                         + "<br />";
                 }
             } else {
-                sFormattedValue += "<table class='settings-notification'>" +
-                    "<tr>" +
-                    "<td>" + this.options.notificationExistingSettingsName + "</td>" +
-                    "<td>" + this.options.notificationExistingSettingsType + "</td>" +
-                    "<td>" + this.options.notificationExistingSettingsValue + "</td>" +
-                    "</tr>";
-                for (var s in aObjectData) {
-                    sFormattedValue += "<tr><td>" + oMetaObject[aObjectData[s]]['name'] + "</td>"
-                        + "<td>" + oMetaObject[aObjectData[s]]['type'] + "</td>"
-                        + "<td>" + oMetaObject[aObjectData[s]]['value'] + "</td></tr>"
-                    ;
+                if (aObjectData.length > 0) {
+                    sFormattedValue += "<table class='settings-notification'>" +
+                        "<tr>" +
+                        "<td>" + this.options.notificationExistingSettingsName + "</td>" +
+                        "<td>" + this.options.notificationExistingSettingsType + "</td>" +
+                        "<td>" + this.options.notificationExistingSettingsValue + "</td>" +
+                        "</tr>";
+                    for (var s in aObjectData) {
+                        sFormattedValue += "<tr><td>" + oMetaObject[aObjectData[s]]['name'] + "</td>"
+                            + "<td>" + oMetaObject[aObjectData[s]]['type'] + "</td>"
+                            + "<td>" + oMetaObject[aObjectData[s]]['value'] + "</td></tr>"
+                        ;
+                    }
+                    sFormattedValue += "</table>";
                 }
-                sFormattedValue += "</table>";
             }
 
             return sFormattedValue;

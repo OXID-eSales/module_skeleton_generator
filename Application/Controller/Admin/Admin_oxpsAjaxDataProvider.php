@@ -168,12 +168,9 @@ class Admin_oxpsAjaxDataProvider extends AdminController
      * Parent `init` call. Method required for mocking.
      *
      * @codeCoverageIgnore
-     *
-     * @return null
      */
     protected function _Admin_oxpsAjaxDataProvider_init_parent()
     {
-        return parent::init();
+        parent::init();
     }
-
 }

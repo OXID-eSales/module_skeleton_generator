@@ -50,7 +50,7 @@ jQuery.widget(
             notificationExistingSettingsType: '',
             notificationExistingSettingsValue: '',
 
-            notificationSlideDownSpeed: 800
+            notificationSlideDownSpeed: 500
         },
 
         /**
@@ -99,7 +99,7 @@ jQuery.widget(
         _bindEvents: function () {
             var self = this;
             // Trigger Edit Mode if entered module name exists.
-            self._validateEnteredModuleName(self._moduleNameSelector)
+            self._validateEnteredModuleName(self._moduleNameSelector);
 
             // Clear input values on successful Module (re)generation.
             this._clearFormInputValuesOnSuccessfulSubmit();
@@ -117,11 +117,14 @@ jQuery.widget(
             if (this._isEmptyField(oElement)) {
                 this._hideNotification(oElement);
                 this._hideExistingComponentNotification();
-            } else if (this._isExcludedName(oElement)) {
-                this._showNotification(oElement, 'notice', this.options.notificationErrorExcludedModuleText);
-                this._hideExistingComponentNotification();
             } else if (this._validateCamelCaseName(oElement)) {
-                this._requestModuleNameJsonResponse(oElement);
+                // Check if entered module name is in excluded array
+                if (this._isExcludedName(oElement)) {
+                    this._showNotification(oElement, 'notice', this.options.notificationErrorExcludedModuleText);
+                    this._hideExistingComponentNotification();
+                } else {
+                    this._requestModuleNameJsonResponse(oElement);
+                }
             } else {
                 this._showNotification(oElement, 'error', this.options.notificationErrorText);
                 this._hideExistingComponentNotification();
@@ -478,7 +481,12 @@ jQuery.widget(
          * @returns {boolean}
          */
         _isExcludedName: function (oElement) {
-            if (this._inArrayIn(jQuery(oElement).val(), this._excludedModuleNames, 0) !== -1) {
+            var aLowerExcludedModuleNames = jQuery.map(
+                this._excludedModuleNames,
+                function (val) {
+                    return val.toLowerCase();
+                });
+            if (this._inArrayIn(jQuery(oElement).val().toLowerCase(), aLowerExcludedModuleNames, 0) !== -1) {
                 return true;
             }
         },

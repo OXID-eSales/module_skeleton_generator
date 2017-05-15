@@ -34,6 +34,7 @@ use OxidEsales\Eshop\Core\Str;
  */
 class oxpsModuleGeneratorValidator extends Base
 {
+
     /**
      * Folder name identifier in class path which determines backward compatibility - old class name usage.
      */
@@ -195,7 +196,12 @@ class oxpsModuleGeneratorValidator extends Base
             $sClassPath = (string) $this->_getClassPath($sClassName);
 
             if ($oFileSystemHelper->isFile($sClassPath)) {
-                $sClassPath = str_replace($sBasePath, '', dirname($sClassPath)) . DIRECTORY_SEPARATOR;
+                if (strpos(dirname($sClassPath), DIRECTORY_SEPARATOR . 'Core'. DIRECTORY_SEPARATOR)) {
+                    $sClassPath = 'Core' . DIRECTORY_SEPARATOR;
+                } else {
+                    $sClassPath = str_replace($sBasePath, '', dirname($sClassPath)) . DIRECTORY_SEPARATOR;
+                }
+
                 $aValidLinkedClasses[$sClassName] = $sClassPath;
             }
         }

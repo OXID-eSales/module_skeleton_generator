@@ -681,7 +681,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         $aModule = [];
         if (file_exists($sMetadataPath)) {
             try {
-                // Required for correct fetch of updated metadata.
+                // Required for correct fetch of latest metadata from updated file.
                 if (function_exists('opcache_reset')) {
                     opcache_reset();
                 }

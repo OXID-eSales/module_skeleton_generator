@@ -318,8 +318,8 @@ class oxpsModuleGeneratorHelper extends Base
         $oFileSystemHelper = $this->getFileSystemHelper();
         $aCopiedClasses = array();
 
-        if (!$oFileSystemHelper->isFile($sTemplatePath) or
-            !$oFileSystemHelper->isDir($this->getModule()->getFullPath() . $sInModulePath)
+        if (!$oFileSystemHelper->isDir($this->getModule()->getFullPath() . $sInModulePath) or
+            !$oFileSystemHelper->isFile($sTemplatePath)
         ) {
             return $aCopiedClasses;
         }

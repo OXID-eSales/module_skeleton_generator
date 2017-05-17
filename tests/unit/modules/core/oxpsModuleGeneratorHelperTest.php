@@ -249,11 +249,11 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
         $oModule->expects($this->once())->method('getModuleId')->will($this->returnValue('oxpsmymodule'));
 
         $this->SUT->init($oModule);
-
+        // TODO #SVO: May have to make changes after namespaces will be officially introduced in eShop Core.
         $this->assertSame(
             array(
-                'Model/oxpsmymoduleoxarticle.php' => 'oxArticle',
-                'Core/oxpsmymoduleoxList.php'      => 'oxList',
+                'Model/oxpsmymoduleoxarticle.php' => 'OxidEsales\EshopCommunity\Application\Model\Article',
+                'Core/oxpsmymoduleoxList.php'      => 'OxidEsales\EshopCommunity\Core\Model\ListModel',
                 'Core/oxpsmymodulenonClass.php'    => 'nonClass',
             ),
             $this->SUT->createClassesToExtend('/path/to/template.tpl')
@@ -323,18 +323,17 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
             'oxpsModuleGeneratorFileSystem',
             array('__call', 'isFile', 'isDir', 'copyFile', 'createFile')
         );
-
         // For faulty items "Faulty Class"
-        $oFileSystem->expects($this->at(0))->method('isFile')
-            ->with('/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/faulty.php.tpl')
+        $oFileSystem->expects($this->at(0))->method('isDir')
+            ->with('/path/to/modules/oxps/mymodule/faulty/')
             ->will($this->returnValue(false));
 
         // For a widget "Bar" class and template
-        $oFileSystem->expects($this->at(1))->method('isFile')
-            ->with('/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsWidgetClass.php.tpl')
-            ->will($this->returnValue(true));
-        $oFileSystem->expects($this->at(2))->method('isDir')
+        $oFileSystem->expects($this->at(1))->method('isDir')
             ->with('/path/to/modules/oxps/mymodule/components/widgets/')
+            ->will($this->returnValue(true));
+        $oFileSystem->expects($this->at(2))->method('isFile')
+            ->with('/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsWidgetClass.php.tpl')
             ->will($this->returnValue(true));
         $oFileSystem->expects($this->at(3))->method('copyFile')
             ->with(
@@ -351,11 +350,11 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
             );
 
         // For a controller "Page" class and template
-        $oFileSystem->expects($this->at(6))->method('isFile')
-            ->with('/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsControllerClass.php.tpl')
-            ->will($this->returnValue(true));
-        $oFileSystem->expects($this->at(7))->method('isDir')
+        $oFileSystem->expects($this->at(6))->method('isDir')
             ->with('/path/to/modules/oxps/mymodule/controllers/')
+            ->will($this->returnValue(true));
+        $oFileSystem->expects($this->at(7))->method('isFile')
+            ->with('/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsControllerClass.php.tpl')
             ->will($this->returnValue(true));
         $oFileSystem->expects($this->at(8))->method('copyFile')
             ->with(
@@ -367,11 +366,11 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
             ->will($this->returnValue(false));
 
         // For a model "Item" class
-        $oFileSystem->expects($this->at(10))->method('isFile')
-            ->with('/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsModelClass.php.tpl')
-            ->will($this->returnValue(true));
-        $oFileSystem->expects($this->at(11))->method('isDir')
+        $oFileSystem->expects($this->at(10))->method('isDir')
             ->with('/path/to/modules/oxps/mymodule/models/')
+            ->will($this->returnValue(true));
+        $oFileSystem->expects($this->at(11))->method('isFile')
+            ->with('/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsModelClass.php.tpl')
             ->will($this->returnValue(true));
         $oFileSystem->expects($this->at(12))->method('copyFile')
             ->with(
@@ -387,18 +386,17 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
             );
 
         // For a list model "Item" class
-        $oFileSystem->expects($this->at(14))->method('isFile')
-            ->with('/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsListModelClass.php.tpl')
-            ->will($this->returnValue(true));
-        $oFileSystem->expects($this->at(15))->method('isDir')
+        $oFileSystem->expects($this->at(14))->method('isDir')
             ->with('/path/to/modules/oxps/mymodule/models/')
+            ->will($this->returnValue(true));
+        $oFileSystem->expects($this->at(15))->method('isFile')
+            ->with('/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsListModelClass.php.tpl')
             ->will($this->returnValue(true));
         $oFileSystem->expects($this->at(16))->method('copyFile')
             ->with(
                 '/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsListModelClass.php.tpl',
                 '/path/to/modules/oxps/mymodule/models/oxpsMyModuleItemList.php'
             );
-
         oxRegistry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
 
         // Module instance mock
@@ -443,9 +441,7 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
         $oModule->expects($this->any())->method('getModuleId')->will($this->returnValue('oxpsMyModule'));
         $oModule->expects($this->any())->method('getFullPath')->will($this->returnValue('/path/to/modules/oxps/mymodule/'));
         $oModule->expects($this->any())->method('getModuleClassName')->will($this->returnValue('oxpsMyModule'));
-
         $this->SUT->setModule($oModule);
-
         $this->assertSame(
             array(
                 'components/widgets/oxpsMyModuleBar.php' => 'Bar',
@@ -532,8 +528,16 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
 
     public function testFillTestsFolder_testsGitUrlNotSet_createNoTestClasses()
     {
-        // TODO: Double check if this test is needed as GIT URL was removed from method logic
-        //$this->markTestSkipped('GIT URL was removed, test to be adjusted, when final v0.6.0 is prepared.'); // TODO DDR
+        // TODO #SVO: Will need to make changes after namespaces will be officially introduced in eShop Core.
+        // Module instance mock
+        $oModule = $this->getMock(
+            'oxpsModuleGeneratorOxModule',
+            array('__construct', '__call', 'getFullPath')
+        );
+
+        $oModule->expects($this->any())
+            ->method('getFullPath')
+            ->will($this->returnValue('/path/to/modules/oxps/mymodule/'));
 
         // Render helper mock
         $oRenderHelper = $this->getMock('oxpsModuleGeneratorRender', array('__call', 'renderWithSmartyAndRename'));
@@ -543,28 +547,32 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
         $oFileSystem = $this->getMock('oxpsModuleGeneratorFileSystem', array('__call', 'isFile', 'isDir', 'copyFile'));
         oxRegistry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
 
+        $this->SUT->init($oModule);
+
         $this->SUT->fillTestsFolder(
             $oRenderHelper,
-            '/path/to/modules/oxps/modulegenerator/',
+            '/path/to/modules/oxps/ModuleGenerator/',
             //'/path/to/modules/oxps/mymodule/',
-            array('models/oxpsmymoduleoxarticle.php' => 'oxArticle'),
+            array('models/oxpsmymoduleoxarticle.php' => 'oxpsmymoduleoxarticle'),
             array(
-                'controllers/oxpsmymodulepage.php' => 'Page',
-                'models/oxpsmymoduleitem.php'      => 'Item',
+                'controllers/oxpsmymodulepage.php' => 'oxpsmymodulepage',
+                'models/oxpsmymoduleitem.php'      => 'oxpsmymoduleitem',
             )
         );
     }
 
     public function testFillTestsFolder_testsFolderNotFetched_createNoTestClasses()
     {
-        $this->markTestIncomplete('Fix when tests generation is complete in v0.6.0'); // TODO DDR:
-
+        // TODO #SVO: Will need to make changes after namespaces will be officially introduced in eShop Core.
         // Module instance mock
-        $oModule = $this->getMock('oxpsModuleGeneratorModule', array('__construct', '__call', 'getSetting'));
-        $oModule->expects($this->once())->method('getSetting')->with('TestsGitUrl')->will(
-            $this->returnValue('git@example.com:path_to/tests.git')
+        $oModule = $this->getMock(
+            'oxpsModuleGeneratorOxModule',
+            array('__construct', '__call', 'getFullPath')
         );
-        oxRegistry::set('oxpsModuleGeneratorModule', $oModule);
+
+        $oModule->expects($this->any())
+            ->method('getFullPath')
+            ->will($this->returnValue('/path/to/modules/oxps/mymodule/'));
 
         // Render helper mock
         $oRenderHelper = $this->getMock('oxpsModuleGeneratorRender', array('__call', 'renderWithSmartyAndRename'));
@@ -573,33 +581,36 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
         // File system helper mock
         $oFileSystem = $this->getMock('oxpsModuleGeneratorFileSystem', array('__call', 'isFile', 'isDir', 'copyFile'));
         $oFileSystem->expects($this->once())->method('isDir')
-            ->with('/path/to/modules/oxps/mymodule/tests/unit/')
+            ->with('/path/to/modules/oxps/mymodule/tests/Unit/modules/')
             ->will($this->returnValue(false));
         $oFileSystem->expects($this->never())->method('isFile');
         $oFileSystem->expects($this->never())->method('copyFile');
         oxRegistry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
 
+        $this->SUT->init($oModule);
+
         $this->SUT->fillTestsFolder(
             $oRenderHelper,
-            '/path/to/modules/oxps/modulegenerator/',
-            array('models/oxpsmymoduleoxarticle.php' => 'oxArticle'),
+            '/path/to/modules/oxps/ModuleGenerator/',
+            array('models/oxpsmymoduleoxarticle.php' => 'oxpsmymoduleoxarticle'),
             array(
-                'controllers/oxpsmymodulepage.php' => 'Page',
-                'models/oxpsmymoduleitem.php'      => 'Item',
+                'controllers/oxpsmymodulepage.php' => 'oxpsmymodulepage',
+                'models/oxpsmymoduleitem.php'      => 'oxpsmymoduleitem',
             )
         );
     }
 
     public function testFillTestsFolder_noNewFiles_createNoTestClasses()
     {
-        $this->markTestIncomplete('Fix when tests generation is complete in v0.6.0'); // TODO DDR:
-
         // Module instance mock
-        $oModule = $this->getMock('oxpsModuleGeneratorModule', array('__construct', '__call', 'getSetting'));
-        $oModule->expects($this->once())->method('getSetting')->with('TestsGitUrl')->will(
-            $this->returnValue('git@example.com:path_to/tests.git')
+        $oModule = $this->getMock(
+            'oxpsModuleGeneratorOxModule',
+            array('__construct', '__call', 'getFullPath')
         );
-        oxRegistry::set('oxpsModuleGeneratorModule', $oModule);
+
+        $oModule->expects($this->any())
+            ->method('getFullPath')
+            ->will($this->returnValue('/path/to/modules/oxps/mymodule/'));
 
         // Render helper mock
         $oRenderHelper = $this->getMock('oxpsModuleGeneratorRender', array('__call', 'renderWithSmartyAndRename'));
@@ -608,26 +619,19 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
         // File system helper mock
         $oFileSystem = $this->getMock('oxpsModuleGeneratorFileSystem', array('__call', 'isFile', 'isDir', 'copyFile'));
         $oFileSystem->expects($this->at(0))->method('isDir')
-            ->with('/path/to/modules/oxps/mymodule/tests/unit/')
+            ->with('/path/to/modules/oxps/mymodule/tests/Unit/modules/')
             ->will($this->returnValue(true));
         $oFileSystem->expects($this->at(1))->method('isFile')
             ->with('/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsTestClass.php.tpl')
             ->will($this->returnValue(true));
-        $oFileSystem->expects($this->at(2))->method('isDir')
-            ->with('/path/to/modules/oxps/mymodule/tests/unit/modules/')
-            ->will($this->returnValue(true));
         $oFileSystem->expects($this->never())->method('copyFile');
         oxRegistry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
-
-        // Module instance mock
-        $oModule = $this->getMock('oxpsModuleGeneratorOxModule', array('__construct', '__call', 'getFullPath'));
-        $oModule->expects($this->once())->method('getFullPath')->will($this->returnValue('/path/to/modules/oxps/mymodule/'));
 
         $this->SUT->init($oModule);
 
         $this->SUT->fillTestsFolder(
             $oRenderHelper,
-            '/path/to/modules/oxps/modulegenerator/',
+            '/path/to/modules/oxps/ModuleGenerator/',
             array(),
             array()
         );
@@ -635,14 +639,16 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
 
     public function testFillTestsFolder_testClassTemplateIsInvalid_createNoTestClasses()
     {
-        $this->markTestIncomplete('Fix when tests generation is complete in v0.6.0'); // TODO DDR:
-
+        // TODO #SVO: Will need to make changes after namespaces will be officially introduced in eShop Core.
         // Module instance mock
-        $oModule = $this->getMock('oxpsModuleGeneratorModule', array('__construct', '__call', 'getSetting'));
-        $oModule->expects($this->once())->method('getSetting')->with('TestsGitUrl')->will(
-            $this->returnValue('git@example.com:path_to/tests.git')
+        $oModule = $this->getMock(
+            'oxpsModuleGeneratorOxModule',
+            array('__construct', '__call', 'getFullPath')
         );
-        oxRegistry::set('oxpsModuleGeneratorModule', $oModule);
+
+        $oModule->expects($this->any())
+            ->method('getFullPath')
+            ->will($this->returnValue('/path/to/modules/oxps/mymodule/'));
 
         // Render helper mock
         $oRenderHelper = $this->getMock('oxpsModuleGeneratorRender', array('__call', 'renderWithSmartyAndRename'));
@@ -651,7 +657,7 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
         // File system helper mock
         $oFileSystem = $this->getMock('oxpsModuleGeneratorFileSystem', array('__call', 'isFile', 'isDir', 'copyFile'));
         $oFileSystem->expects($this->at(0))->method('isDir')
-            ->with('/path/to/modules/oxps/mymodule/tests/unit/')
+            ->with('/path/to/modules/oxps/mymodule/tests/Unit/modules/')
             ->will($this->returnValue(true));
         $oFileSystem->expects($this->at(1))->method('isFile')
             ->with('/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsTestClass.php.tpl')
@@ -659,46 +665,44 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
         $oFileSystem->expects($this->never())->method('copyFile');
         oxRegistry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
 
-        // Module instance mock
-        $oModule = $this->getMock('oxpsModuleGeneratorOxModule', array('__construct', '__call', 'getFullPath'));
-        $oModule->expects($this->never())->method('getFullPath');
-
         $this->SUT->init($oModule);
 
         $this->SUT->fillTestsFolder(
             $oRenderHelper,
-            '/path/to/modules/oxps/modulegenerator/',
-            array('models/oxpsmymoduleoxarticle.php' => 'oxArticle'),
+            '/path/to/modules/oxps/ModuleGenerator/',
+            array('models/oxpsmymoduleoxarticle.php' => 'oxpsmymoduleoxarticle'),
             array(
-                'controllers/oxpsmymodulepage.php' => 'Page',
-                'models/oxpsmymoduleitem.php'      => 'Item',
+                'controllers/oxpsmymodulepage.php' => 'oxpsmymodulepage',
+                'models/oxpsmymoduleitem.php'      => 'oxpsmymodulearticleitem',
             )
         );
     }
 
     public function testFillTestsFolder_testsFolderFetchedAllPathsAreValid_createAndProcessTestClasses()
     {
-        $this->markTestIncomplete('Fix when tests generation is complete in v0.6.0'); // TODO DDR:
-
+        // TODO #SVO: Will need to make changes after namespaces will be officially introduced in eShop Core.
         // Module instance mock
-        $oModule = $this->getMock('oxpsModuleGeneratorModule', array('__construct', '__call', 'getSetting'));
-        $oModule->expects($this->once())->method('getSetting')->with('TestsGitUrl')->will(
-            $this->returnValue('git@example.com:path_to/tests.git')
+        $oModule = $this->getMock(
+            'oxpsModuleGeneratorOxModule',
+            array('__construct', '__call', 'getFullPath')
         );
-        oxRegistry::set('oxpsModuleGeneratorModule', $oModule);
+
+        $oModule->expects($this->any())
+            ->method('getFullPath')
+            ->will($this->returnValue('/path/to/modules/oxps/mymodule/'));
 
         // Render helper mock
         $oRenderHelper = $this->getMock('oxpsModuleGeneratorRender', array('__call', 'renderWithSmartyAndRename'));
         $oRenderHelper->expects($this->once())->method('renderWithSmartyAndRename')->with(
             array(
-                'tests/unit/modules/models/oxpsmymoduleoxarticleTest.php',
-                'tests/unit/modules/controllers/oxpsmymodulepageTest.php',
-                'tests/unit/modules/models/oxpsmymoduleitemTest.php',
+                'tests/Unit/modules/models/oxpsmymoduleoxarticleTest.php',
+                'tests/Unit/modules/controllers/oxpsmymodulepageTest.php',
+                'tests/Unit/modules/models/oxpsmymoduleitemTest.php',
             ),
             array(
-                'tests/unit/modules/models/oxpsmymoduleoxarticleTest.php' => 'oxArticle',
-                'tests/unit/modules/controllers/oxpsmymodulepageTest.php' => 'Page',
-                'tests/unit/modules/models/oxpsmymoduleitemTest.php'      => 'Item',
+                'tests/Unit/modules/models/oxpsmymoduleoxarticleTest.php' => 'oxpsmymoduleoxarticle',
+                'tests/Unit/modules/controllers/oxpsmymodulepageTest.php' => 'oxpsmymodulepage',
+                'tests/Unit/modules/models/oxpsmymoduleitemTest.php'      => 'oxpsmymoduleitem',
             )
         );
 
@@ -708,59 +712,49 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
             array('__call', 'isFile', 'isDir', 'createFolder', 'copyFile', 'createFile', 'renameFile')
         );
         $oFileSystem->expects($this->at(0))->method('isDir')
-            ->with('/path/to/modules/oxps/mymodule/tests/unit/')
+            ->with('/path/to/modules/oxps/mymodule/tests/Unit/modules/')
             ->will($this->returnValue(true));
         $oFileSystem->expects($this->at(1))->method('isFile')
             ->with('/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsTestClass.php.tpl')
             ->will($this->returnValue(true));
-        $oFileSystem->expects($this->at(2))->method('isDir')
-            ->with('/path/to/modules/oxps/mymodule/tests/unit/modules/')
-            ->will($this->returnValue(true));
 
         /* Extended oxArticle model */
-        $oFileSystem->expects($this->at(3))->method('createFolder')->with(
-            '/path/to/modules/oxps/mymodule/tests/unit/modules/models/'
+        $oFileSystem->expects($this->at(2))->method('createFolder')->with(
+            '/path/to/modules/oxps/mymodule/tests/Unit/modules/models/'
         );
-        $oFileSystem->expects($this->at(4))->method('copyFile')->with(
+        $oFileSystem->expects($this->at(3))->method('copyFile')->with(
             '/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsTestClass.php.tpl',
-            '/path/to/modules/oxps/mymodule/tests/unit/modules/models/oxpsmymoduleoxarticleTest.php'
+            '/path/to/modules/oxps/mymodule/tests/Unit/modules/models/oxpsmymoduleoxarticleTest.php'
         );
 
         /* New "Page" controller */
-        $oFileSystem->expects($this->at(5))->method('createFolder')->with(
-            '/path/to/modules/oxps/mymodule/tests/unit/modules/controllers/'
+        $oFileSystem->expects($this->at(4))->method('createFolder')->with(
+            '/path/to/modules/oxps/mymodule/tests/Unit/modules/controllers/'
         );
-        $oFileSystem->expects($this->at(6))->method('copyFile')->with(
+        $oFileSystem->expects($this->at(5))->method('copyFile')->with(
             '/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsTestClass.php.tpl',
-            '/path/to/modules/oxps/mymodule/tests/unit/modules/controllers/oxpsmymodulepageTest.php'
+            '/path/to/modules/oxps/mymodule/tests/Unit/modules/controllers/oxpsmymodulepageTest.php'
         );
 
         /* New "Item" model */
-        $oFileSystem->expects($this->at(7))->method('createFolder')->with(
-            '/path/to/modules/oxps/mymodule/tests/unit/modules/models/'
+        $oFileSystem->expects($this->at(6))->method('createFolder')->with(
+            '/path/to/modules/oxps/mymodule/tests/Unit/modules/models/'
         );
-        $oFileSystem->expects($this->at(8))->method('copyFile')->with(
+        $oFileSystem->expects($this->at(7))->method('copyFile')->with(
             '/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsTestClass.php.tpl',
-            '/path/to/modules/oxps/mymodule/tests/unit/modules/models/oxpsmymoduleitemTest.php'
+            '/path/to/modules/oxps/mymodule/tests/Unit/modules/models/oxpsmymoduleitemTest.php'
         );
-
         oxRegistry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
 
-        // Module instance mock
-        $oModule = $this->getMock(
-            'oxpsModuleGeneratorOxModule',
-            array('__construct', '__call', 'getFullPath', 'getModuleId')
-        );
-        $oModule->expects($this->any())->method('getFullPath')->will($this->returnValue('/path/to/modules/oxps/mymodule/'));
-        $oModule->expects($this->any())->method('getModuleId')->will($this->returnValue('oxpsmymodule'));
+        $this->SUT->init($oModule);
 
         $this->SUT->fillTestsFolder(
             $oRenderHelper,
             '/path/to/modules/oxps/ModuleGenerator/',
-            array('models/oxpsmymoduleoxarticle.php' => 'oxArticle'),
+            array('models/oxpsmymoduleoxarticle.php' => 'oxpsmymoduleoxarticle'),
             array(
-                'controllers/oxpsmymodulepage.php' => 'Page',
-                'models/oxpsmymoduleitem.php'      => 'Item',
+                'controllers/oxpsmymodulepage.php' => 'oxpsmymodulepage',
+                'models/oxpsmymoduleitem.php'      => 'oxpsmymoduleitem',
             )
         );
     }

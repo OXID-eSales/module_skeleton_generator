@@ -24,7 +24,7 @@ $sMetadataVersion = '1.1';
 [{if $oModule->renderTasks()}]/**
  * TODO: Replace sample names and paths (like '[ParentClassName]', '[your_template]', etc.) with real ones You need.
  * TODO: Uncomment lines You need, add more if needed, delete not required.
- * TODO: Remove all these TODO comment.
+ * TODO: Remove all these TODO comments.
  * TODO: Check generated composer.json file on the module and adjust if needed.
  */
 [{/if}]

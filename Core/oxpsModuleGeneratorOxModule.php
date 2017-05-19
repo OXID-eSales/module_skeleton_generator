@@ -425,8 +425,12 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         // Set field for generated module name
         $this->_sModuleName = $sModuleName;
 
+        // TODO [nice2have]: Maybe isEditMode() check should be changed to not call init() for the second time,
+        // TODO [nice2have]: then IF is not needed
         // Set field for Generation Options from Generator submitted form
-        $this->_aGenerationOptions = $aGenerationOptions;
+        if (!empty($aGenerationOptions)) {
+            $this->_aGenerationOptions = $aGenerationOptions;
+        }
     }
 
     /**

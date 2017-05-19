@@ -454,8 +454,7 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
 
     public function testGenerateModule_extendedClassesSet_generateModuleSkeletonWithExtendedClasses()
     {
-        $this->markTestIncomplete('Do not generate extend classes'); // TODO #SVO
-
+        $this->markTestIncomplete('#PSGEN-257: Invalid generation of extending classes'); // TODO #SVO
         // Config mock
         $this->setRequestParameter('modulegenerator_module_name', 'Extended');
         $this->setRequestParameter('modulegenerator_extend_classes', 'oxArticle' . PHP_EOL . 'oxList');
@@ -481,17 +480,17 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
             $this->assertArrayHasKey('extend', $aModule);
             $this->assertSame(
                 array(
-                    'oxList'    => 'oxps/Test/Application/Model/oxpsTestoxArticle',
-                    'oxArticle' => 'oxps/Test/Core/oxpsTestoxList',
+                    'oxArticle' => 'test/Extended/Application/Model/testExtendedoxArticle',
+                    'oxList'    => 'test/Extended/Core/testExtendedoxList',
                 ),
                 $aModule['extend']
             );
         }
 
         // Check extended class content
-        $this->assertFalse(class_exists('testExtendedOxList'));
-        include($this->_getTestPath('modules/test/extended/core/testextendedoxlist.php'));
-        $this->assertTrue(class_exists('testExtendedOxList'));
+        $this->assertFalse(class_exists('testExtendedoxList'));
+        include($this->_getTestPath('modules/test/Extended/Core/testExtendedoxList.php'));
+        $this->assertTrue(class_exists('testExtendedoxList'));
     }
 
     public function testGenerateModule_extendedClassesAreInvalid_generateModuleSkeletonWithNoFaultyExtendedClasses()
@@ -524,8 +523,6 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
 
     public function testGenerateModule_controllersSet_generateModuleSkeletonWithControllersClasses()
     {
-        $this->markTestIncomplete('To be fixed after final v0.6.0 is ready with all eShop v6 features'); // TODO DDR
-
         // Config mock
         $this->setRequestParameter('modulegenerator_module_name', 'Ctrl1');
         $this->setRequestParameter('modulegenerator_extend_classes', '');
@@ -541,32 +538,32 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
         $this->assertFalse($aViewData['blError']);
 
         // Check module structure
-        $this->assertFileExists($this->_getTestPath('modules/test/ctrl1/metadata.php'));
-        $this->assertFileExists($this->_getTestPath('modules/test/ctrl1/controllers/testctrl1page.php'));
-        $this->assertFileExists($this->_getTestPath('modules/test/ctrl1/views/pages/testctrl1page.tpl'));
+        $this->assertFileExists($this->_getTestPath('modules/test/Ctrl1/metadata.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/Ctrl1/Application/Controller/testCtrl1Page.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/Ctrl1/Application/views/pages/testCtrl1Page.tpl'));
 
         // Check metadata content
-        include($this->_getTestPath('modules/test/ctrl1/metadata.php'));
+        include($this->_getTestPath('modules/test/Ctrl1/metadata.php'));
         $this->assertTrue(isset($aModule));
         if (isset($aModule)) {
             $this->assertArrayHasKey('files', $aModule);
             $this->assertArrayHasKey('templates', $aModule);
             $this->assertSame(
                 array(
-                    'testctrl1module' => 'test/ctrl1/core/testctrl1module.php',
-                    'testctrl1page'   => 'test/ctrl1/controllers/testctrl1page.php',
+                    'testCtrl1Module' => 'test/Ctrl1/Core/testCtrl1Module.php',
+                    'testCtrl1Page'   => 'test/Ctrl1/Application/Controller/testCtrl1Page.php',
                 ),
                 $aModule['files']
             );
             $this->assertSame(
-                array('testctrl1page.tpl' => 'test/ctrl1/views/pages/testctrl1page.tpl'),
+                array('testCtrl1Page.tpl' => 'test/Ctrl1/Application/views/pages/testCtrl1Page.tpl'),
                 $aModule['templates']
             );
         }
 
         // Check controller class content
         $this->assertFalse(class_exists('testCtrl1Page'));
-        include($this->_getTestPath('modules/test/ctrl1/controllers/testctrl1page.php'));
+        include($this->_getTestPath('modules/test/Ctrl1/Application/Controller/testCtrl1Page.php'));
         $this->assertTrue(class_exists('testCtrl1Page'));
         $oClass = new testCtrl1Page();
         $this->assertTrue(method_exists($oClass, 'render'));
@@ -574,8 +571,6 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
 
     public function testGenerateModule_sameControllersSetMultipleTimes_generateModuleSkeletonWithUniqueControllersClasses()
     {
-        $this->markTestIncomplete('To be fixed after final v0.6.0 is ready with all eShop v6 features'); // TODO DDR
-
         // Config mock
         $this->setRequestParameter('modulegenerator_module_name', 'Ctrl1');
         $this->setRequestParameter('modulegenerator_extend_classes', '');
@@ -591,30 +586,30 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
         $this->assertFalse($aViewData['blError']);
 
         // Check module structure
-        $this->assertFileExists($this->_getTestPath('modules/test/ctrl1/metadata.php'));
-        $this->assertFileExists($this->_getTestPath('modules/test/ctrl1/controllers/testctrl1page.php'));
-        $this->assertFileExists($this->_getTestPath('modules/test/ctrl1/controllers/testctrl1view.php'));
-        $this->assertFileExists($this->_getTestPath('modules/test/ctrl1/views/pages/testctrl1page.tpl'));
-        $this->assertFileExists($this->_getTestPath('modules/test/ctrl1/views/pages/testctrl1view.tpl'));
+        $this->assertFileExists($this->_getTestPath('modules/test/Ctrl1/metadata.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/Ctrl1/Application/Controller/testCtrl1Page.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/Ctrl1/Application/Controller/testCtrl1View.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/Ctrl1/Application/views/pages/testCtrl1Page.tpl'));
+        $this->assertFileExists($this->_getTestPath('modules/test/Ctrl1/Application/views/pages/testCtrl1View.tpl'));
 
         // Check metadata content
-        include($this->_getTestPath('modules/test/ctrl1/metadata.php'));
+        include($this->_getTestPath('modules/test/Ctrl1/metadata.php'));
         $this->assertTrue(isset($aModule));
         if (isset($aModule)) {
             $this->assertArrayHasKey('files', $aModule);
             $this->assertArrayHasKey('templates', $aModule);
             $this->assertSame(
                 array(
-                    'testctrl1module' => 'test/ctrl1/core/testctrl1module.php',
-                    'testctrl1page'   => 'test/ctrl1/controllers/testctrl1page.php',
-                    'testctrl1view'   => 'test/ctrl1/controllers/testctrl1view.php',
+                    'testCtrl1Module' => 'test/Ctrl1/Core/testCtrl1Module.php',
+                    'testCtrl1Page'   => 'test/Ctrl1/Application/Controller/testCtrl1Page.php',
+                    'testCtrl1View'   => 'test/Ctrl1/Application/Controller/testCtrl1View.php',
                 ),
                 $aModule['files']
             );
             $this->assertSame(
                 array(
-                    'testctrl1page.tpl' => 'test/ctrl1/views/pages/testctrl1page.tpl',
-                    'testctrl1view.tpl' => 'test/ctrl1/views/pages/testctrl1view.tpl',
+                    'testCtrl1Page.tpl' => 'test/Ctrl1/Application/views/pages/testCtrl1Page.tpl',
+                    'testCtrl1View.tpl' => 'test/Ctrl1/Application/views/pages/testCtrl1View.tpl',
                 ),
                 $aModule['templates']
             );
@@ -623,8 +618,6 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
 
     public function testGenerateModule_invalidControllerName_generateModuleSkeletonWithNoControllersClasses()
     {
-        $this->markTestIncomplete('To be fixed after final v0.6.0 is ready with all eShop v6 features'); // TODO DDR
-
         // Config mock
         $this->setRequestParameter('modulegenerator_module_name', 'Ctrl1');
         $this->setRequestParameter('modulegenerator_extend_classes', '');
@@ -640,25 +633,23 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
         $this->assertFalse($aViewData['blError']);
 
         // Check module structure
-        $this->assertFileExists($this->_getTestPath('modules/test/ctrl1/metadata.php'));
-        $this->assertFileNotExists($this->_getTestPath('modules/test/ctrl1/controllers/testctrl1some_class.php'));
-        $this->assertFileNotExists($this->_getTestPath('modules/test/ctrl1/views/pages/testctrl1some_class.tpl'));
+        $this->assertFileExists($this->_getTestPath('modules/test/Ctrl1/metadata.php'));
+        $this->assertFileNotExists($this->_getTestPath('modules/test/Ctrl1/Application/Controller/testCtrl1Some_class.php'));
+        $this->assertFileNotExists($this->_getTestPath('modules/test/Ctrl1/Application/views/pages/testCtrl1Some_class.tpl'));
 
         // Check metadata content
-        include($this->_getTestPath('modules/test/ctrl1/metadata.php'));
+        include($this->_getTestPath('modules/test/Ctrl1/metadata.php'));
         $this->assertTrue(isset($aModule));
         if (isset($aModule)) {
             $this->assertArrayHasKey('files', $aModule);
             $this->assertArrayHasKey('templates', $aModule);
-            $this->assertSame(array('testctrl1module' => 'test/ctrl1/core/testctrl1module.php'), $aModule['files']);
+            $this->assertSame(array('testCtrl1Module' => 'test/Ctrl1/Core/testCtrl1Module.php'), $aModule['files']);
             $this->assertSame(array(), $aModule['templates']);
         }
     }
 
     public function testGenerateModule_modelsSet_generateModuleSkeletonWithModelsClasses()
     {
-        $this->markTestIncomplete('To be fixed after final v0.6.0 is ready with all eShop v6 features'); // TODO DDR
-
         // Config mock
         $this->setRequestParameter('modulegenerator_module_name', 'Special');
         $this->setRequestParameter('modulegenerator_extend_classes', '');
@@ -675,18 +666,18 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
         $this->assertFalse($aViewData['blError']);
 
         // Check module structure
-        $this->assertFileExists($this->_getTestPath('modules/test/special/metadata.php'));
-        $this->assertFileExists($this->_getTestPath('modules/test/special/models/testspecialoffer.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/Special/metadata.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/Special/Application/Model/testSpecialOffer.php'));
 
         // Check metadata content
-        include($this->_getTestPath('modules/test/special/metadata.php'));
+        include($this->_getTestPath('modules/test/Special/metadata.php'));
         $this->assertTrue(isset($aModule));
         if (isset($aModule)) {
             $this->assertArrayHasKey('files', $aModule);
             $this->assertSame(
                 array(
-                    'testspecialmodule' => 'test/special/core/testspecialmodule.php',
-                    'testspecialoffer'  => 'test/special/models/testspecialoffer.php',
+                    'testSpecialModule' => 'test/Special/Core/testSpecialModule.php',
+                    'testSpecialOffer'  => 'test/Special/Application/Model/testSpecialOffer.php',
                 ),
                 $aModule['files']
             );
@@ -694,7 +685,7 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
 
         // Check model class content
         $this->assertFalse(class_exists('testSpecialOffer'));
-        include($this->_getTestPath('modules/test/special/models/testspecialoffer.php'));
+        include($this->_getTestPath('modules/test/Special/Application/Model/testSpecialOffer.php'));
         $this->assertTrue(class_exists('testSpecialOffer'));
         $oClass = new testSpecialOffer();
         $this->assertTrue(method_exists($oClass, '__construct'));
@@ -702,8 +693,6 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
 
     public function testGenerateModule_listModelSetWithNoItemModel_generateModuleSkeletonWithNoListModel()
     {
-        $this->markTestIncomplete('To be fixed after final v0.6.0 is ready with all eShop v6 features'); // TODO DDR
-
         // Config mock
         $this->setRequestParameter('modulegenerator_module_name', 'Special');
         $this->setRequestParameter('modulegenerator_extend_classes', '');
@@ -721,17 +710,17 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
         $this->assertFalse($aViewData['blError']);
 
         // Check module structure
-        $this->assertFileExists($this->_getTestPath('modules/test/special/metadata.php'));
-        $this->assertFileNotExists($this->_getTestPath('modules/test/special/models/testspecialoffer.php'));
-        $this->assertFileNotExists($this->_getTestPath('modules/test/special/models/testspecialofferlist.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/Special/metadata.php'));
+        $this->assertFileNotExists($this->_getTestPath('modules/test/Special/Application/Model/testSpecialOffer.php'));
+        $this->assertFileNotExists($this->_getTestPath('modules/test/Special/Application/Model/testSpecialOfferList.php'));
 
         // Check metadata content
-        include($this->_getTestPath('modules/test/special/metadata.php'));
+        include($this->_getTestPath('modules/test/Special/metadata.php'));
         $this->assertTrue(isset($aModule));
         if (isset($aModule)) {
             $this->assertArrayHasKey('files', $aModule);
             $this->assertSame(
-                array('testspecialmodule' => 'test/special/core/testspecialmodule.php'),
+                array('testSpecialModule' => 'test/Special/Core/testSpecialModule.php'),
                 $aModule['files']
             );
         }
@@ -739,8 +728,6 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
 
     public function testGenerateModule_listAndSameItemModelSet_generateModuleSkeletonWithListAndItemModels()
     {
-        $this->markTestIncomplete('To be fixed after final v0.6.0 is ready with all eShop v6 features'); // TODO DDR
-
         // Config mock
         $this->setRequestParameter('modulegenerator_module_name', 'Special');
         $this->setRequestParameter('modulegenerator_extend_classes', '');
@@ -758,20 +745,20 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
         $this->assertFalse($aViewData['blError']);
 
         // Check module structure
-        $this->assertFileExists($this->_getTestPath('modules/test/special/metadata.php'));
-        $this->assertFileExists($this->_getTestPath('modules/test/special/models/testspecialoffer.php'));
-        $this->assertFileExists($this->_getTestPath('modules/test/special/models/testspecialofferlist.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/Special/metadata.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/Special/Application/Model/testSpecialOffer.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/Special/Application/Model/testSpecialOfferList.php'));
 
         // Check metadata content
-        include($this->_getTestPath('modules/test/special/metadata.php'));
+        include($this->_getTestPath('modules/test/Special/metadata.php'));
         $this->assertTrue(isset($aModule));
         if (isset($aModule)) {
             $this->assertArrayHasKey('files', $aModule);
             $this->assertSame(
                 array(
-                    'testspecialmodule'    => 'test/special/core/testspecialmodule.php',
-                    'testspecialoffer'     => 'test/special/models/testspecialoffer.php',
-                    'testspecialofferlist' => 'test/special/models/testspecialofferlist.php',
+                    'testSpecialModule'    => 'test/Special/Core/testSpecialModule.php',
+                    'testSpecialOffer'     => 'test/Special/Application/Model/testSpecialOffer.php',
+                    'testSpecialOfferList' => 'test/Special/Application/Model/testSpecialOfferList.php',
                 ),
                 $aModule['files']
             );
@@ -779,14 +766,12 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
 
         // Check list model class
         $this->assertFalse(class_exists('testSpecialOfferList'));
-        include($this->_getTestPath('modules/test/special/models/testspecialofferlist.php'));
+        include($this->_getTestPath('modules/test/Special/Application/Model/testSpecialOfferList.php'));
         $this->assertTrue(class_exists('testSpecialOfferList'));
     }
 
     public function testGenerateModule_widgetsSet_generateModuleSkeletonWithWidgetsClasses()
     {
-        $this->markTestIncomplete('To be fixed after final v0.6.0 is ready with all eShop v6 features'); // TODO DDR
-
         // Config mock
         $this->setRequestParameter('modulegenerator_module_name', 'Wi');
         $this->setRequestParameter('modulegenerator_extend_classes', '');
@@ -805,32 +790,32 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
         $this->assertFalse($aViewData['blError']);
 
         // Check module structure
-        $this->assertFileExists($this->_getTestPath('modules/test/wi/metadata.php'));
-        $this->assertFileExists($this->_getTestPath('modules/test/wi/components/widgets/testwibar.php'));
-        $this->assertFileExists($this->_getTestPath('modules/test/wi/views/widgets/testwibar.tpl'));
+        $this->assertFileExists($this->_getTestPath('modules/test/Wi/metadata.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/Wi/Application/Component/Widget/testWiBar.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/Wi/Application/views/widgets/testWiBar.tpl'));
 
         // Check metadata content
-        include($this->_getTestPath('modules/test/wi/metadata.php'));
+        include($this->_getTestPath('modules/test/Wi/metadata.php'));
         $this->assertTrue(isset($aModule));
         if (isset($aModule)) {
             $this->assertArrayHasKey('files', $aModule);
             $this->assertArrayHasKey('templates', $aModule);
             $this->assertSame(
                 array(
-                    'testwimodule' => 'test/wi/core/testwimodule.php',
-                    'testwibar'    => 'test/wi/components/widgets/testwibar.php',
+                    'testWiModule' => 'test/Wi/Core/testWiModule.php',
+                    'testWiBar'    => 'test/Wi/Application/Component/Widget/testWiBar.php',
                 ),
                 $aModule['files']
             );
             $this->assertSame(
-                array('testwibar.tpl' => 'test/wi/views/widgets/testwibar.tpl'),
+                array('testWiBar.tpl' => 'test/Wi/Application/views/widgets/testWiBar.tpl'),
                 $aModule['templates']
             );
         }
 
         // Check widget class content
         $this->assertFalse(class_exists('testWiBar'));
-        include($this->_getTestPath('modules/test/wi/components/widgets/testwibar.php'));
+        include($this->_getTestPath('modules/test/Wi/Application/Component/Widget/testWiBar.php'));
         $this->assertTrue(class_exists('testWiBar'));
         $oClass = new testWiBar();
         $this->assertTrue(method_exists($oClass, 'isCacheable'));
@@ -838,8 +823,6 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
 
     public function testGenerateModule_blocksSet_generateModuleSkeletonWithBlocks()
     {
-        $this->markTestIncomplete('To be fixed after final v0.6.0 is ready with all eShop v6 features'); // TODO DDR
-
         // Config mock
         $this->setRequestParameter('modulegenerator_module_name', 'Block');
         $this->setRequestParameter('modulegenerator_extend_classes', '');
@@ -859,11 +842,11 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
         $this->assertFalse($aViewData['blError']);
 
         // Check module structure
-        $this->assertFileExists($this->_getTestPath('modules/test/block/metadata.php'));
-        $this->assertFileExists($this->_getTestPath('modules/test/block/views/blocks/testblock_my_block.tpl'));
+        $this->assertFileExists($this->_getTestPath('modules/test/Block/metadata.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/Block/Application/views/blocks/testBlock_my_block.tpl'));
 
         // Check metadata content
-        include($this->_getTestPath('modules/test/block/metadata.php'));
+        include($this->_getTestPath('modules/test/Block/metadata.php'));
         $this->assertTrue(isset($aModule));
         if (isset($aModule)) {
             $this->assertArrayHasKey('blocks', $aModule);
@@ -872,7 +855,7 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
                     array(
                         'template' => 'page.tpl',
                         'block'    => 'my_block',
-                        'file'     => 'views/blocks/testblock_my_block.tpl',
+                        'file'     => 'Application/views/blocks/testBlock_my_block.tpl',
                     )
                 ),
                 $aModule['blocks']
@@ -915,8 +898,6 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
 
     public function testGenerateModule_SettingsSet_generateModuleSkeletonWithSettings()
     {
-        $this->markTestIncomplete('To be fixed after final v0.6.0 is ready with all eShop v6 features'); // TODO DDR
-
         // Config mock
         $this->setRequestParameter('modulegenerator_module_name', 'Conf');
         $this->setRequestParameter('modulegenerator_extend_classes', '');
@@ -956,11 +937,11 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
         $this->assertFalse($aViewData['blError']);
 
         // Check module structure
-        $this->assertFileExists($this->_getTestPath('modules/test/conf/metadata.php'));
-        $this->assertFileExists($this->_getTestPath('modules/test/conf/views/admin/en/testconf_admin_en_lang.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/Conf/metadata.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/Conf/Application/views/admin/en/testConf_admin_en_lang.php'));
 
         // Check metadata content
-        include($this->_getTestPath('modules/test/conf/metadata.php'));
+        include($this->_getTestPath('modules/test/Conf/metadata.php'));
         $this->assertTrue(isset($aModule));
         if (isset($aModule)) {
             $this->assertArrayHasKey('settings', $aModule);
@@ -990,7 +971,7 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
         }
 
         // Check backend translation file
-        include($this->_getTestPath('modules/test/conf/views/admin/en/testconf_admin_en_lang.php'));
+        include($this->_getTestPath('modules/test/Conf/Application/views/admin/en/testConf_admin_en_lang.php'));
         $this->assertTrue(isset($aLang));
         if (isset($aLang)) {
             $this->assertArrayHasKey('SHOP_MODULE_GROUP_testConfSettings', $aLang);
@@ -1006,8 +987,6 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
 
     public function testGenerateModule_settingsAreInvalid_generateModuleSkeletonWithNoSettings()
     {
-        $this->markTestIncomplete('To be fixed after final v0.6.0 is ready with all eShop v6 features'); // TODO DDR
-
         // Config mock
         $this->setRequestParameter('modulegenerator_module_name', 'Conf');
         $this->setRequestParameter('modulegenerator_extend_classes', '');
@@ -1047,11 +1026,11 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
         $this->assertFalse($aViewData['blError']);
 
         // Check module structure
-        $this->assertFileExists($this->_getTestPath('modules/test/conf/metadata.php'));
-        $this->assertFileExists($this->_getTestPath('modules/test/conf/views/admin/en/testconf_admin_en_lang.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/Conf/metadata.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/Conf/Application/views/admin/en/testConf_admin_en_lang.php'));
 
         // Check metadata content
-        include($this->_getTestPath('modules/test/conf/metadata.php'));
+        include($this->_getTestPath('modules/test/Conf/metadata.php'));
         $this->assertTrue(isset($aModule));
         if (isset($aModule)) {
             $this->assertArrayHasKey('settings', $aModule);
@@ -1059,7 +1038,7 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
         }
 
         // Check backend translation file
-        include($this->_getTestPath('modules/test/conf/views/admin/en/testconf_admin_en_lang.php'));
+        include($this->_getTestPath('modules/test/Conf/Application/views/admin/en/testConf_admin_en_lang.php'));
         $this->assertTrue(isset($aLang));
         if (isset($aLang)) {
             $this->assertArrayNotHasKey('SHOP_MODULE_GROUP_testConfSettings', $aLang);
@@ -1071,8 +1050,6 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
 
     public function testGenerateModule_versionSet_generateModuleSkeletonWithThatVersion()
     {
-        $this->markTestIncomplete('Not working correctly'); // TODO #SVO
-
         // Config mock
         $this->setRequestParameter('modulegenerator_module_name', 'Version');
         $this->setRequestParameter('modulegenerator_extend_classes', '');
@@ -1147,8 +1124,6 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
 
     public function testGenerateModule_learningTipsAndInstructionsChecked_generateModuleSkeletonWithHintsComments()
     {
-        $this->markTestIncomplete('To be fixed after final v0.6.0 is ready with all eShop v6 features'); // TODO DDR
-
         // Config mock
         $this->setRequestParameter('modulegenerator_module_name', 'Learning');
         $this->setRequestParameter('modulegenerator_extend_classes', '');
@@ -1173,18 +1148,16 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
         $this->assertFalse($aViewData['blError']);
 
         // Check module structure
-        $this->assertFileExists($this->_getTestPath('modules/test/learning/metadata.php'));
+        $this->assertFileExists($this->_getTestPath('modules/test/Learning/metadata.php'));
 
         // Check metadata content
-        $sMetadata = file_get_contents($this->_getTestPath('modules/test/learning/metadata.php'));
-        $this->assertContains(' * TODO: Remove all this TODO comment.', $sMetadata);
-        $this->assertContains("//'[ParentClassName]' => 'test/learning/[appropriate_folder]/testlearning[parent_class_name]',", $sMetadata);
+        $sMetadata = file_get_contents($this->_getTestPath('modules/test/Learning/metadata.php'));
+        $this->assertContains(' * TODO: Remove all these TODO comments.', $sMetadata);
+        $this->assertContains("//'[ParentClassName]' => 'test/Learning/[appropriate_folder]/testLearning[parent_class_name]',", $sMetadata);
     }
 
-    public function testGenerateModule_allOptionsSet_generateModuleSkeletonWithAllFeatres()
+    public function testGenerateModule_allOptionsSet_generateModuleSkeletonWithAllFeatures()
     {
-        $this->markTestIncomplete('To be fixed after final v0.6.0 is ready with all eShop v6 features'); // TODO DDR
-
         // Config mock
         $this->setRequestParameter('modulegenerator_module_name', 'AllThings');
         $this->setRequestParameter('modulegenerator_extend_classes', 'oxbasket' . PHP_EOL . 'oxList');
@@ -1233,8 +1206,8 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
                 array(
                     'id'          => 'testallthings',
                     'title'       => array(
-                        'de' => '[TR - TEST All Things]',
-                        'en' => 'TEST All Things',
+                        'de' => '[TR - TEST :: All Things]',
+                        'en' => 'TEST :: All Things',
                     ),
                     'description' => array(
                         'de' => '[TR - TEST All Things Module]',
@@ -1246,35 +1219,35 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
                     'url'         => 'www.example.com',
                     'email'       => 'test@example.com',
                     'extend'      => array(
-                        'oxbasket' => 'test/allthings/models/testallthingsoxbasket',
-                        'oxlist'   => 'test/allthings/core/testallthingsoxlist',
+                        'oxbasket' => 'test/AllThings/Application/Model/testAllThingsoxbasket',
+                        'oxList'   => 'test/AllThings/Core/testAllThingsoxList',
                     ),
                     'files'       => array(
-                        'testallthingsmodule'    => 'test/allthings/core/testallthingsmodule.php',
-                        'testallthingsbar'       => 'test/allthings/components/widgets/testallthingsbar.php',
-                        'testallthingsmenu'      => 'test/allthings/components/widgets/testallthingsmenu.php',
-                        'testallthingsview'      => 'test/allthings/controllers/testallthingsview.php',
-                        'testallthingspreview'   => 'test/allthings/controllers/testallthingspreview.php',
-                        'testallthingsitem'      => 'test/allthings/models/testallthingsitem.php',
-                        'testallthingsmodel'     => 'test/allthings/models/testallthingsmodel.php',
-                        'testallthingsmodellist' => 'test/allthings/models/testallthingsmodellist.php',
+                        'testAllThingsModule'    => 'test/AllThings/Core/testAllThingsModule.php',
+                        'testAllThingsBar'       => 'test/AllThings/Application/Component/Widget/testAllThingsBar.php',
+                        'testAllThingsMenu'      => 'test/AllThings/Application/Component/Widget/testAllThingsMenu.php',
+                        'testAllThingsView'      => 'test/AllThings/Application/Controller/testAllThingsView.php',
+                        'testAllThingsPreview'   => 'test/AllThings/Application/Controller/testAllThingsPreview.php',
+                        'testAllThingsItem'      => 'test/AllThings/Application/Model/testAllThingsItem.php',
+                        'testAllThingsModel'     => 'test/AllThings/Application/Model/testAllThingsModel.php',
+                        'testAllThingsModelList' => 'test/AllThings/Application/Model/testAllThingsModelList.php',
                     ),
                     'templates'   => array(
-                        'testallthingsview.tpl'    => 'test/allthings/views/pages/testallthingsview.tpl',
-                        'testallthingspreview.tpl' => 'test/allthings/views/pages/testallthingspreview.tpl',
-                        'testallthingsbar.tpl'     => 'test/allthings/views/widgets/testallthingsbar.tpl',
-                        'testallthingsmenu.tpl'    => 'test/allthings/views/widgets/testallthingsmenu.tpl',
+                        'testAllThingsView.tpl'    => 'test/AllThings/Application/views/pages/testAllThingsView.tpl',
+                        'testAllThingsPreview.tpl' => 'test/AllThings/Application/views/pages/testAllThingsPreview.tpl',
+                        'testAllThingsBar.tpl'     => 'test/AllThings/Application/views/widgets/testAllThingsBar.tpl',
+                        'testAllThingsMenu.tpl'    => 'test/AllThings/Application/views/widgets/testAllThingsMenu.tpl',
                     ),
                     'blocks'      => array(
                         array(
                             'template' => 'page.tpl',
                             'block'    => 'block',
-                            'file'     => 'views/blocks/testallthings_block.tpl',
+                            'file'     => 'Application/views/blocks/testAllThings_block.tpl',
                         ),
                         array(
                             'template' => 'layout.tpl',
                             'block'    => 'footer',
-                            'file'     => 'views/blocks/testallthings_footer.tpl',
+                            'file'     => 'Application/views/blocks/testAllThings_footer.tpl',
                         ),
                     ),
                     'settings'    => array(

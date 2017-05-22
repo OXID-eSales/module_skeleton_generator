@@ -232,25 +232,184 @@ class oxpsModuleGeneratorValidatorTest extends OxidEsales\TestingLibrary\UnitTes
         );
     }
 
-    // TODO: finish test
-    public function testValidateAndLinkClasses()
+    /**
+     * @dataProvider validateAndLinkClassesDataProvider
+     */
+    public function testValidateAndLinkClasses($sValue, $aExpectedResult)
     {
+        $this->assertSame($aExpectedResult, $this->SUT->validateAndLinkClasses($sValue));
     }
 
-    // TODO: finish test
-    public function testParseMultiLineInput()
+    public function validateAndLinkClassesDataProvider()
     {
+        return [
+            // Invalid values
+            ['oxNull', []],
+            ['nocamelcase', []],
+            [null, []],
+            [0, []],
+            [1, []],
+            [[], []],
+
+            // Valid values
+            ['Article', ['Article' => 'Application/Controller/Admin/']],
+            ['oxarticle', ['oxarticle' => 'Application/Model/']],
+            ['oxArticle', ['oxArticle' => 'Application/Model/']],
+            ['oxList', ['oxList' => 'Core/']],
+            ['oxBasket', ['oxBasket' => 'Application/Model/']],
+            ['Basket', ['Basket' => 'Application/Controller/']],
+            ['oxArticle' . PHP_EOL . 'oxBasket',
+             [
+                 'oxArticle' => 'Application/Model/',
+                 'oxBasket'  => 'Application/Model/',
+             ]
+            ],
+        ];
     }
 
-    // TODO: finish test
-    public function testParseBlocksData()
+    /**
+     * @dataProvider parseMultiLineInputDataProvider
+     */
+    public function testParseMultiLineInput($sValue, $sLineValidation, $aExpectedResult)
     {
+        $this->assertSame($aExpectedResult, $this->SUT->parseMultiLineInput($sValue, $sLineValidation));
     }
 
-    // TODO: finish test
-    public function testModuleExists()
+    public function parseMultiLineInputDataProvider()
     {
+        return [
+            // not_empty
+            ['oneline', 'not_empty', ['oneline']],
+            ['oneline' . PHP_EOL . 0, 'not_empty', ['oneline']],
+            [0, 'not_empty', []],
+            [1, 'not_empty', ['1']],
+            [null, 'not_empty', []],
+            [[], 'not_empty', ['Array']],
+
+            // camel_case
+            ['nocamelcase', 'camel_case', []],
+            ['UpperCamelCase', 'camel_case', ['UpperCamelCase']],
+            ['camelCase', 'camel_case', []],
+            [0, 'camel_case', []],
+            [1, 'camel_case', []],
+            [null, 'camel_case', []],
+            [[], 'camel_case', ['Array']],
+
+            // multiline
+            ['firstline' . PHP_EOL . 0, 'not_empty', ['firstline']],
+            [0 . PHP_EOL . 'firstline', 'not_empty', ['firstline']],
+            [0 . PHP_EOL . 'firstline', 'camel_case', []],
+            [1 . PHP_EOL . 'FirstLine', 'camel_case', ['FirstLine']],
+            ['firstline' . PHP_EOL . null, 'not_empty', ['firstline']],
+            ['firstline' . PHP_EOL . null, 'not_empty', ['firstline']],
+            ['firstline' . PHP_EOL . [], 'not_empty', ['firstline', 'Array']],
+            ['firstline' . PHP_EOL . 'secondline', 'not_empty', ['firstline', 'secondline']],
+            ['firstline' . PHP_EOL . 'S', 'not_empty', ['firstline', 'S']],
+            ['F' . PHP_EOL . 'S', 'camel_case', []],
+            ['F' . PHP_EOL . 'S', 'not_empty', ['F', 'S']],
+            ['First' . PHP_EOL . 'Second' . PHP_EOL . 'Third', 'not_empty', ['First', 'Second', 'Third']],
+        ];
     }
 
+    /**
+     * @dataProvider parseBlocksDataDataProvide
+     */
+    public function testParseBlocksData($sBlocks, $sVendorPrefix, $sModuleName, $aExpectedData)
+    {
+        $this->assertSame(
+            $aExpectedData,
+            json_decode(json_encode($this->SUT->parseBlocksData($sBlocks, $sVendorPrefix, $sModuleName)), true)
+        );
+    }
 
+    public function parseBlocksDataDataProvide()
+    {
+        return [
+            // invalid values
+            [
+                'details_productmain_titlepage/details/inc/productmain.tpl',
+                'oxps',
+                'ModuleName',
+                [],
+            ],
+            [
+                0,
+                'oxps',
+                'ModuleName',
+                [],
+            ],
+            [
+                null,
+                'oxps',
+                'ModuleName',
+                [],
+            ],
+            [
+                1,
+                'oxps',
+                'ModuleName',
+                [],
+            ],
+
+            // valid values
+            [
+                'details_productmain_title@page/details/inc/productmain.tpl',
+                'oxps',
+                'ModuleName',
+                ['_details_productmain_title' =>
+                     [
+                         'template' => 'page/details/inc/productmain.tpl',
+                         'block'    => 'details_productmain_title',
+                         'file'     => 'Application/views/blocks/oxpsModuleName_details_productmain_title.tpl',
+                     ],
+                ],
+            ],
+            [
+                'details_productmain_title@page/details/inc/productmain.tpl',
+                'oxps',
+                'ModuleName',
+                ['_details_productmain_title' =>
+                     [
+                         'template' => 'page/details/inc/productmain.tpl',
+                         'block'    => 'details_productmain_title',
+                         'file'     => 'Application/views/blocks/oxpsModuleName_details_productmain_title.tpl',
+                     ],
+                ],
+            ],
+            [
+                'details_productmain_title@page/details/inc/productmain.tpl',
+                '',
+                'ModuleName',
+                ['_details_productmain_title' =>
+                     [
+                         'template' => 'page/details/inc/productmain.tpl',
+                         'block'    => 'details_productmain_title',
+                         'file'     => 'Application/views/blocks/ModuleName_details_productmain_title.tpl',
+                     ],
+                ],
+            ],
+
+        ];
+    }
+
+    /**
+     * @dataProvider moduleExistsDataProvider
+     */
+    public function testModuleExists($sModuleName, $blExpectedValue)
+    {
+        $this->assertSame($blExpectedValue, $this->SUT->moduleExists($sModuleName));
+    }
+
+    public function moduleExistsDataProvider()
+    {
+        return [
+            ['ModuleGenerator', true],
+            ['modulegenerator', true],
+            ['NotExistingModule', false],
+            ['', false],
+            [[], false],
+            [0, false],
+            [null, false],
+        ];
+    }
 }

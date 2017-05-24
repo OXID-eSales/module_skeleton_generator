@@ -312,7 +312,7 @@ class oxpsModuleGeneratorValidatorTest extends OxidEsales\TestingLibrary\UnitTes
     }
 
     /**
-     * @dataProvider parseBlocksDataDataProvide
+     * @dataProvider parseBlocksDataDataProvider
      */
     public function testParseBlocksData($sBlocks, $sVendorPrefix, $sModuleName, $aExpectedData)
     {
@@ -322,7 +322,7 @@ class oxpsModuleGeneratorValidatorTest extends OxidEsales\TestingLibrary\UnitTes
         );
     }
 
-    public function parseBlocksDataDataProvide()
+    public function parseBlocksDataDataProvider()
     {
         return [
             // invalid values

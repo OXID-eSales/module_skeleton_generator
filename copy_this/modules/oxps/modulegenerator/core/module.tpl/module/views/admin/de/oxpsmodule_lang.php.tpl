@@ -7,7 +7,7 @@
 $sLangName = 'Deutsch';
 
 $aLang = array(
-    'charset' => 'ISO-8859-15', // Supports DE chars like: ä, ü, ö, etc.
+    'charset' => 'UTF-8', // Supports german language specific chars like: Ã¤, Ã¶. ÃŸ, etc.
     '[{$oModule->getModuleId()}]' => '[{$oModule->getTitle()}]',
 
 [{if $aModuleSettings}]

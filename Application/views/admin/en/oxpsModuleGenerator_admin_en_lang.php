@@ -90,6 +90,8 @@ $aLang = array(
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_ERROR_INVALID_VENDOR'     => 'ERROR! Module vendor prefix configured in settings is invalid. It should contain two to four lowercase latin letters.',
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_ERROR_INVALID_NAME'       => 'ERROR! Module name is invalid. Use unique capitalized camel case name, e.g. "MyModule"',
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_MSG_GENERATION_SUCCESS'   => 'Success! Module have been generated! Please check in <i>Extensions -> Modules</i> and the source code in Your vendor sub-folder.',
+    'OXPS_MODULEGENERATOR_ADMIN_MODULE_MSG_GENERATION_SUCCESS_AUTOLOAD_WARNING'   => '<b>Please note: </b> you need to update your composer.json autoload block in shop root folder. Refer to: ' .
+                                                                                    '<a href="http://oxid-eshop-developer-documentation.readthedocs.io/en/6.0/modules/using_namespaces_in_modules.html#install-and-register-your-module-with-composer">Official Oxid documentation</a>',
 
     // Module generation form JavaScript notifications
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_SUCCESS'               => 'SUCCESS: Entered value is valid',

@@ -1,12 +1,16 @@
 <?php
 [{$oModule->renderFileComment()}]
-
+[{assign var='sVendorPrefix' value=$oModule->getVendorPrefix()|ucfirst}]
+[{assign var='sModuleName' value=$oModule->getModuleFolderName()}]
+[{assign var='sNamespaceSuffix' value=$oModule->getNamespaceSuffixFromPath($sFilePath)}]
 [{assign var='sClassNamePrefix' value=$oModule->getModuleClassName()}]
 [{if $sClassRealName}]
     [{assign var='sClassName' value=$sClassRealName}]
 [{else}]
     [{assign var='sClassName' value=$oModule->getFileNameSuffix($sFilePath)}]
 [{/if}]
+
+namespace [{$sVendorPrefix}]\[{$sModuleName}]\[{$sNamespaceSuffix}];
 
 use \OxidEsales\Eshop\Core\Controller\BaseController;
 use \OxidEsales\Eshop\Core\Registry;
@@ -16,9 +20,9 @@ use \OxidEsales\Eshop\Core\Request;
 [{/if}]
 
 /**
- * Class [{$sClassNamePrefix}][{$sClassName}].
+ * Class [{$sClassName}].
  */
-class [{$sClassNamePrefix}][{$sClassName}] extends BaseController
+class [{$sClassName}] extends BaseController
 {
 
     /**
@@ -35,7 +39,7 @@ class [{$sClassNamePrefix}][{$sClassName}] extends BaseController
 [{if $oModule->renderTasks()}]
         // TODO: Implement Your custom logic here or delete this sample
 [{/if}]
-        //$this->_[{$sClassNamePrefix}][{$sClassName}]_init_parent();
+        //$this->_[{$sClassName}]_init_parent();
     } */
 [{/if}]
 
@@ -49,7 +53,7 @@ class [{$sClassNamePrefix}][{$sClassName}] extends BaseController
      */
     public function render()
     {
-        $mReturn = $this->_[{$sClassNamePrefix}][{$sClassName}]_render_parent();
+        $mReturn = $this->_[{$sClassName}]_render_parent();
 
 [{if $oModule->renderTasks()}]
         // TODO: Implement Your custom logic here
@@ -109,7 +113,7 @@ class [{$sClassNamePrefix}][{$sClassName}] extends BaseController
      *
      * @return mixed
      */
-    protected function _[{$sClassNamePrefix}][{$sClassName}]_render_parent()
+    protected function _[{$sClassName}]_render_parent()
     {
         return parent::render();
     }

@@ -79,6 +79,22 @@
                 <li>[{oxmultilang ident=$sMessage}]</li>
             </ul>
         </div>
+        [{if !$blError}]
+        <div class="warning">
+            <ul>
+                <li>[{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_MODULE_MSG_GENERATION_SUCCESS_AUTOLOAD_WARNING"}]</li>
+                Sample composer.json:<br/>
+<pre><code>"autoload": {
+    "psr-4": {
+        "OxidEsales\\EshopCommunity\\": "./source",
+        "[{$oModule->getVendorPrefix()|ucfirst}]\\[{$oModule->getModuleFolderName()}]\\": "../../../source/modules/[{$oModule->getVendorPrefix()}]/[{$oModule->getModuleFolderName()}]" //copy this line
+        }
+}</code></pre>
+                <li>After updating composer.json, from shops's root dir run:</li>
+                <pre><code>composer dump-autoload</code></pre>
+            </ul>
+        </div>
+        [{/if}]
         [{/if}]
         <br/>
         <table cellspacing="0" cellpadding="0" border="0">

@@ -38,7 +38,7 @@ class oxpsModuleGeneratorValidator extends Base
     /**
      * Folder name identifier in class path which determines backward compatibility - old class name usage.
      */
-    const OXPS_BACKWARD_COMPATIBILITY_FOLDER = 'BackwardCompatibility';
+    const OXPS_BACKWARD_COMPATIBILITY_FOLDER = 'oxideshop-unified-namespace-generator/generated/';
 
     /**
      * Module instance used as information container for new module generation.
@@ -193,16 +193,16 @@ class oxpsModuleGeneratorValidator extends Base
                 continue;
             }
 
-            $sClassPath = (string) $this->_getClassPath($sClassName);
+            $sClassData = (array) $this->_getClassPath($sClassName);
 
-            if ($oFileSystemHelper->isFile($sClassPath)) {
-                if (strpos(dirname($sClassPath), DIRECTORY_SEPARATOR . 'Core'. DIRECTORY_SEPARATOR)) {
-                    $sClassPath = 'Core' . DIRECTORY_SEPARATOR;
+            if ($oFileSystemHelper->isFile($sClassData['classPath'])) {
+                if (strpos(dirname($sClassData['classPath']), DIRECTORY_SEPARATOR . 'Core'. DIRECTORY_SEPARATOR)) {
+                    $sClassData['classPath'] = 'Core' . DIRECTORY_SEPARATOR;
                 } else {
-                    $sClassPath = str_replace($sBasePath, '', dirname($sClassPath)) . DIRECTORY_SEPARATOR;
+                    $sClassData['classPath'] = str_replace($sBasePath, '', dirname($sClassData['classPath'])) . DIRECTORY_SEPARATOR;
                 }
 
-                $aValidLinkedClasses[$sClassName] = $sClassPath;
+                $aValidLinkedClasses[$sClassName] = $sClassData;
             }
         }
 
@@ -344,25 +344,42 @@ class oxpsModuleGeneratorValidator extends Base
 
     /**
      * Build reflection object to get path to a class.
-     * In case of old class name (backwards compatibility), use new class name of parent reflection.
+     * In case of old class name (backwards compatibility), use new class name of parent reflection
+     * and include other necessary data such as namespace.
      *
      * @param string $sClassName
      *
-     * @return string
+     * @return array    Array keys:
+     *                  'classPath' - path to a class
+     *                  'v6ClassName - Oxid version 6 class name
+     *                  'v6Namespace' - Class namespace
      */
     protected function _getClassPath($sClassName)
     {
         /** @var \OxidEsales\Eshop\Core\StrMb|\OxidEsales\Eshop\Core\StrRegular $oStr */
         $oStr = Str::getStr();
+        $aResult = array();
 
         $oReflection = new ReflectionClass(new $sClassName());
-        $sClassPath = (string) $oReflection->getFilename();
-
-        if (false !== $oStr->strpos($sClassPath, self::OXPS_BACKWARD_COMPATIBILITY_FOLDER)) {
+        $aResult['classPath'] = (string) $oReflection->getFilename();
+        if (false !== $oStr->strpos($aResult['classPath'], self::OXPS_BACKWARD_COMPATIBILITY_FOLDER)) {
             $oReflection = $oReflection->getParentClass();
-            $sClassPath = (string) $oReflection->getFilename();
+            $aResult['classPath'] = $sClassPath = (string) $oReflection->getFilename();
+            $aResult['v6ClassName'] = $sNewClassName = (string) $oReflection->getShortName();
+            $aResult['v6Namespace'] = (string) $this->_unifyNamespace($oReflection->getNamespaceName());
         }
 
-        return $sClassPath;
+        return $aResult;
+    }
+
+
+    /**
+     * Returns a unified namespace (eg. OxidEsales\EshopCommunity\Application -> OxidEsales\Eshop\Application)
+     *
+     * @param $sNamespace
+     * @return string
+     */
+    protected function _unifyNamespace($sNamespace){
+        return str_replace(array('EshopCommunity', 'EshopEnterprise', 'EshopProfessional'), 'Eshop', $sNamespace);
     }
 }

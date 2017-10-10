@@ -94,6 +94,8 @@ $aLang = array(
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_ERROR_INVALID_NAME'       => '[TR - ERROR! Module name is invalid. Use unique capitalized camel case name, e.g. "MyModule"]',
     //    'OXPS_MODULEGENERATOR_ADMIN_MODULE_MSG_GENERATION_SUCCESS' => 'Ihr Modul wurde erfolgreich generiert! Bitte prüfen Sie in <i>Erweiterungen -> Module</i> und den Source-Code in Ihrem Hersteller-Verzeichnis.',
     'OXPS_MODULEGENERATOR_ADMIN_MODULE_MSG_GENERATION_SUCCESS'   => '[TR - Success! Module have been generated! Please check in <i>Extensions -> Modules</i> and the source code in Your vendor sub-folder.]',
+    'OXPS_MODULEGENERATOR_ADMIN_MODULE_MSG_GENERATION_SUCCESS_AUTOLOAD_WARNING'   => '[TR - <b>Please note: </b> you need to update your composer.json autoload block in shop root folder. Refer to: ' .
+                                                                                      '<a href="http://oxid-eshop-developer-documentation.readthedocs.io/en/6.0/modules/using_namespaces_in_modules.html#install-and-register-your-module-with-composer">]',
 
     // Module generation form JavaScript notifications
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_SUCCESS'               => '[TR - SUCCESS: Entered value is valid]',

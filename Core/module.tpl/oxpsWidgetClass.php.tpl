@@ -1,6 +1,8 @@
 <?php
 [{$oModule->renderFileComment()}]
-
+[{assign var='sVendorPrefix' value=$oModule->getVendorPrefix()|ucfirst}]
+[{assign var='sModuleName' value=$oModule->getModuleFolderName()}]
+[{assign var='sNamespaceSuffix' value=$oModule->getNamespaceSuffixFromPath($sFilePath)}]
 [{assign var='sClassNamePrefix' value=$oModule->getModuleClassName()}]
 [{if $sClassRealName}]
     [{assign var='sClassName' value=$sClassRealName}]
@@ -8,12 +10,14 @@
     [{assign var='sClassName' value=$oModule->getFileNameSuffix($sFilePath)}]
 [{/if}]
 
+namespace [{$sVendorPrefix}]\[{$sModuleName}]\[{$sNamespaceSuffix}];
+
 use \OxidEsales\Eshop\Application\Component\Widget\WidgetController;
 
 /**
- * Class [{$sClassNamePrefix}][{$sClassName}].
+ * Class [{$sClassName}].
  */
-class [{$sClassNamePrefix}][{$sClassName}] extends WidgetController
+class [{$sClassName}] extends WidgetController
 {
 
     /**

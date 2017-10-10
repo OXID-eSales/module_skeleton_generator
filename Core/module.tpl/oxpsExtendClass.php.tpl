@@ -1,20 +1,28 @@
 <?php
 [{$oModule->renderFileComment()}]
 [{assign var='sClassNamePrefix' value=$oModule->getModuleClassName()}]
+[{assign var='sVendorPrefix' value=$oModule->getVendorPrefix()|ucfirst}]
+[{assign var='sModuleName' value=$oModule->getModuleFolderName()}]
+[{assign var='sNamespaceSuffix' value=$oModule->getNamespaceSuffixFromPath($sFilePath)}]
 [{if $sClassRealName}]
     [{assign var='sClassName' value=$sClassRealName}]
 [{else}]
     [{assign var='sClassName' value=$oModule->getFileNameSuffix($sFilePath)}]
 [{/if}]
+[{if $v6Namespace}]
+    [{assign var='sv6Namespace' value=$v6Namespace}]
+[{/if}]
 [{assign var='sReadableClassName' value=$sClassName|capitalize}]
 
+namespace [{$sVendorPrefix}]\[{$sModuleName}]\[{$sNamespaceSuffix}];
+
 /**
- * Class [{$sClassNamePrefix}][{$sReadableClassName}].
- * Extends [{$sClassName}].
+ * Class [{$sReadableClassName}].
+ * Extends \[{$sv6Namespace}]\[{$sClassName}].
  *
- * @see [{$sClassName}]
+ * @mixin \[{$sv6Namespace}]\[{$sClassName}]
  */
-class [{$sClassNamePrefix}][{$sReadableClassName}] extends [{$sClassNamePrefix}][{$sReadableClassName}]_parent
+class [{$sReadableClassName}] extends [{$sReadableClassName}]_parent
 {
 [{if $oModule->renderTasks()}]
     // TODO: Overload parent class methods or implement new methods for the extended class.
@@ -30,7 +38,7 @@ class [{$sClassNamePrefix}][{$sReadableClassName}] extends [{$sClassNamePrefix}]
         // NOTE: Overloaded method must always call parent and do a return similar as in original method
 [{/if}]
 
-        return $this->_[{$sClassNamePrefix}][{$sReadableClassName}]_[myMethod]_parent($[sSomeParameter]);
+        return $this->_[{$sReadableClassName}]_[myMethod]_parent($[sSomeParameter]);
     } */
 
 
@@ -44,7 +52,7 @@ class [{$sClassNamePrefix}][{$sReadableClassName}] extends [{$sClassNamePrefix}]
      *
      * @return mixed
      */
-    /* protected function _[{$sClassNamePrefix}][{$sReadableClassName}]_[myMethod]_parent($[sSomeParameter] = '')
+    /* protected function _[{$sReadableClassName}]_[myMethod]_parent($[sSomeParameter] = '')
     {
         return parent::[myMethod]($[sSomeParameter]);
     } */

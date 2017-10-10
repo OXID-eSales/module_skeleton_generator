@@ -1,10 +1,14 @@
 <?php
 [{$oModule->renderFileComment()}]
+[{assign var='sVendorPrefix' value=$oModule->getVendorPrefix()|ucfirst}]
+[{assign var='sModuleName' value=$oModule->getModuleFolderName()}]
+[{assign var='sNamespaceSuffix' value=$oModule->getNamespaceSuffixFromPath($sFilePath)}]
+namespace [{$sVendorPrefix}]\[{$sModuleName}]\[{$sNamespaceSuffix}];
 
 use \OxidEsales\Eshop\Core\Module\Module;
 use \OxidEsales\Eshop\Core\Registry;
 
-[{assign var='sModuleClassName' value=$oModule->getModuleClassName()|cat:'Module'}]
+[{assign var='sModuleClassName' value=$oModule->getModuleFolderName()|cat:'Module'}]
 /**
  * Class [{$sModuleClassName}]
  * Handles module setup, provides additional tools and module related helpers.

@@ -139,15 +139,15 @@ class oxpsModuleGeneratorHelper extends Base
             return $aExtendedClasses;
         }
 
-        foreach ($aClassesToExtend as $sClassName => $mApplicationPath) {
-            $sInModulePath = $this->_getPathInsideModule($sModulePath, $mApplicationPath);
+        foreach ($aClassesToExtend as $sClassName => $aClassData) {
+            $sInModulePath = $this->_getPathInsideModule($sModulePath, $aClassData['classPath']);
             $sDestinationPath = $sModulePath . $sInModulePath;
-            $sClassFileName = $sModuleId . $sClassName . '.php';
+            $sClassFileName = $aClassData['v6ClassName'] . '.php';
             $sClassFilePath = $sDestinationPath . $sClassFileName;
 
             $oFileSystemHelper->copyFile($sClassExtendTemplatePath, $sClassFilePath);
 
-            $aExtendedClasses[$sInModulePath . $sClassFileName] = $this->_getCoreClassName($sClassName);
+            $aExtendedClasses[$sInModulePath . $sClassFileName] = $aClassData;
         }
 
         return $aExtendedClasses;
@@ -355,11 +355,11 @@ class oxpsModuleGeneratorHelper extends Base
         $sModulePath = $oModule->getFullPath();
 
         if (empty($blTestClasses)) {
-            $sClassFileName = sprintf('%s%s.php', $sModuleId, $sClass);
+            $sClassFileName = sprintf('%s.php', $sClass);
             $sClassFilePath = $sModulePath . $sInModulePath . $sClassFileName;
             $sProcessedFileKey = $sInModulePath . $sClassFileName;
         } else {
-            $sClassFileName = sprintf('%s%sTest.php', $sModuleId, $sClass);
+            $sClassFileName = sprintf('%sTest.php', $sClass);
             $sClassDirPath = $sModulePath . $sInModulePath . dirname($mKey) . DIRECTORY_SEPARATOR;
             $this->getFileSystemHelper()->createFolder($sClassDirPath);
             $sClassFilePath = $sClassDirPath . $sClassFileName;
@@ -424,6 +424,6 @@ class oxpsModuleGeneratorHelper extends Base
 
         $oReflection = new ReflectionClass(new $sClassName());
 
-        return $oReflection->getName();
+        return $oReflection->getShortName();
     }
 }

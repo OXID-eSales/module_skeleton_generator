@@ -8,7 +8,9 @@ Folders structure, empty classes and metadata generation for new OXID eShop modu
  * **Enter Your copyright data in the module settings**
  * **Open an easy to use Module Generator Wizard**
  * **Enter new module name and optional components**
- * **Press "Generate New Module" and its done - new module is now ready to be activated and filled with features!**
+ * **Press "Generate New Module"** 
+ * **Update your composer autoloader** 
+ * **And its done - new module is now ready to be activated and filled with features!**
 
 ## OXID Module Skeleton Generator features
  - Fully configurable vendor/author parameters for new modules creation
@@ -44,6 +46,7 @@ Folders structure, empty classes and metadata generation for new OXID eShop modu
 
 ## Installation
  - Copy the content of `copy_this/` folder to OXID eShop root folder
+ - Make sure the Module Generator directory in module dir follows Pascal case naming pattern - `modules/oxps/ModuleGenerator`
  - Activate the module in administration area
  - Set eShop `modules/` folder writable while generating new modules
 
@@ -56,6 +59,7 @@ Folders structure, empty classes and metadata generation for new OXID eShop modu
  - (optionally) Enter any other options required in a new module (refer to help hints for more info)
  - Press "Generate New Module" button
  - The module skeleton source is now available in Your vendor sub-folder
+ - Update composer.json and run 'composer dump-autoload' (refer to the notification that appears after module generation for more detailed info)
  - And the module could be activated already in _Extensions -> Modules_
 
 ## To do and nice to have features for future releases

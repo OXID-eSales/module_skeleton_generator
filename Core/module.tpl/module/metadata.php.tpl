@@ -5,6 +5,7 @@
 [{assign var='sVendorDir' value=$oModule->getVendorPrefix()}]
 [{assign var='sModuleId' value=$oModule->getModuleId(false)}]
 [{assign var='sModuleCamelCaseId' value=$oModule->getModuleId(true)}]
+[{assign var='sModuleCamelCaseName' value=$oModule->getModuleFolderName()}]
 [{assign var='sModuleFolderName' value=$oModule->getModuleFolderName()}]
 [{assign var='aNewClasses' value=$oModule->getClassesToCreate()}]
 [{assign var='aControllersClasses' value=$oModule->getClassesToCreate('controllers', 'aClasses')}]
@@ -45,20 +46,21 @@ $aModule = array(
     'email'       => '[{$oModule->getAuthorData('mail')}]',
     'extend'      => array(
 [{if $aExtendClasses}]
-[{foreach from=$aExtendClasses key='sExtendClass' item='mApplicationPath'}]
-        '[{$sExtendClass}]' => '[{$sVendorDir}]/[{$sModuleFolderName}]/[{$mApplicationPath}][{$sModuleCamelCaseId}][{$sExtendClass}]',
+[{foreach from=$aExtendClasses key='sLegacyClass' item='aV6ClassData'}]
+        // Extends [{$sLegacyClass}]
+        \[{$aV6ClassData.v6Namespace}]\[{$aV6ClassData.v6ClassName}]::class => [{$sVendorDir|ucfirst}]\[{$sModuleFolderName}]\[{$aV6ClassData.classPath|replace:"/":"\\"}][{$aV6ClassData.v6ClassName}]::class,
 [{/foreach}]
 [{/if}]
         [{if $oModule->renderSamples()}]//'[ParentClassName]' => '[{$sVendorDir}]/[{$sModuleFolderName}]/[appropriate_folder]/[{$sModuleCamelCaseId}][parent_class_name]',
 [{/if}]
     ),
     'files'       => array(
-        '[{$sModuleCamelCaseId}]Module' => '[{$sVendorDir}]/[{$sModuleFolderName}]/Core/[{$sModuleCamelCaseId}]Module.php',
+        '[{$sModuleCamelCaseName}]Module' => '[{$sVendorDir}]/[{$sModuleFolderName}]/Core/[{$sModuleCamelCaseName}]Module.php',
 [{if $aNewClasses}]
 [{foreach from=$aNewClasses key='sObjectType' item='aClassesData'}]
 [{assign var='aClasses' value=$aClassesData.aClasses}]
 [{foreach from=$aClasses key='sClassKey' item='sClassName'}]
-        '[{$sModuleCamelCaseId}][{$sClassName}]' => '[{$sVendorDir}]/[{$sModuleFolderName}]/[{$aClassesData.sInModulePath}][{$sModuleCamelCaseId}][{$sClassName}].php',
+        '[{$sClassName}]' => '[{$sVendorDir}]/[{$sModuleFolderName}]/[{$aClassesData.sInModulePath}][{$sClassName}].php',
 [{/foreach}]
 [{/foreach}]
 [{/if}]
@@ -145,7 +147,7 @@ $aModule = array(
 [{/if}]
     ),
     'events'      => array(
-        'onActivate'   => '[{$oModule->getModuleClassName()}]Module::onActivate',
-        'onDeactivate' => '[{$oModule->getModuleClassName()}]Module::onDeactivate',
+        'onActivate'   => '[{$oModule->getModuleFolderName()}]Module::onActivate',
+        'onDeactivate' => '[{$oModule->getModuleFolderName()}]Module::onDeactivate',
     ),
 );

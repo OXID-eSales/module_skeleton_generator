@@ -33,7 +33,7 @@ use \OxidEsales\Eshop\Core\Str;
  * The class becomes a container for all information required to generate  module.
  * NOTE: This class is very long, but it cannot be split since consists mostly of getters and setters.
  *
- * @see \OxidEsales\Eshop\Core\Module
+ * @see \OxidEsales\Eshop\Core\Module\Module
  */
 class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
 {
@@ -534,6 +534,26 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
             }
         }
 
+        return $sSuffix;
+    }
+
+    /**
+     * Generates a namespace based on given path to file. Used in templates for namespace generation.
+     * Expects argument to be something like "path/to/[vendor_prefix][module_name][desired_suffix].php"
+     *
+     * @param string $sPath
+     * @param $blOmitFileName bool Whether to omit filename or not
+     *
+     * @return string
+     */
+    public function getNamespaceSuffixFromPath($sPath, $blOmitFileName = true)
+    {
+        $sSuffix = '';
+        if (!empty($sPath)) {
+            $sDir = $blOmitFileName ? dirname($sPath) : $sPath;
+            $sSuffix = str_replace(array(DIRECTORY_SEPARATOR, '.php'), "\\", $sDir);
+            $sSuffix = rtrim($sSuffix, '\\');
+        }
         return $sSuffix;
     }
 

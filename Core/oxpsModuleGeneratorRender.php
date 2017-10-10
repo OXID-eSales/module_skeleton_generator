@@ -118,7 +118,16 @@ class oxpsModuleGeneratorRender extends Base
 
         foreach ($aClasses as $sFileName => $sFilePath) {
             $oSmarty->assign('sFilePath', $sFilePath);
-            $oSmarty->assign('sClassRealName', $oValidator->getArrayValue($sClassesNames, $sFilePath));
+            // if $mClassData is an array that means it's an extended class
+            // so extra data is required (eg. namespace) which is contained in $mClassData array
+            $mClassData = $sClassesNames[$sFilePath];
+            if (is_array($mClassData)){
+                $oSmarty->assign('sClassRealName', $mClassData['v6ClassName']);
+                $oSmarty->assign('v6Namespace', $mClassData['v6Namespace']);
+            } else {
+                // Not an array so we only need the class name
+                $oSmarty->assign('sClassRealName', $oValidator->getArrayValue($sClassesNames, $sFilePath));
+            }
 
             $sFileFullPath = $sModulePath . $sFilePath;
 
@@ -178,11 +187,12 @@ class oxpsModuleGeneratorRender extends Base
     protected function _getFilesToProcess(array $aClassesToExtend, array $aNewClasses)
     {
         $sModuleId = $this->getModule()->getModuleId();
+        $sModuleName = $this->getModule()->getModuleFolderName();
 
         $aFilesToProcess = array(
             $sModuleId . '_de_lang.php'       => 'Application/translations/de/oxpsModule_lang.php.tpl',
             $sModuleId . '_en_lang.php'       => 'Application/translations/en/oxpsModule_lang.php.tpl',
-            $sModuleId . 'Module.php'         => 'Core/oxpsModule.php.tpl',
+            $sModuleName . 'Module.php'         => 'Core/oxpsModule.php.tpl',
             'docs/install.sql',
             'docs/README.txt',
             'docs/uninstall.sql',

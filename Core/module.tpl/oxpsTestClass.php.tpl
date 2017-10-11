@@ -7,21 +7,25 @@
 [{else}]
     [{assign var='sClassName' value=$oModule->getFileNameSuffix($sFilePath)}]
 [{/if}]
-[{assign var="sClassFullName" value=$sClassNamePrefix|cat:$sClassName}]
+[{assign var='sVendorPrefix' value=$oModule->getVendorPrefix()|ucfirst}]
+[{assign var='sModuleName' value=$oModule->getModuleFolderName()}]
+[{assign var='sNamespaceSuffix' value=$oModule->getNamespaceSuffixFromPath($sFilePath)}]
+
+namespace [{$sVendorPrefix}]\[{$sModuleName}]\[{$sNamespaceSuffix}];
 
 /**
- * Class [{$sClassFullName}]Test
- * Tests for core class [{$sClassFullName}].
+ * Class [{$sClassName}]Test
+ * Tests for core class [{$sClassName}].
  *
- * @see [{$sClassFullName}]
+ * @see [{$sClassName}]
  */
-class [{$sClassFullName}]Test extends OxidTestCase
+class [{$sClassName}]Test extends \OxidEsales\TestingLibrary\UnitTestCase
 {
 
     /**
      * Subject under the test.
      *
-     * @var [{$sClassFullName}]
+     * @var [{$sClassName}]
      */
     protected $SUT;
 
@@ -36,7 +40,7 @@ class [{$sClassFullName}]Test extends OxidTestCase
 [{if $oModule->renderTasks()}]
         //TODO: Add more methods to mock.
 [{/if}]
-        $this->SUT = $this->getMock('[{$sClassFullName}]', array('__call'));
+        $this->SUT = $this->getMock('[{$sClassName}]', array('__call'));
     }
 
 

@@ -37,7 +37,7 @@ class oxpsModuleGeneratorMetadata extends Base
     /**
      * Components' path patterns to extract file types from metadata 'files' array
      */
-    const OXPS_CONTROLLER_PATTERN = '/Application/Controller/';
+    const OXPS_CONTROLLER_PATTERN = '\Application\Controller\\';
     const OXPS_MODEL_PATTERN = '/Application/Model/';
     const OXPS_LIST_PATTERN = 'List.php';
     const OXPS_WIDGET_PATTERN = '/Application/Component/Widget/';
@@ -127,7 +127,7 @@ class oxpsModuleGeneratorMetadata extends Base
 
         $aGenerationOptions = [
             'aExtendClasses'  => $this->_parseMetadataExtendClasses('extend'),
-            'aNewControllers' => $this->_parseMetadataControllers('files'),
+            'aNewControllers' => $this->_parseMetadataControllers('controllers'),
             'aNewModels'      => $this->_parseMetadataModels('files', 'model'),
             'aNewLists'       => $this->_parseMetadataModels('files', 'list'),
             'aNewWidgets'     => $this->_parseMetadataWidgets('files'),
@@ -171,7 +171,7 @@ class oxpsModuleGeneratorMetadata extends Base
         if ($this->_isValidMetadataKey($sMetadataArrayKey)) {
             foreach ($this->_aMetadata[$sMetadataArrayKey] as $aMetadataKey => $aMetadataValue) {
                 if (stripos($aMetadataValue, self::OXPS_CONTROLLER_PATTERN) !== false) {
-                    $aMetadataControllers[] = $this->_stripModuleId($aMetadataKey);
+                    $aMetadataControllers[] = $this->_getFileNameFromNamespace($this->_stripModuleId($aMetadataValue));
                 }
             }
         }
@@ -312,6 +312,20 @@ class oxpsModuleGeneratorMetadata extends Base
     {
         return (string) array_key_exists('id', $this->_aMetadata)
             ? str_ireplace($this->_aMetadata['id'], '', $sFullName)
+            : '';
+    }
+
+    /**
+     * Returns file name from given namespace.
+     *
+     * @param $sNamespace
+     *
+     * @return string
+     */
+    protected function _getFileNameFromNamespace($sNamespace)
+    {
+        return (string) !empty($sNamespace)
+            ? array_pop(explode('\\', $sNamespace))
             : '';
     }
 

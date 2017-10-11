@@ -9,6 +9,7 @@
 [{assign var='sModuleFolderName' value=$oModule->getModuleFolderName()}]
 [{assign var='aNewClasses' value=$oModule->getClassesToCreate()}]
 [{assign var='aControllersClasses' value=$oModule->getClassesToCreate('controllers', 'aClasses')}]
+[{assign var='aControllerNamespace' value=$oModule->getNamespaceSuffixFromPath($oModule->getClassesToCreate('controllers', 'sInModulePath'), false)}]
 [{assign var='aWidgetsClasses' value=$oModule->getClassesToCreate('widgets', 'aClasses')}]
 [{assign var='aExtendClasses' value=$oModule->getClassesToExtend()}]
 [{assign var='aModuleBlocks' value=$oModule->getBlocks()}]
@@ -17,7 +18,7 @@
 /**
  * Metadata version
  */
-$sMetadataVersion = '1.1';
+$sMetadataVersion = '2.0';
 
 /**
  * Module information
@@ -47,25 +48,17 @@ $aModule = array(
     'extend'      => array(
 [{if $aExtendClasses}]
 [{foreach from=$aExtendClasses key='sLegacyClass' item='aV6ClassData'}]
-        // Extends [{$sLegacyClass}]
         \[{$aV6ClassData.v6Namespace}]\[{$aV6ClassData.v6ClassName}]::class => [{$sVendorDir|ucfirst}]\[{$sModuleFolderName}]\[{$aV6ClassData.classPath|replace:"/":"\\"}][{$aV6ClassData.v6ClassName}]::class,
 [{/foreach}]
 [{/if}]
         [{if $oModule->renderSamples()}]//'[ParentClassName]' => '[{$sVendorDir}]/[{$sModuleFolderName}]/[appropriate_folder]/[{$sModuleCamelCaseId}][parent_class_name]',
 [{/if}]
     ),
-    'files'       => array(
-        '[{$sModuleCamelCaseName}]Module' => '[{$sVendorDir}]/[{$sModuleFolderName}]/Core/[{$sModuleCamelCaseName}]Module.php',
-[{if $aNewClasses}]
-[{foreach from=$aNewClasses key='sObjectType' item='aClassesData'}]
-[{assign var='aClasses' value=$aClassesData.aClasses}]
-[{foreach from=$aClasses key='sClassKey' item='sClassName'}]
-        '[{$sClassName}]' => '[{$sVendorDir}]/[{$sModuleFolderName}]/[{$aClassesData.sInModulePath}][{$sClassName}].php',
-[{/foreach}]
-[{/foreach}]
-[{/if}]
-[{if $oModule->renderSamples()}]
-        //'[your_class_name]' => '[{$sVendorDir}]/[{$sModuleFolderName}]/[appropriate_folder]/[{$sModuleCamelCaseId}][your_class_name].php',
+    'controllers' => array(
+[{if $aControllersClasses}]
+    [{foreach from=$aControllersClasses item='sControllerClassName'}]
+    '[{$sVendorDir|lower}]_[{$sModuleFolderName|lower}]_[{$sControllerClassName|lower}]' => [{$sVendorDir}]\[{$sModuleFolderName}]\[{$aControllerNamespace}]\[{$sControllerClassName}]::class,
+    [{/foreach}]
 [{/if}]
 ),
     'templates'   => array(

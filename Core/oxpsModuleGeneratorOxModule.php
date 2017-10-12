@@ -489,10 +489,10 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         if ($blAddParsedOptions) {
             foreach ($this->_aGenerationOptions as $index => $aGenerationOption) {
                 if (array_key_exists($index, $this->_aParsedMetadataOptions)) {
-                    $aOptionsToSet[$index] = array_merge(
+                    $aOptionsToSet[$index] = array_unique(array_merge(
                         $this->_aParsedMetadataOptions[$index],
                         $this->_aGenerationOptions[$index]
-                    );
+                    ), SORT_REGULAR);
                 }
             }
         }
@@ -639,7 +639,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         if (!empty($aMetadata)) {
             /** @var oxpsModuleGeneratorMetadata $oMetadataParser */
             $oMetadataParser = Registry::get('oxpsModuleGeneratorMetadata');
-            $aGenerationOptions = $oMetadataParser->parseMetadata($aMetadata, $this->getVendorPrefix(), $sModuleName);
+            $aGenerationOptions = $oMetadataParser->parseMetadata($aMetadata, $this->getVendorPrefix(), $sModuleName, $this->getVendorPath() . $sModuleName);
         }
 
         return $aGenerationOptions;

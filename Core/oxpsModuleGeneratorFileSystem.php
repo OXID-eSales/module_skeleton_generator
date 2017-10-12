@@ -187,6 +187,28 @@ class oxpsModuleGeneratorFileSystem extends Base
         }
     }
 
+    /**
+     * Scans provided path for files and returns an array of file names.
+     *
+     * @param string $sPath Relative path to append to base module dir
+     * @param bool $blRemoveFileExt Flag to remove file extensions
+     * @return array
+     */
+    public function scanDirForFiles($sPath, $blRemoveFileExt = true)
+    {
+        $aFilteredFiles = array_filter(scandir($sPath), function ($item) use ($sPath) {
+            return !is_dir($sPath . $item);
+        });
+
+        if ($blRemoveFileExt){
+            $aFilteredFiles = array_map(function ($sFile){
+                return pathinfo($sFile, PATHINFO_FILENAME);
+            }, $aFilteredFiles);
+        }
+
+        return $aFilteredFiles;
+    }
+
 
     /**
      * @param string $sPath

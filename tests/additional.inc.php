@@ -1,7 +1,7 @@
 <?php
 // Test data creation
 
-$oDb = oxDb::getDb();
+$oDb = \OxidEsales\Eshop\Core\DatabaseProvider::getDb();
 
 // Sample CMS snippet insertion
 $oDb->execute(

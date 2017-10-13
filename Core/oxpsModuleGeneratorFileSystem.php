@@ -188,7 +188,7 @@ class oxpsModuleGeneratorFileSystem extends Base
     }
 
     /**
-     * Scans provided path for files and returns an array of file names.
+     * Scans provided path for files and returns an array of file names. Only looks for .php files.
      *
      * @param string $sPath Relative path to append to base module dir
      * @param bool $blRemoveFileExt Flag to remove file extensions
@@ -197,7 +197,7 @@ class oxpsModuleGeneratorFileSystem extends Base
     public function scanDirForFiles($sPath, $blRemoveFileExt = true)
     {
         $aFilteredFiles = array_filter(scandir($sPath), function ($item) use ($sPath) {
-            return !is_dir($sPath . $item);
+            return !is_dir($sPath . $item) && pathinfo($item, PATHINFO_EXTENSION) === 'php';
         });
 
         if ($blRemoveFileExt){
@@ -206,7 +206,7 @@ class oxpsModuleGeneratorFileSystem extends Base
             }, $aFilteredFiles);
         }
 
-        return $aFilteredFiles;
+        return is_array($aFilteredFiles) ? array_values($aFilteredFiles) : [];
     }
 
 

@@ -311,9 +311,12 @@ class oxpsModuleGeneratorMetadata extends Base
      */
     protected function _getFileNameFromNamespace($sNamespace)
     {
-        return (string) !empty($sNamespace)
-            ? array_pop(explode('\\', $sNamespace))
-            : '';
+        if (!empty($sNamespace)){
+            $aNamespaceParts = explode('\\', $sNamespace);
+            return (string) array_pop($aNamespaceParts);
+        }
+
+        return '';
     }
 
     /**

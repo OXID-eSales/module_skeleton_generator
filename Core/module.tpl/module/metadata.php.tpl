@@ -57,7 +57,7 @@ $aModule = array(
     'controllers' => array(
 [{if $aControllersClasses}]
     [{foreach from=$aControllersClasses item='sControllerClassName'}]
-    '[{$sVendorDir|lower}]_[{$sModuleFolderName|lower}]_[{$sControllerClassName|lower}]' => [{$sVendorDir}]\[{$sModuleFolderName}]\[{$aControllerNamespace}]\[{$sControllerClassName}]::class,
+    '[{$sVendorDir|lower}]_[{$sModuleFolderName|lower}]_[{$sControllerClassName|lower}]' => [{$sVendorDir|ucfirst}]\[{$sModuleFolderName}]\[{$aControllerNamespace}]\[{$sControllerClassName}]::class,
     [{/foreach}]
 [{/if}]
 ),

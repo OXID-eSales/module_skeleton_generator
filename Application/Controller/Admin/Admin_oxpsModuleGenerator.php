@@ -163,15 +163,12 @@ class Admin_oxpsModuleGenerator extends AdminController
 
 
         if (!$this->getValidator()->validateVendorPrefix($this->getVendorPrefix())) {
-
             // Set an error if configured module vendor prefix is not valid
             $this->_setMessage('OXPS_MODULEGENERATOR_ADMIN_MODULE_ERROR_INVALID_VENDOR');
         } elseif (!$this->getModule()->validateModuleName($sModuleName)) {
-
             // Set an error if module name is not valid
             $this->_setMessage('OXPS_MODULEGENERATOR_ADMIN_MODULE_ERROR_INVALID_NAME');
         } else {
-
             $this->getModule()->generateModule($sModuleName, $aGenerationOptions);
 
             // Set success massage
@@ -439,23 +436,24 @@ class Admin_oxpsModuleGenerator extends AdminController
      * Parent `init` call. Method required for mocking.
      *
      * @codeCoverageIgnore
-     *
+     * @codingStandardsIgnoreStart
      * @return null
      */
     protected function _Admin_oxpsModuleGenerator_init_parent()
     {
         return parent::init();
     }
-
+    // @codingStandardsIgnoreEnd
     /**
      * Parent `render` call. Method required for mocking.
      *
      * @codeCoverageIgnore
-     *
+     * @codingStandardsIgnoreStart
      * @return null
      */
     protected function _Admin_oxpsModuleGenerator_render_parent()
     {
         return parent::render();
     }
+    // @codingStandardsIgnoreEnd
 }

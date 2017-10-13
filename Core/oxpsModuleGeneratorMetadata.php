@@ -195,7 +195,8 @@ class oxpsModuleGeneratorMetadata extends Base
      *
      * @return array
      */
-    protected function _parseModels($blParseModelLists = false){
+    protected function _parseModels($blParseModelLists = false)
+    {
         $aModels = $this->_parseFilesFromDir(self::OXPS_MODEL_PATTERN);
 
         if ($blParseModelLists) {
@@ -209,8 +210,13 @@ class oxpsModuleGeneratorMetadata extends Base
         }
     }
 
+
     /**
+     * Returns file name array from a given sub directory. Optionally leaves file extensions.
      *
+     * @param string $sSubDirPath
+     * @param bool   $blRemoveFileExt
+     * @return array
      */
     protected function _parseFilesFromDir($sSubDirPath, $blRemoveFileExt = true)
     {
@@ -232,7 +238,6 @@ class oxpsModuleGeneratorMetadata extends Base
         $aMetadataBlocks = [];
         $aParsedBlocks = [];
         if ($this->_isValidMetadataKey($sMetadataArrayKey)) {
-
             foreach ($this->_aMetadata[$sMetadataArrayKey] as $aMetadataBlockArray) {
                 if ($this->_hasRequiredArrayKeys($aMetadataBlockArray, $this->_aBlockKeys)) {
                     $sBlockPath = $aMetadataBlockArray['block'] . "@" . $aMetadataBlockArray['template'];
@@ -267,7 +272,6 @@ class oxpsModuleGeneratorMetadata extends Base
             $iArrayKey = 0;
 
             foreach ($this->_aMetadata[$sMetadataArrayKey] as $aMetadataSettingsArray) {
-
                 if ($this->_hasRequiredArrayKeys($aMetadataSettingsArray, $this->_aSettingsKeys)) {
                     $aMetadataSettings[$iArrayKey]['name'] = $this->_stripModuleId($aMetadataSettingsArray['name']);
 
@@ -291,7 +295,7 @@ class oxpsModuleGeneratorMetadata extends Base
     /**
      * Strip module ID (vendor and module names) from module components names.
      *
-     * @param $sFullName
+     * @param string $sFullName
      *
      * @return string
      */
@@ -305,13 +309,13 @@ class oxpsModuleGeneratorMetadata extends Base
     /**
      * Returns file name from given namespace.
      *
-     * @param $sNamespace
+     * @param string $sNamespace
      *
      * @return string
      */
     protected function _getFileNameFromNamespace($sNamespace)
     {
-        if (!empty($sNamespace)){
+        if (!empty($sNamespace)) {
             $aNamespaceParts = explode('\\', $sNamespace);
             return (string) array_pop($aNamespaceParts);
         }
@@ -414,8 +418,6 @@ class oxpsModuleGeneratorMetadata extends Base
     protected function _hasRequiredArrayKeys(array $aMetadataArray, array $aRequiredKeys)
     {
         return is_array($aMetadataArray)
-               && count(
-                      array_intersect_key(array_flip($aRequiredKeys), $aMetadataArray)
-                  ) === count($aRequiredKeys);
+               && count(array_intersect_key(array_flip($aRequiredKeys), $aMetadataArray)) === count($aRequiredKeys);
     }
 }

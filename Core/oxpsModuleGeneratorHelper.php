@@ -211,9 +211,13 @@ class oxpsModuleGeneratorHelper extends Base
      * @param array                     $aClassesToExtend
      * @param array                     $aNewClasses
      */
-    public function fillTestsFolder(oxpsModuleGeneratorRender $oRenderHelper, $sModuleGeneratorPath,
-                                    array $aClassesToExtend, array $aNewClasses)
-    {
+    public function fillTestsFolder(
+        oxpsModuleGeneratorRender $oRenderHelper,
+        $sModuleGeneratorPath,
+        array $aClassesToExtend,
+        array $aNewClasses
+    ) {
+    
         $aAllFiles = array_merge($aClassesToExtend, $aNewClasses);
         $sTemplate = sprintf('%sCore/module.tpl/oxpsTestClass.php.tpl', $sModuleGeneratorPath);
         $aNewFiles = (array) $this->_copyNewClasses($aAllFiles, $sTemplate, 'tests/Unit/', true);
@@ -325,16 +329,18 @@ class oxpsModuleGeneratorHelper extends Base
         }
 
         foreach ($aClasses as $mKey => $aClassData) {
-
             //Extended classes has additional data passed as array, instead of a string with a class name.
             //So we check if that's the case, if the value isn't an array, we convert it to one to make the data structure the same.
-            if (!is_array($aClassData)){
+            if (!is_array($aClassData)) {
                 $sClassName = $aClassData;
                 $aClassData = array();
                 $aClassData['v6ClassName'] = $sClassName;
             }
             list($sClassFilePath, $sProcessedFileKey) = $this->_getNewClassPathAndKey(
-                $mKey, $aClassData['v6ClassName'], $sInModulePath, $blTestClasses
+                $mKey,
+                $aClassData['v6ClassName'],
+                $sInModulePath,
+                $blTestClasses
             );
             $oFileSystemHelper->copyFile($sTemplatePath, $sClassFilePath);
 

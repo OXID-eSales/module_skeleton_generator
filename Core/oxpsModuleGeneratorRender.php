@@ -121,7 +121,7 @@ class oxpsModuleGeneratorRender extends Base
             // if $mClassData is an array that means it's an extended class
             // so extra data is required (eg. namespace) which is contained in $mClassData array
             $mClassData = $sClassesNames[$sFilePath];
-            if (is_array($mClassData)){
+            if (is_array($mClassData)) {
                 $oSmarty->assign('sClassRealName', $mClassData['v6ClassName']);
                 $oSmarty->assign('v6Namespace', $mClassData['v6Namespace']);
             } else {
@@ -140,7 +140,6 @@ class oxpsModuleGeneratorRender extends Base
             $oFileSystemHelper->createFile($sFileFullPath, $oSmarty->fetch($sFileFullPath));
 
             if (is_string($sFileName)) {
-
                 // Renaming the file
                 $sFileName = str_replace('.php.tpl', '.php', $sFileName);
                 $sNewFullPath = str_replace(basename($sFileFullPath), $sFileName, $sFileFullPath);

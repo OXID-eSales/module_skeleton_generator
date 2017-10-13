@@ -328,7 +328,7 @@ class oxpsModuleGeneratorValidator extends Base
         $blIsValid = false;
 
         switch ($sValidationRule) {
-            case 'not_empty';
+            case 'not_empty':
                 $blIsValid = !empty($sValue);
                 break;
 
@@ -376,10 +376,11 @@ class oxpsModuleGeneratorValidator extends Base
     /**
      * Returns a unified namespace (eg. OxidEsales\EshopCommunity\Application -> OxidEsales\Eshop\Application)
      *
-     * @param $sNamespace
+     * @param string $sNamespace
      * @return string
      */
-    protected function _unifyNamespace($sNamespace){
+    protected function _unifyNamespace($sNamespace)
+    {
         return str_replace(array('EshopCommunity', 'EshopEnterprise', 'EshopProfessional'), 'Eshop', $sNamespace);
     }
 }

@@ -88,7 +88,6 @@ class oxpsModuleGeneratorFileSystem extends Base
     public function createFolder($sFolderFullPath)
     {
         if (!$this->isDir($sFolderFullPath)) {
-
             mkdir($sFolderFullPath, 0777, true);
         }
     }
@@ -129,8 +128,8 @@ class oxpsModuleGeneratorFileSystem extends Base
      * Recursive directory copying.
      * Copies all files and folders to a new location.
      *
-     * @param string $sSourcePath      Where to copy from.
-     * @param string $sDestinationPath Where to copy to.
+     * @param string $sSourcePath       Where to copy from.
+     * @param string $sDestinationPath  Where to copy to.
      * @param array  $aExtraIgnoreFiles
      *
      * @return bool
@@ -190,8 +189,8 @@ class oxpsModuleGeneratorFileSystem extends Base
     /**
      * Scans provided path for files and returns an array of file names. Only looks for .php files.
      *
-     * @param string $sPath Relative path to append to base module dir
-     * @param bool $blRemoveFileExt Flag to remove file extensions
+     * @param string $sPath           Relative path to append to base module dir
+     * @param bool   $blRemoveFileExt Flag to remove file extensions
      * @return array
      */
     public function scanDirForFiles($sPath, $blRemoveFileExt = true)
@@ -200,8 +199,8 @@ class oxpsModuleGeneratorFileSystem extends Base
             return !is_dir($sPath . $item) && pathinfo($item, PATHINFO_EXTENSION) === 'php';
         });
 
-        if ($blRemoveFileExt){
-            $aFilteredFiles = array_map(function ($sFile){
+        if ($blRemoveFileExt) {
+            $aFilteredFiles = array_map(function ($sFile) {
                 return pathinfo($sFile, PATHINFO_FILENAME);
             }, $aFilteredFiles);
         }
@@ -232,10 +231,10 @@ class oxpsModuleGeneratorFileSystem extends Base
      */
     protected function _copy($sSourcePath, $sDestinationPath)
     {
-            if ($this->isDir($sSourcePath)) {
-                $this->copyFolder($sSourcePath, $sDestinationPath);
-            } else {
-                $this->copyFile($sSourcePath, $sDestinationPath);
+        if ($this->isDir($sSourcePath)) {
+            $this->copyFolder($sSourcePath, $sDestinationPath);
+        } else {
+            $this->copyFile($sSourcePath, $sDestinationPath);
         }
     }
 }

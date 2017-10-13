@@ -66,7 +66,7 @@ class [{$sClassName}] extends BaseController
         // $oRequest = Registry::get(Request::class);
         // ... = $oRequest->getRequestParameter('[request_parameter]'); // To get GET/POST parameters
 
-        // $oModule = oxRegistry::get([{$sClassNamePrefix}]Module::class); // Get the module instance
+        // $oModule = \OxidEsales\Eshop\Core\Registry::get(\[{$sVendorPrefix}]\[{$sModuleName}]\Core\[{$sModuleName}]Module::class); // Get the module instance
 
         // /** @var myObject|myObjectParent $oObject */
         // $oObject = oxNew(myObject::class); // To create new object

@@ -30,7 +30,7 @@
  *
  * @see oxpsModuleGeneratorFileSystem
  */
-class oxpsModuleGeneratorFileSystemTest extends OxidTestCase
+class oxpsModuleGeneratorFileSystemTest extends \OxidEsales\TestingLibrary\UnitTestCase
 {
 
     /**
@@ -289,7 +289,7 @@ class oxpsModuleGeneratorFileSystemTest extends OxidTestCase
      */
     protected function _getTestPath($sPathSuffix = '')
     {
-        return oxRegistry::getConfig()->getConfigParam('sCompileDir') . DIRECTORY_SEPARATOR .
+        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('sCompileDir') . DIRECTORY_SEPARATOR .
                'test' . DIRECTORY_SEPARATOR . (string) $sPathSuffix;
     }
 }

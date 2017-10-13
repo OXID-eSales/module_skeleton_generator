@@ -187,7 +187,7 @@ class Admin_oxpsModuleGenerator extends AdminController
     {
         return (string)
         htmlspecialchars_decode(
-            Registry::get("oxUtilsUrl")->processUrl($this->getConfig()->getCurrentShopUrl() . 'index.php', true) .
+            Registry::getUtilsUrl()->processUrl($this->getConfig()->getCurrentShopUrl() . 'index.php', true) .
             '&amp;cl=admin_oxpsajaxdataprovider&amp;fnc=' .
             strtolower($sResponseMethodName)
         );

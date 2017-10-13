@@ -30,7 +30,7 @@
  *
  * @see oxpsModuleGeneratorHelper
  */
-class oxpsModuleGeneratorHelperTest extends OxidTestCase
+class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestCase
 {
 
     /**
@@ -222,7 +222,7 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
             '/path/to/template.tpl',
             '/path/to/modules/oxps/mymodule/Core/ListModel.php'
         );
-        oxRegistry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
 
         // Module instance mock
         $oModule = $this->getMock(
@@ -403,7 +403,7 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
                 '/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsListModelClass.php.tpl',
                 '/path/to/modules/oxps/mymodule/models/ItemList.php'
             );
-        oxRegistry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
 
         // Module instance mock
         $oModule = $this->getMock(
@@ -467,7 +467,7 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
         $oFileSystem = $this->getMock('oxpsModuleGeneratorFileSystem', array('__call', 'isDir', 'createFile'));
         $oFileSystem->expects($this->never())->method('isDir');
         $oFileSystem->expects($this->never())->method('createFile');
-        oxRegistry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
 
         // Module instance mock
         $oModule = $this->getMock(
@@ -499,7 +499,7 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
             '/path/to/modules/oxps/mymodule/Application/views/blocks/oxpsmymodule_footer.tpl',
             $this->stringContains('footer')
         );
-        oxRegistry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
 
         // Module instance mock
         $oModule = $this->getMock(
@@ -551,7 +551,7 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
 
         // File system helper mock
         $oFileSystem = $this->getMock('oxpsModuleGeneratorFileSystem', array('__call', 'isFile', 'isDir', 'copyFile'));
-        oxRegistry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
 
         $this->SUT->init($oModule);
 
@@ -591,7 +591,7 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
             ->will($this->returnValue(false));
         $oFileSystem->expects($this->never())->method('isFile');
         $oFileSystem->expects($this->never())->method('copyFile');
-        oxRegistry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
 
         $this->SUT->init($oModule);
 
@@ -631,7 +631,7 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
             ->with('/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsTestClass.php.tpl')
             ->will($this->returnValue(true));
         $oFileSystem->expects($this->never())->method('copyFile');
-        oxRegistry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
 
         $this->SUT->init($oModule);
 
@@ -669,7 +669,7 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
             ->with('/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsTestClass.php.tpl')
             ->will($this->returnValue(false));
         $oFileSystem->expects($this->never())->method('copyFile');
-        oxRegistry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
 
         $this->SUT->init($oModule);
 
@@ -750,7 +750,7 @@ class oxpsModuleGeneratorHelperTest extends OxidTestCase
             '/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsTestClass.php.tpl',
             '/path/to/modules/oxps/mymodule/tests/Unit/models/oxpsmymoduleitemTest.php'
         );
-        oxRegistry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
 
         $this->SUT->init($oModule);
 

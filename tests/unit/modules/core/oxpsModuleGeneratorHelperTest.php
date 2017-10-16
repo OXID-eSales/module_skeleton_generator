@@ -77,7 +77,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
     public function testGetFileSystemHelper()
     {
         $oFileSystem = $this->getMock('oxpsModuleGeneratorFileSystem', array('__call'));
-        oxRegistry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
 
         $this->assertSame($oFileSystem, $this->SUT->getFileSystemHelper());
     }
@@ -97,7 +97,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
             ' */' . PHP_EOL .
             '$sVendorMetadataVersion = \'1.0\';' . PHP_EOL
         );
-        oxRegistry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
 
         $this->SUT->createVendorMetadata('/path/to/modules/oxps');
     }
@@ -112,7 +112,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
         );
         $oFileSystem->expects($this->never())->method('isDir');
         $oFileSystem->expects($this->never())->method('copyFile');
-        oxRegistry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
 
         // Module instance mock
         $oModule = $this->getMock(
@@ -147,7 +147,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
             $this->returnValue(false)
         );
         $oFileSystem->expects($this->never())->method('copyFile');
-        oxRegistry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
 
         // Module instance mock
         $oModule = $this->getMock(
@@ -182,7 +182,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
             $this->returnValue(true)
         );
         $oFileSystem->expects($this->never())->method('copyFile');
-        oxRegistry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
 
         // Module instance mock
         $oModule = $this->getMock(

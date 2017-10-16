@@ -87,7 +87,7 @@
 <pre><code>"autoload": {
     "psr-4": {
         "OxidEsales\\EshopCommunity\\": "./source",
-        "[{$oModule->getVendorPrefix()|ucfirst}]\\[{$oModule->getModuleFolderName()}]\\": "../../../source/modules/[{$oModule->getVendorPrefix()}]/[{$oModule->getModuleFolderName()}]" //copy this line
+        "[{$oModule->getVendorPrefix()|ucfirst}]\\[{$oModule->getModuleFolderName()}]\\": "./source/modules/[{$oModule->getVendorPrefix()}]/[{$oModule->getModuleFolderName()}]" //copy this line
         }
 }</code></pre>
                 <li>After updating composer.json, from shops's root dir run:</li>

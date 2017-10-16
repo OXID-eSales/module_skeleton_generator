@@ -12,5 +12,8 @@
     "oxideshop": {
       "target-directory": "oxps/ModuleGenerator"
     }
+  },
+  "require": {
+    "php": ">=5.6"
   }
 }

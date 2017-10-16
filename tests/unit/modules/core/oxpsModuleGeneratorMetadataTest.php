@@ -86,8 +86,20 @@ class oxpsModuleGeneratorMetadataTest extends OxidEsales\TestingLibrary\UnitTest
             'aModuleSettings' => [],
         ];
 
+        $aStructure = [
+            'Application' => [
+                'Component' => [
+                    'Widget' => []
+                ],
+                'Model' => []
+            ]
+        ];
+
+        $oModuleDir = vfsStream::setup($this->_sModuleName);
+        vfsStream::create($aStructure, $oModuleDir);
+
         $this->assertSame(
-            $aExpectedValue, $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName, $this->_sModulePath)
+            $aExpectedValue, $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName, $oModuleDir->url())
         );
     }
 
@@ -125,8 +137,20 @@ class oxpsModuleGeneratorMetadataTest extends OxidEsales\TestingLibrary\UnitTest
             'aModuleSettings' => [],
         ];
 
+        $aStructure = [
+            'Application' => [
+                'Component' => [
+                    'Widget' => []
+                ],
+                'Model' => []
+            ]
+        ];
+
+        $oModuleDir = vfsStream::setup($this->_sModuleName);
+        vfsStream::create($aStructure, $oModuleDir);
+
         $this->assertSame(
-            $aExpectedValue, $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName, $this->_sModulePath)
+            $aExpectedValue, $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName, $oModuleDir->url())
         );
     }
 
@@ -151,8 +175,20 @@ class oxpsModuleGeneratorMetadataTest extends OxidEsales\TestingLibrary\UnitTest
             'aModuleSettings' => [],
         ];
 
+        $aStructure = [
+            'Application' => [
+                'Component' => [
+                    'Widget' => []
+                ],
+                'Model' => []
+            ]
+        ];
+
+        $oModuleDir = vfsStream::setup($this->_sModuleName);
+        vfsStream::create($aStructure, $oModuleDir);
+
         $this->assertSame(
-            $aExpectedValue, $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName, $this->_sModulePath)
+            $aExpectedValue, $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName, $oModuleDir->url())
         );
     }
 
@@ -310,8 +346,20 @@ class oxpsModuleGeneratorMetadataTest extends OxidEsales\TestingLibrary\UnitTest
             'aModuleSettings' => [],
         ];
 
+        $aStructure = [
+            'Application' => [
+                'Component' => [
+                    'Widget' => []
+                ],
+                'Model' => []
+            ]
+        ];
+
+        $oModuleDir = vfsStream::setup($this->_sModuleName);
+        vfsStream::create($aStructure, $oModuleDir);
+
         $this->assertEquals(
-            $aExpectedValue, $result = $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName, $this->_sModulePath)
+            $aExpectedValue, $result = $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName, $oModuleDir->url())
         );
     }
 
@@ -400,8 +448,20 @@ class oxpsModuleGeneratorMetadataTest extends OxidEsales\TestingLibrary\UnitTest
             ],
         ];
 
+        $aStructure = [
+            'Application' => [
+                'Component' => [
+                    'Widget' => []
+                ],
+                'Model' => []
+            ]
+        ];
+
+        $oModuleDir = vfsStream::setup($this->_sModuleName);
+        vfsStream::create($aStructure, $oModuleDir);
+
         $this->assertSame(
-            $aExpectedValue, $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName, $this->_sModulePath)
+            $aExpectedValue, $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName, $oModuleDir->url())
         );
     }
 }

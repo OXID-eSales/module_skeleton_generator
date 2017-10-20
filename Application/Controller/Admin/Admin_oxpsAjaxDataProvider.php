@@ -52,6 +52,9 @@ class Admin_oxpsAjaxDataProvider extends AdminController
      */
     protected $_oValidator;
 
+    /**
+     *  Overridden init method
+     */
     public function init()
     {
         // Parent call
@@ -168,9 +171,11 @@ class Admin_oxpsAjaxDataProvider extends AdminController
      * Parent `init` call. Method required for mocking.
      *
      * @codeCoverageIgnore
+     * @codingStandardsIgnoreStart
      */
     protected function _Admin_oxpsAjaxDataProvider_init_parent()
     {
         parent::init();
     }
+    // @codingStandardsIgnoreEnd
 }

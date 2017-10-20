@@ -24,6 +24,7 @@
  * @copyright (C) OXID eSales AG 2003-2014
  */
 
+use org\bovigo\vfs\vfsStream;
 /**
  * Class oxpsModuleGeneratorMetadataTest
  * UNIT tests for core class oxpsModuleGeneratorMetadata.
@@ -60,6 +61,7 @@ class oxpsModuleGeneratorMetadataTest extends OxidEsales\TestingLibrary\UnitTest
      * @var string
      */
     protected $_sModuleId = 'oxpstestmodule';
+    protected $_sModulePath = '/var/www/oxideshop/source/modules/oxps/TestModule';
 
     /**
      * Set SUT state before test.
@@ -84,8 +86,20 @@ class oxpsModuleGeneratorMetadataTest extends OxidEsales\TestingLibrary\UnitTest
             'aModuleSettings' => [],
         ];
 
+        $aStructure = [
+            'Application' => [
+                'Component' => [
+                    'Widget' => []
+                ],
+                'Model' => []
+            ]
+        ];
+
+        $oModuleDir = vfsStream::setup($this->_sModuleName);
+        vfsStream::create($aStructure, $oModuleDir);
+
         $this->assertSame(
-            $aExpectedValue, $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName)
+            $aExpectedValue, $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName, $oModuleDir->url())
         );
     }
 
@@ -109,7 +123,11 @@ class oxpsModuleGeneratorMetadataTest extends OxidEsales\TestingLibrary\UnitTest
 
         $aExpectedValue = [
             'aExtendClasses'  => [
-                'OxidEsales\Eshop\Core\Module\Module' => 'Core/',
+                'OxidEsales\Eshop\Core\Module\Module' => [
+                    'classPath' =>'Core/',
+                    'v6ClassName' =>'Module',
+                    'v6Namespace' => 'OxidEsales\Eshop\Core\Module'
+                    ]
             ],
             'aNewControllers' => [],
             'aNewModels'      => [],
@@ -119,28 +137,36 @@ class oxpsModuleGeneratorMetadataTest extends OxidEsales\TestingLibrary\UnitTest
             'aModuleSettings' => [],
         ];
 
+        $aStructure = [
+            'Application' => [
+                'Component' => [
+                    'Widget' => []
+                ],
+                'Model' => []
+            ]
+        ];
+
+        $oModuleDir = vfsStream::setup($this->_sModuleName);
+        vfsStream::create($aStructure, $oModuleDir);
+
         $this->assertSame(
-            $aExpectedValue, $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName)
+            $aExpectedValue, $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName, $oModuleDir->url())
         );
     }
 
     public function testParseMetadata_parseControllers()
     {
-        $this->markTestIncomplete('Fix is needed for str_replace()');
-
         $aMetadata = [
             'id'    => $this->_sModuleId,
-            'files' => [
-                'Admin_oxpsTestModule'       => 'oxps/TestModule/Application/Controller/Admin/Admin_oxpsTestModule.php',
-                'Admin_oxpsAjaxDataProvider' => 'oxps/TestModule/Application/Controller/Admin/Admin_oxpsAjaxDataProvider.php',
+            'controllers' => [
+                'oxps_test_testcontroller'       => 'Oxps\Test\Application\Controller\TestController',
             ],
         ];
 
         $aExpectedValue = [
             'aExtendClasses'  => [],
             'aNewControllers' => [
-                0 => 'Admin_', // TODO: FIX THIS!!!
-                1 => 'Admin_oxpsAjaxDataProvider',
+                0 => 'TestController',
             ],
             'aNewModels'      => [],
             'aNewLists'       => [],
@@ -149,28 +175,35 @@ class oxpsModuleGeneratorMetadataTest extends OxidEsales\TestingLibrary\UnitTest
             'aModuleSettings' => [],
         ];
 
+        $aStructure = [
+            'Application' => [
+                'Component' => [
+                    'Widget' => []
+                ],
+                'Model' => []
+            ]
+        ];
+
+        $oModuleDir = vfsStream::setup($this->_sModuleName);
+        vfsStream::create($aStructure, $oModuleDir);
+
         $this->assertSame(
-            $aExpectedValue, $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName)
+            $aExpectedValue, $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName, $oModuleDir->url())
         );
     }
 
     public function testParseMetadata_parseModels()
     {
         $aMetadata = [
-            'id'    => $this->_sModuleId,
-            'files' => [
-                // valid values
-                'ModelName'                => 'oxps/TestModule/Application/Model/oxpsTestModuleModel.php',
-                // invalid values
-                'oxpsTestModuleFileSystem' => 'oxps/TestModule/Core/oxpsTestModuleFileSystem.php',
-            ],
+            'id'    => $this->_sModuleId
         ];
 
         $aExpectedValue = [
             'aExtendClasses'  => [],
             'aNewControllers' => [],
             'aNewModels'      => [
-                0 => 'ModelName',
+                0 => 'AnotherModel',
+                1 => 'TestModel'
             ],
             'aNewLists'       => [],
             'aNewWidgets'     => [],
@@ -178,21 +211,31 @@ class oxpsModuleGeneratorMetadataTest extends OxidEsales\TestingLibrary\UnitTest
             'aModuleSettings' => [],
         ];
 
+        $aStructure = [
+          'Application' => [
+              'Component' => [
+                  'Widget' => []
+              ],
+              'Model' => [
+                  'TestModel.php' => 'content',
+                  'AnotherModel.php' => 'content'
+              ]
+          ]
+        ];
+
+        // Mock file system. Models get parsed from a directory, since they're no longer in metadata v2.0.
+        $oModuleDir = vfsStream::setup($this->_sModuleName);
+        vfsStream::create($aStructure, $oModuleDir);
+
         $this->assertSame(
-            $aExpectedValue, $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName)
+            $aExpectedValue, $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName, $oModuleDir->url())
         );
     }
 
     public function testParseMetadata_parseLists()
     {
         $aMetadata = [
-            'id'    => $this->_sModuleId,
-            'files' => [
-                // valid values
-                'ModelList'                => 'oxps/TestModule/Application/Model/oxpsTestModuleList.php',
-                // invalid values
-                'oxpsTestModuleFileSystem' => 'oxps/TestModule/Core/oxpsTestModuleFileSystem.php',
-            ],
+            'id'    => $this->_sModuleId
         ];
 
         $aExpectedValue = [
@@ -200,15 +243,31 @@ class oxpsModuleGeneratorMetadataTest extends OxidEsales\TestingLibrary\UnitTest
             'aNewControllers' => [],
             'aNewModels'      => [],
             'aNewLists'       => [
-                0 => 'ModelList',
+                0 => 'TestModelList',
             ],
             'aNewWidgets'     => [],
             'aNewBlocks'      => [],
             'aModuleSettings' => [],
         ];
 
+        $aStructure = [
+            'Application' => [
+                'Component' => [
+                    'Widget' => []
+                ],
+                'Model' => [
+                    'TestModelList.php' => 'content',   // Valid Model List
+                    'otherClass.php' => 'content'       // Non list class
+                ]
+            ]
+        ];
+
+        // Mock file system. Model lists get parsed from a directory, since they're no longer in metadata v2.0.
+        $oModuleDir = vfsStream::setup($this->_sModuleName);
+        vfsStream::create($aStructure, $oModuleDir);
+
         $this->assertSame(
-            $aExpectedValue, $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName)
+            $aExpectedValue, $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName, $oModuleDir->url())
         );
     }
 
@@ -236,8 +295,25 @@ class oxpsModuleGeneratorMetadataTest extends OxidEsales\TestingLibrary\UnitTest
             'aModuleSettings' => [],
         ];
 
+        $aStructure = [
+            'Application' => [
+                'Component' => [
+                    'Widget' => [
+                        'Widget.php' => 'content',       //valid
+                        'random.txt' => 'why am i here', //invalid
+                        'unknownfile' => 'no extension' //invalid
+                    ]
+                ],
+                'Model' => []
+            ]
+        ];
+
+        // Mock file system. Widgets get parsed from a directory, since they're no longer in metadata v2.0.
+        $oModuleDir = vfsStream::setup($this->_sModuleName);
+        vfsStream::create($aStructure, $oModuleDir);
+
         $this->assertSame(
-            $aExpectedValue, $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName)
+            $aExpectedValue, $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName, $oModuleDir->url())
         );
     }
 
@@ -270,8 +346,20 @@ class oxpsModuleGeneratorMetadataTest extends OxidEsales\TestingLibrary\UnitTest
             'aModuleSettings' => [],
         ];
 
+        $aStructure = [
+            'Application' => [
+                'Component' => [
+                    'Widget' => []
+                ],
+                'Model' => []
+            ]
+        ];
+
+        $oModuleDir = vfsStream::setup($this->_sModuleName);
+        vfsStream::create($aStructure, $oModuleDir);
+
         $this->assertEquals(
-            $aExpectedValue, $result = $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName)
+            $aExpectedValue, $result = $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName, $oModuleDir->url())
         );
     }
 
@@ -360,8 +448,20 @@ class oxpsModuleGeneratorMetadataTest extends OxidEsales\TestingLibrary\UnitTest
             ],
         ];
 
+        $aStructure = [
+            'Application' => [
+                'Component' => [
+                    'Widget' => []
+                ],
+                'Model' => []
+            ]
+        ];
+
+        $oModuleDir = vfsStream::setup($this->_sModuleName);
+        vfsStream::create($aStructure, $oModuleDir);
+
         $this->assertSame(
-            $aExpectedValue, $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName)
+            $aExpectedValue, $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName, $oModuleDir->url())
         );
     }
 }

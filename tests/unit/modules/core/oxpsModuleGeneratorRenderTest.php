@@ -30,7 +30,7 @@
  *
  * @see oxpsModuleGeneratorRender
  */
-class oxpsModuleGeneratorRenderTest extends OxidTestCase
+class oxpsModuleGeneratorRenderTest extends \OxidEsales\TestingLibrary\UnitTestCase
 {
 
     /**
@@ -130,7 +130,7 @@ class oxpsModuleGeneratorRenderTest extends OxidTestCase
         $oFileSystem->expects($this->at(35))->method('createFile')
             ->with('/path/to/modules/oxps/mymodule/models/oxpsmymoduleitem.php', '_processed_item_content_');
 
-        oxRegistry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
 
         // Module instance mock
         $oModule = $this->getMock(

@@ -139,15 +139,15 @@ class oxpsModuleGeneratorHelper extends Base
             return $aExtendedClasses;
         }
 
-        foreach ($aClassesToExtend as $sClassName => $mApplicationPath) {
-            $sInModulePath = $this->_getPathInsideModule($sModulePath, $mApplicationPath);
+        foreach ($aClassesToExtend as $sClassName => $aClassData) {
+            $sInModulePath = $this->_getPathInsideModule($sModulePath, $aClassData['classPath']);
             $sDestinationPath = $sModulePath . $sInModulePath;
-            $sClassFileName = $sModuleId . $sClassName . '.php';
+            $sClassFileName = $aClassData['v6ClassName'] . '.php';
             $sClassFilePath = $sDestinationPath . $sClassFileName;
 
             $oFileSystemHelper->copyFile($sClassExtendTemplatePath, $sClassFilePath);
 
-            $aExtendedClasses[$sInModulePath . $sClassFileName] = $this->_getCoreClassName($sClassName);
+            $aExtendedClasses[$sInModulePath . $sClassFileName] = $aClassData;
         }
 
         return $aExtendedClasses;
@@ -211,12 +211,16 @@ class oxpsModuleGeneratorHelper extends Base
      * @param array                     $aClassesToExtend
      * @param array                     $aNewClasses
      */
-    public function fillTestsFolder(oxpsModuleGeneratorRender $oRenderHelper, $sModuleGeneratorPath,
-                                    array $aClassesToExtend, array $aNewClasses)
-    {
+    public function fillTestsFolder(
+        oxpsModuleGeneratorRender $oRenderHelper,
+        $sModuleGeneratorPath,
+        array $aClassesToExtend,
+        array $aNewClasses
+    ) {
+    
         $aAllFiles = array_merge($aClassesToExtend, $aNewClasses);
         $sTemplate = sprintf('%sCore/module.tpl/oxpsTestClass.php.tpl', $sModuleGeneratorPath);
-        $aNewFiles = (array) $this->_copyNewClasses($aAllFiles, $sTemplate, 'tests/Unit/modules/', true);
+        $aNewFiles = (array) $this->_copyNewClasses($aAllFiles, $sTemplate, 'tests/Unit/', true);
 
         if (!empty($aNewFiles)) {
             $oRenderHelper->renderWithSmartyAndRename(array_keys($aNewFiles), $aNewFiles);
@@ -324,13 +328,23 @@ class oxpsModuleGeneratorHelper extends Base
             return $aCopiedClasses;
         }
 
-        foreach ($aClasses as $mKey => $sClass) {
+        foreach ($aClasses as $mKey => $aClassData) {
+            //Extended classes has additional data passed as array, instead of a string with a class name.
+            //So we check if that's the case, if the value isn't an array, we convert it to one to make the data structure the same.
+            if (!is_array($aClassData)) {
+                $sClassName = $aClassData;
+                $aClassData = array();
+                $aClassData['v6ClassName'] = $sClassName;
+            }
             list($sClassFilePath, $sProcessedFileKey) = $this->_getNewClassPathAndKey(
-                $mKey, $sClass, $sInModulePath, $blTestClasses
+                $mKey,
+                $aClassData['v6ClassName'],
+                $sInModulePath,
+                $blTestClasses
             );
             $oFileSystemHelper->copyFile($sTemplatePath, $sClassFilePath);
 
-            $aCopiedClasses[$sProcessedFileKey] = $sClass;
+            $aCopiedClasses[$sProcessedFileKey] = $aClassData['v6ClassName'];
         }
 
         return $aCopiedClasses;
@@ -355,11 +369,11 @@ class oxpsModuleGeneratorHelper extends Base
         $sModulePath = $oModule->getFullPath();
 
         if (empty($blTestClasses)) {
-            $sClassFileName = sprintf('%s%s.php', $sModuleId, $sClass);
+            $sClassFileName = sprintf('%s.php', $sClass);
             $sClassFilePath = $sModulePath . $sInModulePath . $sClassFileName;
             $sProcessedFileKey = $sInModulePath . $sClassFileName;
         } else {
-            $sClassFileName = sprintf('%s%sTest.php', $sModuleId, $sClass);
+            $sClassFileName = sprintf('%sTest.php', $sClass);
             $sClassDirPath = $sModulePath . $sInModulePath . dirname($mKey) . DIRECTORY_SEPARATOR;
             $this->getFileSystemHelper()->createFolder($sClassDirPath);
             $sClassFilePath = $sClassDirPath . $sClassFileName;
@@ -424,6 +438,6 @@ class oxpsModuleGeneratorHelper extends Base
 
         $oReflection = new ReflectionClass(new $sClassName());
 
-        return $oReflection->getName();
+        return $oReflection->getShortName();
     }
 }

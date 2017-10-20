@@ -1,6 +1,9 @@
 <?php
 [{$oModule->renderFileComment()}]
 [{assign var='sClassNamePrefix' value=$oModule->getModuleClassName()}]
+[{assign var='sVendorPrefix' value=$oModule->getVendorPrefix()|ucfirst}]
+[{assign var='sModuleName' value=$oModule->getModuleFolderName()}]
+[{assign var='sNamespaceSuffix' value=$oModule->getNamespaceSuffixFromPath($sFilePath)}]
 [{if $sClassRealName}]
     [{assign var='sClassName' value=$sClassRealName}]
 [{else}]
@@ -8,6 +11,8 @@
 [{/if}]
 [{assign var='sTableName' value=$oModule->getModuleId(false)|cat:'_'}]
 [{assign var='sTableName' value=$sTableName|cat:$sClassName|lower}]
+
+namespace [{$sVendorPrefix}]\[{$sModuleName}]\[{$sNamespaceSuffix}];
 
 use \OxidEsales\Eshop\Core\Model\BaseModel;
 use \OxidEsales\Eshop\Core\DatabaseProvider;
@@ -17,13 +22,13 @@ use \OxidEsales\Eshop\Core\TableViewNameGenerator;
 [{/if}]
 
 /**
- * Class [{$sClassNamePrefix}][{$sClassName}].
+ * Class [{$sClassName}].
  * [{$sClassName}] model.
  */
 [{if $oModule->renderTasks()}]
 //TODO: Extend oxI18n - if multilingual fields are used
 [{/if}]
-class [{$sClassNamePrefix}][{$sClassName}] extends BaseModel
+class [{$sClassName}] extends BaseModel
 {
 
     /**

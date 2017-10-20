@@ -50,7 +50,6 @@ class oxpsModuleGeneratorSettings extends Base
         $aCleanSettings = array();
 
         foreach ($aModuleSettings as $aModuleSetting) {
-
             // Get clean name, type and value
             $aModuleSetting = (array) $aModuleSetting;
             $sSettingName = trim($oValidator->getArrayValue($aModuleSetting, 'name', 'string'));
@@ -95,7 +94,6 @@ class oxpsModuleGeneratorSettings extends Base
             $sMethod = $aSettingParsersMap[$sSettingType];
             $sValue = $this->$sMethod((string) $sInitialValue);
         } else {
-
             // String ("str") type is the default fallback
             $sValue = "'" . (string) $sInitialValue . "'";
         }
@@ -107,7 +105,6 @@ class oxpsModuleGeneratorSettings extends Base
         );
 
         if ($sSettingType == 'select') {
-
             // For "select" type also adds options string under "constrains" key
             $aSetting['constrains'] = $this->_getSelectSettingValue($sInitialValue, true);
         }

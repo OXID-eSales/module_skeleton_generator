@@ -85,6 +85,20 @@ div#oxpsmodulegenerator input.removeLineButton  {
     font-size: 10px;
 }
 
+div#oxpsmodulegenerator div.warning pre {
+    display: inline-flex;
+    margin: 1em 1em;
+    background-color: #F9F9FA;
+    width: auto;
+    border: solid 1px rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
+
+div#oxpsmodulegenerator div.warning code {
+    padding: 0.5em 1em;
+    color: black;
+}
+
 /**
 Notifications
  */
@@ -114,6 +128,11 @@ div#oxpsmodulegenerator .notice-info  {
 div#oxpsmodulegenerator .notice-notice  {
     background-color: #ff8000;
     border: 1px solid #a44300;
+}
+
+div#oxpsmodulegenerator div.warning a {
+    color: #b10300;
+    text-decoration: underline;
 }
 
 div#oxpsmodulegenerator .notice-hidden,

@@ -37,7 +37,7 @@ class oxpsModuleGeneratorMetadata extends Base
     /**
      * Components' path patterns to extract file types from metadata 'files' array
      */
-    const OXPS_CONTROLLER_PATTERN = '/Application/Controller/';
+    const OXPS_CONTROLLER_PATTERN = '\Application\Controller\\';
     const OXPS_MODEL_PATTERN = '/Application/Model/';
     const OXPS_LIST_PATTERN = 'List.php';
     const OXPS_WIDGET_PATTERN = '/Application/Component/Widget/';
@@ -69,6 +69,13 @@ class oxpsModuleGeneratorMetadata extends Base
      * @var array
      */
     protected $_aMetadata = [];
+
+    /**
+     * Module path
+     *
+     * @var string
+     */
+    protected $_sModulePath;
 
     /**
      * Array to test if required Block keys exists for parsing.
@@ -118,19 +125,21 @@ class oxpsModuleGeneratorMetadata extends Base
      * @param array  $aMetadata
      * @param string $sVendorPrefix
      * @param string $sModuleName
+     * @param string $sModulePath
      *
      * @return array
      */
-    public function parseMetadata(array $aMetadata, $sVendorPrefix, $sModuleName)
+    public function parseMetadata(array $aMetadata, $sVendorPrefix, $sModuleName, $sModulePath)
     {
         $this->_aMetadata = $aMetadata;
+        $this->_sModulePath = $sModulePath;
 
         $aGenerationOptions = [
             'aExtendClasses'  => $this->_parseMetadataExtendClasses('extend'),
-            'aNewControllers' => $this->_parseMetadataControllers('files'),
-            'aNewModels'      => $this->_parseMetadataModels('files', 'model'),
-            'aNewLists'       => $this->_parseMetadataModels('files', 'list'),
-            'aNewWidgets'     => $this->_parseMetadataWidgets('files'),
+            'aNewControllers' => $this->_parseMetadataControllers('controllers'),
+            'aNewModels'      => $this->_parseModels(),
+            'aNewLists'       => $this->_parseModels(true),
+            'aNewWidgets'     => $this->_parseFilesFromDir(self::OXPS_WIDGET_PATTERN),
             'aNewBlocks'      => $this->_parseMetadataBlocks('blocks', $sVendorPrefix, $sModuleName),
             'aModuleSettings' => $this->_parseMetadataSettings('settings'),
         ];
@@ -171,7 +180,7 @@ class oxpsModuleGeneratorMetadata extends Base
         if ($this->_isValidMetadataKey($sMetadataArrayKey)) {
             foreach ($this->_aMetadata[$sMetadataArrayKey] as $aMetadataKey => $aMetadataValue) {
                 if (stripos($aMetadataValue, self::OXPS_CONTROLLER_PATTERN) !== false) {
-                    $aMetadataControllers[] = $this->_stripModuleId($aMetadataKey);
+                    $aMetadataControllers[] = $this->_getFileNameFromNamespace($this->_stripModuleId($aMetadataValue));
                 }
             }
         }
@@ -180,55 +189,39 @@ class oxpsModuleGeneratorMetadata extends Base
     }
 
     /**
-     * Parse Models (or Lists) from existing Metadata
+     * Parse Models (or their lists) from existing module directory
      *
-     * @param string $sMetadataArrayKey
-     * @param string $sFileType
+     * @param bool $blParseModelLists
      *
      * @return array
      */
-    protected function _parseMetadataModels($sMetadataArrayKey, $sFileType = '')
+    protected function _parseModels($blParseModelLists = false)
     {
-        $aMetadataModels = [];
-        if ($this->_isValidMetadataKey($sMetadataArrayKey)) {
-            foreach ($this->_aMetadata[$sMetadataArrayKey] as $aMetadataKey => $aMetadataValue) {
-                if (stripos($aMetadataValue, self::OXPS_MODEL_PATTERN) !== false) {
-                    $aExplodedModelPath = explode("/", $aMetadataValue);
-                    if ('model' === $sFileType) {
-                        if (stripos(end($aExplodedModelPath), self::OXPS_LIST_PATTERN) === false) {
-                            $aMetadataModels[] = $this->_stripModuleId($aMetadataKey);
-                        }
-                    } elseif ('list' === $sFileType) {
-                        if (stripos(end($aExplodedModelPath), self::OXPS_LIST_PATTERN) !== false) {
-                            $aMetadataModels[] = $this->_stripModuleId($aMetadataKey);
-                        }
-                    }
-                }
-            }
-        }
+        $aModels = $this->_parseFilesFromDir(self::OXPS_MODEL_PATTERN);
 
-        return $aMetadataModels;
+        if ($blParseModelLists) {
+            return array_filter($aModels, function ($sModel) {
+                return substr($sModel, -4) == 'List';
+            });
+        } else {
+            return array_filter($aModels, function ($sModel) {
+                return (substr($sModel, -4) !== 'List') && (substr($sModel, -5) == 'Model');
+            });
+        }
     }
 
+
     /**
-     * Parse Widgets from existing Metadata
+     * Returns file name array from a given sub directory. Optionally leaves file extensions.
      *
-     * @param string $sMetadataArrayKey
-     *
+     * @param string $sSubDirPath
+     * @param bool   $blRemoveFileExt
      * @return array
      */
-    protected function _parseMetadataWidgets($sMetadataArrayKey)
+    protected function _parseFilesFromDir($sSubDirPath, $blRemoveFileExt = true)
     {
-        $aMetadataWidgets = [];
-        if ($this->_isValidMetadataKey($sMetadataArrayKey)) {
-            foreach ($this->_aMetadata[$sMetadataArrayKey] as $aMetadataKey => $aMetadataValue) {
-                if (stripos($aMetadataValue, self::OXPS_WIDGET_PATTERN) !== false) {
-                    $aMetadataWidgets[] = $this->_stripModuleId($aMetadataKey);
-                }
-            }
-        }
-
-        return $aMetadataWidgets;
+        $oFilesystemHelper = \OxidEsales\Eshop\Core\Registry::get('oxpsModuleGeneratorFileSystem');
+        return $oFilesystemHelper->scanDirForFiles($this->_sModulePath . $sSubDirPath, $blRemoveFileExt);
     }
 
     /**
@@ -245,7 +238,6 @@ class oxpsModuleGeneratorMetadata extends Base
         $aMetadataBlocks = [];
         $aParsedBlocks = [];
         if ($this->_isValidMetadataKey($sMetadataArrayKey)) {
-
             foreach ($this->_aMetadata[$sMetadataArrayKey] as $aMetadataBlockArray) {
                 if ($this->_hasRequiredArrayKeys($aMetadataBlockArray, $this->_aBlockKeys)) {
                     $sBlockPath = $aMetadataBlockArray['block'] . "@" . $aMetadataBlockArray['template'];
@@ -280,7 +272,6 @@ class oxpsModuleGeneratorMetadata extends Base
             $iArrayKey = 0;
 
             foreach ($this->_aMetadata[$sMetadataArrayKey] as $aMetadataSettingsArray) {
-
                 if ($this->_hasRequiredArrayKeys($aMetadataSettingsArray, $this->_aSettingsKeys)) {
                     $aMetadataSettings[$iArrayKey]['name'] = $this->_stripModuleId($aMetadataSettingsArray['name']);
 
@@ -304,7 +295,7 @@ class oxpsModuleGeneratorMetadata extends Base
     /**
      * Strip module ID (vendor and module names) from module components names.
      *
-     * @param $sFullName
+     * @param string $sFullName
      *
      * @return string
      */
@@ -313,6 +304,23 @@ class oxpsModuleGeneratorMetadata extends Base
         return (string) array_key_exists('id', $this->_aMetadata)
             ? str_ireplace($this->_aMetadata['id'], '', $sFullName)
             : '';
+    }
+
+    /**
+     * Returns file name from given namespace.
+     *
+     * @param string $sNamespace
+     *
+     * @return string
+     */
+    protected function _getFileNameFromNamespace($sNamespace)
+    {
+        if (!empty($sNamespace)) {
+            $aNamespaceParts = explode('\\', $sNamespace);
+            return (string) array_pop($aNamespaceParts);
+        }
+
+        return '';
     }
 
     /**
@@ -410,8 +418,6 @@ class oxpsModuleGeneratorMetadata extends Base
     protected function _hasRequiredArrayKeys(array $aMetadataArray, array $aRequiredKeys)
     {
         return is_array($aMetadataArray)
-               && count(
-                      array_intersect_key(array_flip($aRequiredKeys), $aMetadataArray)
-                  ) === count($aRequiredKeys);
+               && count(array_intersect_key(array_flip($aRequiredKeys), $aMetadataArray)) === count($aRequiredKeys);
     }
 }

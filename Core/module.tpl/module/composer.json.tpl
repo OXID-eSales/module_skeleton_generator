@@ -12,6 +12,11 @@
         "oxideshop": {
             "target-directory": "[{$oModule->getVendorPrefix()}]/[{$oModule->getModuleFolderName()}]"
         }
+    },
+    "autoload": {
+        "psr-4": {
+            "[{$oModule->getVendorPrefix()|ucfirst}]\\[{$oModule->getModuleFolderName()}]\\": "../../../source/modules/[{$oModule->getVendorPrefix()}]/[{$oModule->getModuleFolderName()}]"
+        }
     }
 }
 

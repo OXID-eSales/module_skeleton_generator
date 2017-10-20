@@ -1,6 +1,9 @@
 <?php
 [{$oModule->renderFileComment()}]
 [{assign var='sClassNamePrefix' value=$oModule->getModuleClassName()}]
+[{assign var='sVendorPrefix' value=$oModule->getVendorPrefix()|ucfirst}]
+[{assign var='sModuleName' value=$oModule->getModuleFolderName()}]
+[{assign var='sNamespaceSuffix' value=$oModule->getNamespaceSuffixFromPath($sFilePath)}]
 [{if $sClassRealName}]
     [{assign var='sClassName' value=$sClassRealName}]
 [{else}]
@@ -12,7 +15,9 @@
 [{assign var='sTableName' value=$oModule->getModuleId(false)|cat:'_'}]
 [{assign var='sTableName' value=$sTableName|cat:$sListObjectsClassName|lower}]
 [{assign var='sFullClassName' value=$sClassNamePrefix|cat:$sClassName}]
-[{assign var='sFullObjectName' value=$sClassNamePrefix|cat:$sListObjectsClassName}]
+[{assign var='sFullObjectName' value=$sListObjectsClassName}]
+
+namespace [{$sVendorPrefix}]\[{$sModuleName}]\[{$sNamespaceSuffix}];
 
 use \OxidEsales\Eshop\Core\Model\ListModel;
 use \OxidEsales\Eshop\Core\TableViewNameGenerator;
@@ -21,12 +26,12 @@ use \OxidEsales\Eshop\Core\TableViewNameGenerator;
 [{/if}]
 
 /**
- * Class [{$sFullClassName}].
+ * Class [{$sClassName}].
  * [{$sFullObjectName}] list model.
  *
  * @see [{$sFullObjectName}]
  */
-class [{$sFullClassName}] extends ListModel
+class [{$sClassName}] extends ListModel
 {
 
     /**

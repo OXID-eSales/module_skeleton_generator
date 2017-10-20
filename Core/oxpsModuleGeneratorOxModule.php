@@ -33,7 +33,7 @@ use \OxidEsales\Eshop\Core\Str;
  * The class becomes a container for all information required to generate  module.
  * NOTE: This class is very long, but it cannot be split since consists mostly of getters and setters.
  *
- * @see \OxidEsales\Eshop\Core\Module
+ * @see \OxidEsales\Eshop\Core\Module\Module
  */
 class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
 {
@@ -296,12 +296,10 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         );
 
         if (!is_null($sObjectType)) {
-
             // Get only one type of classes
             $mData = (array) $this->getArrayValue($mData, $sObjectType, 'array');
 
             if (!is_null($sObjectsParam)) {
-
                 // Get only one param of one class type
                 $sType = ($sObjectsParam == 'aClasses') ? 'array' : 'string';
                 $mData = $this->getArrayValue($mData, $sObjectsParam, $sType);
@@ -439,21 +437,21 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      *
      * @todo (nice2have): move to generation helper class.
      *
-     * @param string $sModuleName          CamelCase module name to use as a base for new module naming.
-     * @param array  $aGenerationOptions   Additional module generation options:
-     *                                     `aExtendClasses`   - A list of classes to overload (extend).
-     *                                     `aNewControllers`  - A list of controllers to create.
-     *                                     `aNewModels`       - A list of models (item models) to create.
-     *                                     `aNewLists`        - Repeat some or all of item models to create list models.
-     *                                     `aNewWidgets`      - A list of widgets to create.
-     *                                     `aNewBlocks`       - A list of blocks data to create.
-     *                                     `aModuleSettings`  - Data for module settings to create.
-     *                                     `blThemesNone`     - Use same templates for all themes (no multi-theme)
-     *                                     `aThemesList`      - A list on theme IDs for multi-theme templates
-     *                                     `sInitialVersion`  - Initial version value for a new module.
-     *                                     `blFetchUnitTests` - Whatever to clone PHPUnit tests from GIT or not.
-     *                                     `blRenderTasks`    - Option to render "To Do" tasks comments.
-     *                                     `blRenderSamples`  - Option to render sample data comments.
+     * @param string $sModuleName        CamelCase module name to use as a base for new module naming.
+     * @param array  $aGenerationOptions Additional module generation options:
+     *                                   `aExtendClasses`   - A list of classes to overload (extend).
+     *                                   `aNewControllers`  - A list of controllers to create.
+     *                                   `aNewModels`       - A list of models (item models) to create.
+     *                                   `aNewLists`        - Repeat some or all of item models to create list models.
+     *                                   `aNewWidgets`      - A list of widgets to create.
+     *                                   `aNewBlocks`       - A list of blocks data to create.
+     *                                   `aModuleSettings`  - Data for module settings to create.
+     *                                   `blThemesNone`     - Use same templates for all themes (no multi-theme)
+     *                                   `aThemesList`      - A list on theme IDs for multi-theme templates
+     *                                   `sInitialVersion`  - Initial version value for a new module.
+     *                                   `blFetchUnitTests` - Whatever to clone PHPUnit tests from GIT or not.
+     *                                   `blRenderTasks`    - Option to render "To Do" tasks comments.
+     *                                   `blRenderSamples`  - Option to render sample data comments.
      *
      * @return bool
      */
@@ -489,9 +487,12 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         if ($blAddParsedOptions) {
             foreach ($this->_aGenerationOptions as $index => $aGenerationOption) {
                 if (array_key_exists($index, $this->_aParsedMetadataOptions)) {
-                    $aOptionsToSet[$index] = array_merge(
-                        $this->_aParsedMetadataOptions[$index],
-                        $this->_aGenerationOptions[$index]
+                    $aOptionsToSet[$index] = array_unique(
+                        array_merge(
+                            $this->_aParsedMetadataOptions[$index],
+                            $this->_aGenerationOptions[$index]
+                        ),
+                        SORT_REGULAR
                     );
                 }
             }
@@ -532,6 +533,27 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
             if (!empty($aFileName[0])) {
                 $sSuffix = str_replace($this->getModuleId(), '', $aFileName[0]);
             }
+        }
+
+        return $sSuffix;
+    }
+
+    /**
+     * Generates a namespace based on given path to file. Used in templates for namespace generation.
+     * Expects argument to be something like "path/to/[vendor_prefix][module_name][desired_suffix].php"
+     *
+     * @param string $sPath
+     * @param bool   $blOmitFileName bool Whether to omit filename or not
+     *
+     * @return string
+     */
+    public function getNamespaceSuffixFromPath($sPath, $blOmitFileName = true)
+    {
+        $sSuffix = '';
+        if (!empty($sPath)) {
+            $sDir = $blOmitFileName ? dirname($sPath) : $sPath;
+            $sSuffix = str_replace(array(DIRECTORY_SEPARATOR, '.php'), "\\", $sDir);
+            $sSuffix = rtrim($sSuffix, '\\');
         }
 
         return $sSuffix;
@@ -597,6 +619,9 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         return $this->_blEditMode;
     }
 
+    /**
+     *
+     */
     public function backupFiles()
     {
         foreach ($this->_aFilesToBackupOnEdit as $item) {
@@ -619,7 +644,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         if (!empty($aMetadata)) {
             /** @var oxpsModuleGeneratorMetadata $oMetadataParser */
             $oMetadataParser = Registry::get('oxpsModuleGeneratorMetadata');
-            $aGenerationOptions = $oMetadataParser->parseMetadata($aMetadata, $this->getVendorPrefix(), $sModuleName);
+            $aGenerationOptions = $oMetadataParser->parseMetadata($aMetadata, $this->getVendorPrefix(), $sModuleName, $this->getVendorPath() . $sModuleName);
         }
 
         return $aGenerationOptions;
@@ -675,7 +700,7 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
     /**
      * Get Metadata of provided module name.
      *
-     * @param $sModuleName
+     * @param string $sModuleName
      *
      * @return array
      */
@@ -715,11 +740,11 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         return (string) $sMetadataPath;
     }
 
+    /*    TODO: Method should go to class \oxpsModuleGeneratorFileSystem and use its helpers. Of course parameter*/
+    /*    TODO: would become full path, not just file name (full path could be set in new "backupFiles" method).*/
     /**
      * @param string $sFileName
      */
-    // TODO: Method should go to class \oxpsModuleGeneratorFileSystem and use its helpers. Of course parameter
-    // TODO: would become full path, not just file name (full path could be set in new "backupFiles" method).
     protected function _backupFileIfExists($sFileName)
     {
         if (file_exists($this->_getFullFilePath($this->_sModuleName, $sFileName))) {

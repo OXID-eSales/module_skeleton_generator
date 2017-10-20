@@ -31,7 +31,7 @@
  *
  * @see oxpsModuleGeneratorOxModule
  */
-class oxpsModuleGeneratorOxModuleTest extends OxidTestCase
+class oxpsModuleGeneratorOxModuleTest extends \OxidEsales\TestingLibrary\UnitTestCase
 {
 
     /**
@@ -482,10 +482,10 @@ class oxpsModuleGeneratorOxModuleTest extends OxidTestCase
     public function testGetVendorPath()
     {
         // Config mock
-        $oConfig = $this->getMock('oxConfig', array('getModulesDir'));
+        $oConfig = $this->getMock(\OxidEsales\Eshop\Core\Config::class, array('getModulesDir'));
         $oConfig->expects($this->once())->method('getModulesDir')->will($this->returnValue('/path/to/modules/'));
 
-        oxRegistry::set('oxConfig', $oConfig);
+        \OxidEsales\Eshop\Core\Registry::set(\OxidEsales\Eshop\Core\Config::class, $oConfig);
 
         $this->SUT->setVendorPrefix('oxps');
 
@@ -496,10 +496,10 @@ class oxpsModuleGeneratorOxModuleTest extends OxidTestCase
     public function testGetFullPath()
     {
         // Config mock
-        $oConfig = $this->getMock('oxConfig', array('getModulesDir'));
+        $oConfig = $this->getMock(\OxidEsales\Eshop\Core\Config::class, array('getModulesDir'));
         $oConfig->expects($this->once())->method('getModulesDir')->will($this->returnValue('/path/to/modules/'));
 
-        oxRegistry::set('oxConfig', $oConfig);
+        \OxidEsales\Eshop\Core\Registry::set(\OxidEsales\Eshop\Core\Config::class, $oConfig);
 
         $this->SUT->setVendorPrefix('oxps');
         $this->SUT->setModuleData(array('oxpsmodulegenerator_folder' => 'testmodule'));
@@ -511,14 +511,14 @@ class oxpsModuleGeneratorOxModuleTest extends OxidTestCase
     public function testGenerateModule()
     {
         // Config mock
-        $oConfig = $this->getMock('oxConfig', array('getModulesDir'));
+        $oConfig = $this->getMock(\OxidEsales\Eshop\Core\Config::class, array('getModulesDir'));
         $oConfig->expects($this->any())->method('getModulesDir')->will($this->returnValue('/path/to/modules/'));
-        oxRegistry::set('oxConfig', $oConfig);
+        \OxidEsales\Eshop\Core\Registry::set(\OxidEsales\Eshop\Core\Config::class, $oConfig);
 
         // The generator module main class mock
         $oGeneratorModule = $this->getMock('oxpsModuleGeneratorModule', array('__construct', '__call', 'getPath'));
 
-        oxRegistry::set('oxpsModuleGeneratorModule', $oGeneratorModule);
+        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorModule', $oGeneratorModule);
 
         // File system helper mock
         $oFileSystem = $this->getMock('oxpsModuleGeneratorFileSystem', array('__call', 'copyFolder'));
@@ -534,7 +534,7 @@ class oxpsModuleGeneratorOxModuleTest extends OxidTestCase
             array('models/oxpsmymoduleoxarticle.php' => 'oxArticle'),
             array('models/oxpsmymoduleitem.php' => 'oxpsMyModuleItem')
         );
-        oxRegistry::set('oxpsModuleGeneratorRender', $oRenderHelper);
+        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorRender', $oRenderHelper);
 
         // Module generation helper mock
         $oHelper = $this->getMock(
@@ -566,7 +566,7 @@ class oxpsModuleGeneratorOxModuleTest extends OxidTestCase
             array('models/oxpsmymoduleoxarticle.php' => 'oxArticle'),
             array('models/oxpsmymoduleitem.php' => 'oxpsMyModuleItem')
         );
-        oxRegistry::set('oxpsModuleGeneratorHelper', $oHelper);
+        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorHelper', $oHelper);
 
         $this->SUT->setVendorPrefix('oxps');
 
@@ -664,7 +664,7 @@ class oxpsModuleGeneratorOxModuleTest extends OxidTestCase
         $oHelper = $this->getMock('oxpsModuleGeneratorRender', array('__call', 'init', 'renderFileComment'));
         $oHelper->expects($this->once())->method('init')->with($this->isInstanceOf(get_class($this->SUT)));
         $oHelper->expects($this->once())->method('renderFileComment')->with('');
-        oxRegistry::set('oxpsModuleGeneratorRender', $oHelper);
+        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorRender', $oHelper);
 
         $this->SUT->renderFileComment();
     }

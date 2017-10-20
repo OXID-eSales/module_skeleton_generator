@@ -252,16 +252,62 @@ class oxpsModuleGeneratorValidatorTest extends OxidEsales\TestingLibrary\UnitTes
             [[], []],
 
             // Valid values
-            ['Article', ['Article' => 'Application/Controller/Admin/']],
-            ['oxarticle', ['oxarticle' => 'Application/Model/']],
-            ['oxArticle', ['oxArticle' => 'Application/Model/']],
-            ['oxList', ['oxList' => 'Core/']],
-            ['oxBasket', ['oxBasket' => 'Application/Model/']],
-            ['Basket', ['Basket' => 'Application/Controller/']],
+            ['Article', ['Article' =>
+                [
+                    'classPath' => 'Application/Controller/Admin/',
+                    'v6ClassName' => 'ArticleController',
+                    'v6Namespace' => 'OxidEsales\Eshop\Application\Controller\Admin'
+                ]
+            ]],
+            ['oxarticle', ['oxarticle' =>
+                [
+                    'classPath' => 'Application/Model/',
+                    'v6ClassName' => 'Article',
+                    'v6Namespace' => 'OxidEsales\Eshop\Application\Model'
+                ]
+            ]],
+            ['oxArticle', ['oxArticle' =>
+                [
+                    'classPath' => 'Application/Model/',
+                    'v6ClassName' => 'Article',
+                    'v6Namespace' => 'OxidEsales\Eshop\Application\Model'
+                ]
+            ]],
+            ['oxList', ['oxList' =>
+                [
+                    'classPath' => 'Core/',
+                    'v6ClassName' => 'ListModel',
+                    'v6Namespace' => 'OxidEsales\Eshop\Core\Model',
+                ]
+            ]],
+            ['oxBasket', ['oxBasket' =>
+                [
+                    'classPath' => 'Application/Model/',
+                    'v6ClassName' => 'Basket',
+                    'v6Namespace' => 'OxidEsales\Eshop\Application\Model'
+                ]
+            ]],
+            ['Basket', ['Basket' =>
+                [
+                    'classPath' => 'Application/Controller/',
+                    'v6ClassName' => 'BasketController',
+                    'v6Namespace' => 'OxidEsales\Eshop\Application\Controller'
+                ]
+            ]],
             ['oxArticle' . PHP_EOL . 'oxBasket',
              [
-                 'oxArticle' => 'Application/Model/',
-                 'oxBasket'  => 'Application/Model/',
+                 'oxArticle' =>
+                 [
+                     'classPath' => 'Application/Model/',
+                     'v6ClassName' => 'Article',
+                     'v6Namespace' => 'OxidEsales\Eshop\Application\Model'
+                 ],
+                 'oxBasket'  =>
+                 [
+                     'classPath' => 'Application/Model/',
+                     'v6ClassName' => 'Basket',
+                     'v6Namespace' => 'OxidEsales\Eshop\Application\Model'
+                 ],
              ]
             ],
         ];
@@ -403,8 +449,8 @@ class oxpsModuleGeneratorValidatorTest extends OxidEsales\TestingLibrary\UnitTes
     public function moduleExistsDataProvider()
     {
         return [
-            ['ModuleGenerator', true],
-            ['modulegenerator', true],
+            ['oxps/ModuleGenerator', true],
+            ['oxps/modulegenerator', false],
             ['NotExistingModule', false],
             ['', false],
             [[], false],

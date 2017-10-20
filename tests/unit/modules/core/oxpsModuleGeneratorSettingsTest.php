@@ -30,7 +30,7 @@
  *
  * @see oxpsModuleGeneratorSettings
  */
-class oxpsModuleGeneratorSettingsTest extends OxidTestCase
+class oxpsModuleGeneratorSettingsTest extends \OxidEsales\TestingLibrary\UnitTestCase
 {
 
     /**

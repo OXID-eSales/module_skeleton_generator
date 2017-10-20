@@ -82,7 +82,7 @@
         [{if !$blError}]
         <div class="warning">
             <ul>
-                <li>[{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_MODULE_MSG_GENERATION_SUCCESS_AUTOLOAD_WARNING"}]</li>
+                <li>[{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_MODULE_MSG_GENERATION_SUCCESS_AUTOLOAD_NOTE"}]</li>
                 Sample composer.json:<br/>
 <pre><code>"autoload": {
     "psr-4": {

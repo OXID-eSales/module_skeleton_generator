@@ -2,7 +2,6 @@
   "name": "oxid-esales/module-generator",
   "description": "Folders structure, empty classes and metadata generation for new OXID eShop modules.",
   "license": [
-    "GPL-3.0",
-    "proprietary"
+    "GPL-3.0-only"
   ]
 }

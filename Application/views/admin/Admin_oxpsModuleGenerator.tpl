@@ -59,6 +59,14 @@
                 });
             });"
            priority=10}]
+<div class = "notification-error-examples"
+     data-module-name = "[{$sNotificationExampleModuleName}]"
+     data-controller-name = "[{$sNotificationExampleControllerName}]"
+     data-model-name = "[{$sNotificationExampleModelName}]"
+     data-list-name = "[{$sNotificationExampleListName}]"
+     data-widget-name = "[{$sNotificationExampleWidgetName}]"
+     data-block-name = "[{$sNotificationExampleBlockName}]"
+></div>
 <script type="application/javascript">
     /**
      * Themes list disabling/enabling event depending on "no themes" checkbox status.
@@ -366,12 +374,4 @@
 </tr>
 </table>
 </div>
-<div class = "notification-error-examples"
-     data-module-name = "[{$sNotificationExampleModuleName}]"
-     data-controller-name = "[{$sNotificationExampleControllerName}]"
-     data-model-name = "[{$sNotificationExampleModelName}]"
-     data-list-name = "[{$sNotificationExampleListName}]"
-     data-widget-name = "[{$sNotificationExampleWidgetName}]"
-     data-block-name = "[{$sNotificationExampleBlockName}]"
-></div>
 [{include file="bottomitem.tpl"}]

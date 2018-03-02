@@ -374,7 +374,6 @@ jQuery.widget(
                 this._hideNotification(oElement);
             } else {
                 var response = this.options.notificationValidClassesText + this._buildHtmlResponse(oData, true, ', ');
-
                 this._showNotification(oElement, 'info', response);
             }
         },
@@ -401,6 +400,9 @@ jQuery.widget(
             for (var i in aObjectData) {
                 aFormattedValue.push(aObjectData[i]);
             }
+
+            if (aFormattedValue.length === 0)
+                aFormattedValue.push("none");
 
             return aFormattedValue.join(sSpaceType);
         },

@@ -31,6 +31,7 @@
 [{assign var="sNotificationExampleListName" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_LIST_NAME"|oxmultilangassign}]
 [{assign var="sNotificationExampleWidgetName" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_WIDGET_NAME"|oxmultilangassign}]
 [{assign var="sNotificationExampleBlockName" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_BLOCK_NAME"|oxmultilangassign}]
+[{assign var="sNotificationExampleSettingName" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_SETTING_NAME"|oxmultilangassign}]
 
 [{oxscript add="
             jQuery(document).ready(function () {
@@ -66,6 +67,7 @@
      data-list-name = "[{$sNotificationExampleListName}]"
      data-widget-name = "[{$sNotificationExampleWidgetName}]"
      data-block-name = "[{$sNotificationExampleBlockName}]"
+     data-setting-name = "[{$sNotificationExampleSettingName}]"
 ></div>
 <script type="application/javascript">
     /**

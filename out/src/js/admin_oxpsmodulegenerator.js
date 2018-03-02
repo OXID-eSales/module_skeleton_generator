@@ -86,12 +86,8 @@ jQuery.widget(
                 example: document.querySelector('.notification-error-examples').dataset.blockName
             },
             {
-                element: 'modulegenerator_settings[0][name]',
-                example: 'MySetting'
-            },
-            {
-                element: 'modulegenerator_settings[1][name]',
-                example: 'MySetting'
+                element: 'modulegenerator_settings',
+                example: document.querySelector('.notification-error-examples').dataset.settingName
             }
         ],
         _errorText: '',
@@ -523,6 +519,10 @@ jQuery.widget(
             return str.split(']')[0];
         },
 
+        _getSettingName:function(str){
+            return str.split('[')[0];
+        },
+
         /**
          * Show notification depending on various states of input field.
          *
@@ -541,7 +541,7 @@ jQuery.widget(
             var notice = document.querySelectorAll('.js-notice-block');
 
             self._errorText = self._getValidErrorMessage(oElement, this) + ' ' + self._errorMessageExamples.find(function(variable) {
-                return variable.element === jQuery(oElement).attr('name');
+                return variable.element === self._getSettingName(jQuery(oElement).attr('name'));
             }).example;
 
             var sEnteredInput = jQuery(oElement).val();

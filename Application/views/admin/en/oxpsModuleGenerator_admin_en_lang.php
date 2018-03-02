@@ -99,7 +99,7 @@ $aLang = array(
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_ERROR_BLOCK'                       => 'ERROR: Entered block name and template path should be separated by "@", e.g.',
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXCLUDED_MODULE_ERROR'             => 'NOTICE: Existing module is excluded from Edit Mode',
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_WARNING'                           => 'WARNING: Entered value is invalid',
-    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_VALID_CLASSES'                     => 'INFO: Valid classes: ',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_VALID_CLASSES'                     => 'INFO: Successful recognized classes: ',
 
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_MODULE_NAME'               => 'MyModule',
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_CONTROLLER_NAME'           => 'MyController',

@@ -103,7 +103,7 @@ $aLang = array(
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_ERROR'                             => '[TR - ERROR: Entered value is invalid]',
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXCLUDED_MODULE_ERROR'             => '[TR - NOTICE: Existing module is excluded from Edit Mode]',
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_WARNING'                           => '[TR - WARNING: Entered value is invalid]',
-    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_VALID_CLASSES'                     => '[TR - INFO: Valid classes: ]',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_VALID_CLASSES'                     => '[TR - INFO: Successful recognized classes: ]',
 
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_MODULE_NAME'               => '[TR - MyModule]',
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_CONTROLLER_NAME'           => '[TR - MyController]',

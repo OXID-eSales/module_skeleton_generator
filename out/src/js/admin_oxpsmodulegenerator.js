@@ -73,6 +73,10 @@ jQuery.widget(
                 example: 'MyModel'
             },
             {
+                element: 'modulegenerator_lists',
+                example: 'MyList'
+            },
+            {
                 element: 'modulegenerator_widgets',
                 example: 'MyWidget'
             },
@@ -86,7 +90,7 @@ jQuery.widget(
         _moduleClassesSelector: "textarea[name='modulegenerator_extend_classes']",
         _moduleControllersSelector: "textarea[name='modulegenerator_controllers']",
         _moduleModelsSelector: "textarea[name='modulegenerator_models']",
-        _moduleListsSelector: "textarea[name='C']",
+        _moduleListsSelector: "textarea[name='modulegenerator_lists']",
         _moduleWidgetsSelector: "textarea[name='modulegenerator_widgets']",
         _moduleBlocksSelector: "textarea[name='modulegenerator_blocks']",
         _moduleSettingsNameSelector: "input[name^='modulegenerator_settings']",

@@ -25,12 +25,18 @@
 [{assign var="sNotificationExistingSettingsType" value="OXPS_MODULEGENERATOR_ADMIN_MODULE_SETTING_TYPE"|oxmultilangassign}]
 [{assign var="sNotificationExistingSettingsValue" value="OXPS_MODULEGENERATOR_ADMIN_MODULE_SETTING_VALUE"|oxmultilangassign}]
 
+[{assign var="sNotificationExampleModuleName" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_MODULE_NAME"|oxmultilangassign}]
+[{assign var="sNotificationExampleControllerName" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_CONTROLLER_NAME"|oxmultilangassign}]
+[{assign var="sNotificationExampleModelName" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_MODEL_NAME"|oxmultilangassign}]
+[{assign var="sNotificationExampleListName" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_LIST_NAME"|oxmultilangassign}]
+[{assign var="sNotificationExampleWidgetName" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_WIDGET_NAME"|oxmultilangassign}]
+[{assign var="sNotificationExampleBlockName" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_BLOCK_NAME"|oxmultilangassign}]
 
 [{oxscript add="
             jQuery(document).ready(function () {
                 jQuery('#oxpsmodulegenerator').wizard({
-                     moduleNameValidationUrl: '`$sModuleNameValidationUrl`',
-                     extendClassesValidationUrl: '`$sExtendClassesNamesValidationUrl`',
+                    moduleNameValidationUrl: '`$sModuleNameValidationUrl`',
+                    extendClassesValidationUrl: '`$sExtendClassesNamesValidationUrl`',
 
                     notificationSuccessText: '`$sNotificationSuccessText`',
                     notificationBlockErrorText: '`$sNotificationBlockErrorText`',
@@ -360,4 +366,12 @@
 </tr>
 </table>
 </div>
+<div class = "notification-error-examples"
+     data-module-name = "[{$sNotificationExampleModuleName}]"
+     data-controller-name = "[{$sNotificationExampleControllerName}]"
+     data-model-name = "[{$sNotificationExampleModelName}]"
+     data-list-name = "[{$sNotificationExampleListName}]"
+     data-widget-name = "[{$sNotificationExampleWidgetName}]"
+     data-block-name = "[{$sNotificationExampleBlockName}]"
+></div>
 [{include file="bottomitem.tpl"}]

@@ -63,27 +63,27 @@ jQuery.widget(
         _errorMessageExamples:[
             {
                 element: 'modulegenerator_module_name',
-                example: 'MyModule'
+                example: document.querySelector('.notification-error-examples').dataset.moduleName
             },
             {
                 element: 'modulegenerator_controllers',
-                example: 'MyController'
+                example: document.querySelector('.notification-error-examples').dataset.controllerName
             },
             {
                 element: 'modulegenerator_models',
-                example: 'MyModel'
+                example: document.querySelector('.notification-error-examples').dataset.modelName
             },
             {
                 element: 'modulegenerator_lists',
-                example: 'MyList'
+                example: document.querySelector('.notification-error-examples').dataset.listName
             },
             {
                 element: 'modulegenerator_widgets',
-                example: 'MyWidget'
+                example: document.querySelector('.notification-error-examples').dataset.widgetName
             },
             {
                 element: 'modulegenerator_blocks',
-                example: 'my_block_name@page/details/inc/myblockname.tpl'
+                example: document.querySelector('.notification-error-examples').dataset.blockName
             }
         ],
         _errorText: '',
@@ -493,7 +493,6 @@ jQuery.widget(
          */
         _showCorrectNotification: function (oElement, sRegexFunction) {
             var self = this;
-
             self._errorText = self._getValidErrorMessage(oElement, this) + ' ' + self._errorMessageExamples.find(function(variable) {
                 return variable.element === jQuery(oElement).attr('name');
             }).example;

@@ -199,7 +199,7 @@ jQuery.widget(
                     .find("input[type='text'], textarea").val('')
                 ;
 
-
+                //Using to hide error messages.
                 var notice = document.querySelectorAll('.js-notice-block');
                 jQuery(notice[iCleanId])
                     .removeClass()
@@ -482,6 +482,7 @@ jQuery.widget(
         _validateBlocksFieldEntry: function (oElement) {
             return this._showCorrectNotification(oElement, '_blocksRegex','');
         },
+
         /**
          * Checks or triggered field is a block element
          * And returns a certain error message
@@ -497,8 +498,9 @@ jQuery.widget(
         },
 
         /**
+         * Checks or object has given through parameters(cls) class
          *
-         * @param element
+         * @param {object} element
          * @param cls
          * @returns {boolean}
          * @private
@@ -509,6 +511,8 @@ jQuery.widget(
 
 
         /**
+         *  Using for slicing settings name input and returning index of it.
+         *  For example given name: modulegenerator_settings[0][name] => returns 0
          *
          * @param str
          * @returns {string}
@@ -519,6 +523,14 @@ jQuery.widget(
             return str.split(']')[0];
         },
 
+        /**
+         * Using for slicing settings name input and returning first part of it.
+         * For example given name: modulegenerator_settings[0][name] => returns modulegenerator_settings
+         *
+         * @param {string} str
+         * @returns {string}
+         * @private
+         */
         _getSettingName:function(str){
             return str.split('[')[0];
         },
@@ -548,6 +560,7 @@ jQuery.widget(
             if (self._isEmptyField(oElement)) {
                 self._hideNotification(oElement);
 
+                //If setting field is empty hide it
                 if (self._hasClass(oElement, 'js-setting-element'))
                     self._showSettingNotification(notice[self._getIndexFromString(oElement.getAttribute("name"))], 'hidden', '');
             }
@@ -560,6 +573,7 @@ jQuery.widget(
                 }
             } else if (self[sRegexFunction](sEnteredInput)) {
 
+                //If setting field is written correctly hide it.
                 if (self._hasClass(oElement, 'js-setting-element')) {
                     self._showSettingNotification(notice[self._getIndexFromString(oElement.getAttribute("name"))], 'hidden', '');
                 }
@@ -576,6 +590,8 @@ jQuery.widget(
 
 
         /**
+         *
+         * Special for settings notification because they have other html structure.
          *
          * @param oElement
          * @param sNoticeType

@@ -59,12 +59,34 @@ jQuery.widget(
         _excludedModuleNames: [
             'ModuleGenerator'
         ],
-
+        _camelCasesObj:[
+            {
+                element: 'modulegenerator_module_name',
+                example: 'MyModule'
+            },
+            {
+                element: 'modulegenerator_controllers',
+                example: 'MyController'
+            },
+            {
+                element: 'modulegenerator_models',
+                example: 'MyModel'
+            },
+            {
+                element: 'modulegenerator_widgets',
+                example: 'MyWidget'
+            },
+            {
+                element: 'modulegenerator_blocks',
+                example: 'MyBlock'
+            }
+        ],
+        _errorText: '',
         _moduleNameSelector: "input[name='modulegenerator_module_name']",
         _moduleClassesSelector: "textarea[name='modulegenerator_extend_classes']",
         _moduleControllersSelector: "textarea[name='modulegenerator_controllers']",
         _moduleModelsSelector: "textarea[name='modulegenerator_models']",
-        _moduleListsSelector: "textarea[name='modulegenerator_lists']",
+        _moduleListsSelector: "textarea[name='C']",
         _moduleWidgetsSelector: "textarea[name='modulegenerator_widgets']",
         _moduleBlocksSelector: "textarea[name='modulegenerator_blocks']",
         _moduleSettingsNameSelector: "input[name^='modulegenerator_settings']",
@@ -120,13 +142,17 @@ jQuery.widget(
             } else if (this._validateCamelCaseName(oElement)) {
                 // Check if entered module name is in excluded array
                 if (this._isExcludedName(oElement)) {
-                    this._showNotification(oElement, 'notice', this.options.notificationErrorExcludedModuleText);
+                    this._showNotification(oElement, 'notice', this.options.notificationErrorExcludedModuleText, 0, this);
                     this._hideExistingComponentNotification();
                 } else {
                     this._requestModuleNameJsonResponse(oElement);
                 }
             } else {
-                this._showNotification(oElement, 'error', this.options.notificationErrorText);
+                this.errorText = this.options.notificationErrorText+this._camelCasesObj.find(function(variable) {
+                    return variable.element === jQuery(oElement).attr('name');
+                }).example;
+
+                this._showNotification(oElement, 'error', this.options.notificationErrorText, 1, this);
                 this._hideExistingComponentNotification();
             }
         },
@@ -428,7 +454,7 @@ jQuery.widget(
          * @returns {boolean}
          */
         _validateBlocksFieldEntry: function (oElement) {
-            return this._showCorrectNotification(oElement, '_blocksRegex');
+            return this._showCorrectNotification(oElement, '_blocksRegex','');
         },
 
         /**
@@ -443,24 +469,29 @@ jQuery.widget(
          */
         _showCorrectNotification: function (oElement, sRegexFunction) {
             var self = this;
-            var sEnteredInput = jQuery(oElement).val();
 
+            self.errorText = self.options.notificationErrorText+self._camelCasesObj.find(function(variable) {
+                return variable.element === jQuery(oElement).attr('name');
+            }).example;
+
+            var sEnteredInput = jQuery(oElement).val();
             if (self._isEmptyField(oElement)) {
                 self._hideNotification(oElement);
-            } else if ((self._countNewLines(sEnteredInput)) > 0) {
+            }
+            else if ((self._countNewLines(sEnteredInput)) > 0) {
                 if (Object.values(self._splitNewLines(sEnteredInput, sRegexFunction)).indexOf(false) !== -1) {
-                    self._showNotification(oElement, 'error', self.options.notificationErrorText);
+                    self._showNotification(oElement, 'error', self.options, 1, self);
                 } else {
-                    self._showNotification(oElement, 'success', self.options.notificationSuccessText);
+                    self._showNotification(oElement, 'success', self.options.notificationSuccessText, 0, self);
 
                     return true;
                 }
             } else if (self[sRegexFunction](sEnteredInput)) {
-                self._showNotification(oElement, 'success', self.options.notificationSuccessText);
+                self._showNotification(oElement, 'success', self.options.notificationSuccessText,0, self);
 
                 return true;
             } else {
-                self._showNotification(oElement, 'error', self.options.notificationErrorText);
+                self._showNotification(oElement, 'error', self.options.notificationSuccessText,1, self);
             }
         },
 
@@ -491,17 +522,19 @@ jQuery.widget(
             }
         },
 
+
         /**
          * @param {object} oElement
          * @param {string} sNoticeType
          * @param {string} sNoticeText
          */
-        _showNotification: function (oElement, sNoticeType, sNoticeText) {
+        _showNotification: function (oElement, sNoticeType, sNoticeText, importance, self) {
+            var notice = (importance === 1) ? self.errorText : sNoticeText;
             jQuery(oElement).siblings(this._cssNoticeSelectorClass)
                 .fadeIn(1000)
                 .attr('class', 'notice')
                 .addClass('notice-' + sNoticeType)
-                .text(sNoticeText)
+                .text(notice)
             ;
         },
 

@@ -236,7 +236,7 @@
                                         [{/if}]
                                         <tr class="settingsLine" id="settingsLine[{$i}]">
                                             <td>
-                                                <input type="text" name="modulegenerator_settings[[{$i}]][name]"
+                                                <input type="text" name="modulegenerator_settings[[{$i}]][name]" class = "js-setting-element"
                                                        value="[{$aSetting.name}]" maxlength="12"/>
                                             </td>
                                             <td>
@@ -260,6 +260,9 @@
                                                 <textarea name="modulegenerator_settings[[{$i}]][value]" cols="10"
                                                           rows="1">[{$aSetting.value}]</textarea>
                                             </td>
+                                            <td>
+                                                <span class="notice notice-hidden js-notice-block"></span>
+                                            </td>
                                         </tr>
                                         [{/section}]
                                     </tbody>
@@ -267,7 +270,6 @@
                                 <input type="button" name="modulegenerator_addNewSettingsLine" id="addNewSettingsLine"
                                        value="[{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_MODULE_ADD_SETTINGS_LINE"}]"/>
                                 [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_SETTINGS_HINT"}]
-                                <span class="notice notice-hidden"></span>
                             </td>
                             <tr>
                                 <td colspan="2">&nbsp;</td>

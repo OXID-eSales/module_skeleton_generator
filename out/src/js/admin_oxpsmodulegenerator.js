@@ -84,6 +84,14 @@ jQuery.widget(
             {
                 element: 'modulegenerator_blocks',
                 example: document.querySelector('.notification-error-examples').dataset.blockName
+            },
+            {
+                element: 'modulegenerator_settings[0][name]',
+                example: 'MySetting'
+            },
+            {
+                element: 'modulegenerator_settings[1][name]',
+                example: 'MySetting'
             }
         ],
         _errorText: '',
@@ -112,6 +120,7 @@ jQuery.widget(
         _cssSettingsLineClass: ".settingsLine",
         _cssSettingsLineId: "settingsLine",
         _cssRemoveSettingsLineButtonClass: ".removeLineButton",
+        _settingsRowNumber: 0,
 
         /**
          * Widget Constructor
@@ -180,7 +189,6 @@ jQuery.widget(
 
                 // Adding +1 to last ID for new line
                 iCleanId++;
-
                 // Clone, replace unique id, append below and clear existing values from last line.
                 jQuery(self._cssSettingsLineClass + ':last')
                     .clone()
@@ -192,8 +200,17 @@ jQuery.widget(
                     .find(self._cssRemoveSettingsLineButtonClass).remove().end()
                     .appendTo(self._cssSettingsBodyId)
                     .append('<input type="button" value="REMOVE" class="removeLineButton" id="' + iCleanId + '">')
-                    .find("input[type='text'], textarea").val('').removeClass()
+                    .find("input[type='text'], textarea").val('')
                 ;
+
+
+                var notice = document.querySelectorAll('.js-notice-block');
+                jQuery(notice[iCleanId])
+                    .removeClass()
+                    .addClass('notice notice-hidden js-notice-block')
+                    .text('')
+                ;
+                notice[iCleanId].style.display = "none";
             });
 
             jQuery(self._cssRemoveSettingsLineButtonClass).live('click', function () {
@@ -236,6 +253,9 @@ jQuery.widget(
             jQuery(this._moduleBlocksSelector).live('keyup', function () {
                 self._validateBlocksFieldEntry(this);
             });
+            jQuery(this._moduleSettingsNameSelector).live('keyup', function () {
+                self._validateCamelCaseName(this);
+            });
         },
 
         /**
@@ -246,12 +266,12 @@ jQuery.widget(
 
             jQuery(this._moduleSettingsNameSelector).live('keyup', function () {
                 if (self._isEmptyField(this)) {
-                    jQuery(this).removeClass().addClass('default-settings-color');
+                    jQuery(this).removeClass().addClass('default-settings-color js-setting-element');
                 }
                 else if (self._camelCaseRegex(jQuery(this).val())) {
-                    jQuery(this).removeClass().addClass('correct-settings-color');
+                    jQuery(this).removeClass().addClass('correct-settings-color js-setting-element');
                 } else {
-                    jQuery(this).removeClass().addClass('invalid-settings-color');
+                    jQuery(this).removeClass().addClass('invalid-settings-color js-setting-element');
                 }
             });
         },
@@ -481,6 +501,29 @@ jQuery.widget(
         },
 
         /**
+         *
+         * @param element
+         * @param cls
+         * @returns {boolean}
+         * @private
+         */
+        _hasClass: function (element, cls) {
+            return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
+        },
+
+
+        /**
+         *
+         * @param str
+         * @returns {string}
+         * @private
+         */
+        _getIndexFromString: function(str){
+            str = str.substring(str.indexOf("[") + 1);
+            return str.split(']')[0];
+        },
+
+        /**
          * Show notification depending on various states of input field.
          *
          * self._errorText gets error message which should be render if user value is invalid.
@@ -495,6 +538,8 @@ jQuery.widget(
          */
         _showCorrectNotification: function (oElement, sRegexFunction) {
             var self = this;
+            var notice = document.querySelectorAll('.js-notice-block');
+
             self._errorText = self._getValidErrorMessage(oElement, this) + ' ' + self._errorMessageExamples.find(function(variable) {
                 return variable.element === jQuery(oElement).attr('name');
             }).example;
@@ -502,25 +547,55 @@ jQuery.widget(
             var sEnteredInput = jQuery(oElement).val();
             if (self._isEmptyField(oElement)) {
                 self._hideNotification(oElement);
+
+                if (self._hasClass(oElement, 'js-setting-element'))
+                    self._showSettingNotification(notice[self._getIndexFromString(oElement.getAttribute("name"))], 'hidden', '');
             }
             else if ((self._countNewLines(sEnteredInput)) > 0) {
                 if (Object.values(self._splitNewLines(sEnteredInput, sRegexFunction)).indexOf(false) !== -1) {
                     self._showNotification(oElement, 'error', self.options.notificationErrorText);
                 } else {
                     self._showNotification(oElement, 'success', self.options.notificationSuccessText);
-
                     return true;
                 }
             } else if (self[sRegexFunction](sEnteredInput)) {
+
+                if (self._hasClass(oElement, 'js-setting-element')) {
+                    self._showSettingNotification(notice[self._getIndexFromString(oElement.getAttribute("name"))], 'hidden', '');
+                }
                 self._showNotification(oElement, 'success', self.options.notificationSuccessText);
 
                 return true;
             } else {
+                if (self._hasClass(oElement, 'js-setting-element'))
+                    self._showSettingNotification(notice[self._getIndexFromString(oElement.getAttribute("name"))], 'error', self._errorText);
+
                 self._showNotification(oElement, 'error', self._errorText);
             }
         },
 
+
         /**
+         *
+         * @param oElement
+         * @param sNoticeType
+         * @param sNoticeText
+         * @private
+         */
+        _showSettingNotification: function (oElement, sNoticeType, sNoticeText) {
+            jQuery(oElement)
+                .fadeIn(1000)
+                .attr('class', 'notice')
+                .addClass('notice notice-' + sNoticeType+ ' js-notice-block')
+                .text(sNoticeText)
+            ;
+
+            if ( sNoticeType === 'hidden')
+                oElement.style.display = "none";
+        },
+
+        /**
+         * Validate if input field or textarea is empty
          * Validate if input field or textarea is empty
          *
          * @param oElement

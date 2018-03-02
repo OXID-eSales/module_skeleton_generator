@@ -34,6 +34,7 @@ jQuery.widget(
 
             notificationSuccessText: '',
             notificationErrorText: '',
+            notificationBlockErrorText: '',
             notificationErrorExcludedModuleText: '',
             notificationWarningText: '',
             notificationValidClassesText: '',
@@ -59,7 +60,7 @@ jQuery.widget(
         _excludedModuleNames: [
             'ModuleGenerator'
         ],
-        _camelCasesObj:[
+        _camelCaseExamples:[
             {
                 element: 'modulegenerator_module_name',
                 example: 'MyModule'
@@ -82,7 +83,7 @@ jQuery.widget(
             },
             {
                 element: 'modulegenerator_blocks',
-                example: 'MyBlock'
+                example: 'my_block_name@page/details/inc/myblockname.tpl'
             }
         ],
         _errorText: '',
@@ -135,6 +136,8 @@ jQuery.widget(
         },
 
         /**
+         * this.errorText gets error message which should be render if user value is invalid
+         *
          * Check if entered module exists and show appropriate notifications
          *
          * @param oElement
@@ -146,17 +149,17 @@ jQuery.widget(
             } else if (this._validateCamelCaseName(oElement)) {
                 // Check if entered module name is in excluded array
                 if (this._isExcludedName(oElement)) {
-                    this._showNotification(oElement, 'notice', this.options.notificationErrorExcludedModuleText, 0, this);
+                    this._showNotification(oElement, 'notice', this.options.notificationErrorExcludedModuleText);
                     this._hideExistingComponentNotification();
                 } else {
                     this._requestModuleNameJsonResponse(oElement);
                 }
             } else {
-                this.errorText = this.options.notificationErrorText+this._camelCasesObj.find(function(variable) {
+                //combines two strings: translatable error text and camelCase examples by field
+                this.errorText = this.options.notificationErrorText + ' ' + this._camelCaseExamples.find(function(variable) {
                     return variable.element === jQuery(oElement).attr('name');
                 }).example;
-
-                this._showNotification(oElement, 'error', this.options.notificationErrorText, 1, this);
+                this._showNotification(oElement, 'error', this.errorText);
                 this._hideExistingComponentNotification();
             }
         },
@@ -258,7 +261,6 @@ jQuery.widget(
          */
         _requestModuleNameJsonResponse: function (oElement) {
             var self = this;
-
             jQuery.ajax({
                 cache: false,
                 dataType: 'json',
@@ -362,6 +364,7 @@ jQuery.widget(
         },
 
         /**
+         *
          * @param {object} oElement
          * @param {object} oData
          */
@@ -460,9 +463,24 @@ jQuery.widget(
         _validateBlocksFieldEntry: function (oElement) {
             return this._showCorrectNotification(oElement, '_blocksRegex','');
         },
+        /**
+         * Checks or triggered field is a block element
+         * And returns a certain error message
+         *
+         * @param {object} oElement
+         * @param {object} self
+         * @returns {string}
+         */
+        _getValidErrorMessage: function(oElement, self){
+            var blockElement = document.querySelector(self._moduleBlocksSelector);
+
+            return (oElement === blockElement)? self.options.notificationBlockErrorText: self.options.notificationErrorText;
+        },
 
         /**
          * Show notification depending on various states of input field.
+         *
+         * self.errorText gets error message which should be render if user value is invalid
          *
          * TODO: This logic could be refactored to smaller parts
          *
@@ -474,7 +492,7 @@ jQuery.widget(
         _showCorrectNotification: function (oElement, sRegexFunction) {
             var self = this;
 
-            self.errorText = self.options.notificationErrorText+self._camelCasesObj.find(function(variable) {
+            self.errorText = self._getValidErrorMessage(oElement, this) + ' ' + self._camelCaseExamples.find(function(variable) {
                 return variable.element === jQuery(oElement).attr('name');
             }).example;
 
@@ -484,18 +502,18 @@ jQuery.widget(
             }
             else if ((self._countNewLines(sEnteredInput)) > 0) {
                 if (Object.values(self._splitNewLines(sEnteredInput, sRegexFunction)).indexOf(false) !== -1) {
-                    self._showNotification(oElement, 'error', self.options, 1, self);
+                    self._showNotification(oElement, 'error', self.options.notificationErrorText);
                 } else {
-                    self._showNotification(oElement, 'success', self.options.notificationSuccessText, 0, self);
+                    self._showNotification(oElement, 'success', self.options.notificationSuccessText);
 
                     return true;
                 }
             } else if (self[sRegexFunction](sEnteredInput)) {
-                self._showNotification(oElement, 'success', self.options.notificationSuccessText,0, self);
+                self._showNotification(oElement, 'success', self.options.notificationSuccessText);
 
                 return true;
             } else {
-                self._showNotification(oElement, 'error', self.options.notificationSuccessText,1, self);
+                self._showNotification(oElement, 'error', self.errorText);
             }
         },
 
@@ -532,13 +550,12 @@ jQuery.widget(
          * @param {string} sNoticeType
          * @param {string} sNoticeText
          */
-        _showNotification: function (oElement, sNoticeType, sNoticeText, importance, self) {
-            var notice = (importance === 1) ? self.errorText : sNoticeText;
+        _showNotification: function (oElement, sNoticeType, sNoticeText) {
             jQuery(oElement).siblings(this._cssNoticeSelectorClass)
                 .fadeIn(1000)
                 .attr('class', 'notice')
                 .addClass('notice-' + sNoticeType)
-                .text(notice)
+                .text(sNoticeText)
             ;
         },
 

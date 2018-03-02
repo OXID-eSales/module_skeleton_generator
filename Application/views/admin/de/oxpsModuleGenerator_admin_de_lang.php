@@ -99,6 +99,7 @@ $aLang = array(
 
     // Module generation form JavaScript notifications
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_SUCCESS'                           => '[TR - SUCCESS: Entered value is valid]',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_ERROR_BLOCK'                       => '[TR - ERROR: Entered block name and template path should be separated by "@", e.g.]',
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_ERROR'                             => '[TR - ERROR: Entered value is invalid]',
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXCLUDED_MODULE_ERROR'             => '[TR - NOTICE: Existing module is excluded from Edit Mode]',
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_WARNING'                           => '[TR - WARNING: Entered value is invalid]',

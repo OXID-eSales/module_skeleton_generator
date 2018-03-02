@@ -60,7 +60,7 @@ jQuery.widget(
         _excludedModuleNames: [
             'ModuleGenerator'
         ],
-        _camelCaseExamples:[
+        _errorMessageExamples:[
             {
                 element: 'modulegenerator_module_name',
                 example: 'MyModule'
@@ -136,7 +136,8 @@ jQuery.widget(
         },
 
         /**
-         * this.errorText gets error message which should be render if user value is invalid
+         * this._errorText gets error message which should be render if user value is invalid.
+         * This message combines from two strings: translatable error message text and example by field which one is invalid
          *
          * Check if entered module exists and show appropriate notifications
          *
@@ -156,10 +157,10 @@ jQuery.widget(
                 }
             } else {
                 //combines two strings: translatable error text and camelCase examples by field
-                this.errorText = this.options.notificationErrorText + ' ' + this._camelCaseExamples.find(function(variable) {
+                this._errorText = this.options.notificationErrorText + ' ' + this._errorMessageExamples.find(function(variable) {
                     return variable.element === jQuery(oElement).attr('name');
                 }).example;
-                this._showNotification(oElement, 'error', this.errorText);
+                this._showNotification(oElement, 'error', this._errorText);
                 this._hideExistingComponentNotification();
             }
         },
@@ -480,7 +481,8 @@ jQuery.widget(
         /**
          * Show notification depending on various states of input field.
          *
-         * self.errorText gets error message which should be render if user value is invalid
+         * self._errorText gets error message which should be render if user value is invalid.
+         * This message combines from two strings: translatable error message text and example by field which one is invalid
          *
          * TODO: This logic could be refactored to smaller parts
          *
@@ -492,7 +494,7 @@ jQuery.widget(
         _showCorrectNotification: function (oElement, sRegexFunction) {
             var self = this;
 
-            self.errorText = self._getValidErrorMessage(oElement, this) + ' ' + self._camelCaseExamples.find(function(variable) {
+            self._errorText = self._getValidErrorMessage(oElement, this) + ' ' + self._errorMessageExamples.find(function(variable) {
                 return variable.element === jQuery(oElement).attr('name');
             }).example;
 
@@ -513,7 +515,7 @@ jQuery.widget(
 
                 return true;
             } else {
-                self._showNotification(oElement, 'error', self.errorText);
+                self._showNotification(oElement, 'error', self._errorText);
             }
         },
 

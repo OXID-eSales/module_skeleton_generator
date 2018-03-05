@@ -214,11 +214,53 @@ jQuery.widget(
             });
         },
 
+        _getArrayFromObject:function(obj){
+            var array = [];
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    array.push(obj[key]);
+                }
+            }
+
+            return array;
+        },
+
+        _orExist:function(array, inputValue){
+            return array.find(function(variable) {
+                return (variable === inputValue)
+            });
+        },
+
         _validateEnteredValueFromRepeat: function(oData, oElement){
-            console.log("oData:");
-            console.log(oData);
-            console.log("oElement:");
-            console.log(oElement);
+            var namesArray = this._getArrayFromObject(oData);
+
+            if ( typeof this._orExist(namesArray, jQuery(oElement).val()) !== 'undefined') {
+                this._showValidationNotification(oElement, 'error', 'ERROR: Components are repeating');
+            } else {
+                this._validateRepeatInput(oElement, '#808080', 'black');
+            }
+
+        },
+        /**
+         * @param {object} oElement
+         * @param {string} sNoticeType
+         * @param {string} sNoticeText
+         */
+        _showValidationNotification: function (oElement, sNoticeType, sNoticeText) {
+            this._validateRepeatInput(oElement, 'red', 'red');
+            jQuery(oElement).siblings(this._cssNoticeSelectorClass)
+                .fadeIn(1000)
+                .attr('class', 'notice')
+                .addClass('notice-' + sNoticeType)
+                .text(sNoticeText)
+            ;
+        },
+
+        _validateRepeatInput: function(oElement, borderColor, textColor){
+            jQuery(oElement)
+                .css('border-color', borderColor)
+                .css('color', textColor)
+            ;
         },
 
         /**
@@ -227,7 +269,6 @@ jQuery.widget(
          */
         _validateComponentName: function (oData) {
             var self = this;
-
             // From jQuery 1.7+ live() is deprecated and should be changed to on() method after jQuery version update.
             jQuery(this._moduleNameSelector).live('keyup change', function () {
                 self._validateEnteredModuleName(this);

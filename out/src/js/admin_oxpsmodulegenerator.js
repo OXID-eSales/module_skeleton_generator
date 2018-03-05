@@ -214,11 +214,18 @@ jQuery.widget(
             });
         },
 
+        _validateEnteredValueFromRepeat: function(oData, oElement){
+            console.log("oData:");
+            console.log(oData);
+            console.log("oElement:");
+            console.log(oElement);
+        },
+
         /**
          * Validate entered various components' names.
          * (Module name, extended class, controller, model, list, widget and block)
          */
-        _validateComponentName: function () {
+        _validateComponentName: function (oData) {
             var self = this;
 
             // From jQuery 1.7+ live() is deprecated and should be changed to on() method after jQuery version update.
@@ -228,29 +235,50 @@ jQuery.widget(
 
             jQuery(this._moduleClassesSelector).live('keyup', function () {
                 self._requestExtendClassesJsonResponse(this);
+                if (typeof oData !== 'undefined') {
+                    self._validateEnteredValueFromRepeat(oData['aExtendClasses'], this);
+                }
             });
 
             jQuery(this._moduleControllersSelector).live('keyup', function () {
                 self._validateCamelCaseName(this);
+                if (typeof oData !== 'undefined') {
+                    self._validateEnteredValueFromRepeat(oData['aNewControllers'], this);
+                }
             });
 
             jQuery(this._moduleModelsSelector).live('keyup', function () {
                 self._validateCamelCaseName(this);
+                if (typeof oData !== 'undefined') {
+                    self._validateEnteredValueFromRepeat(oData['aNewModels'], this);
+                }
             });
 
             jQuery(this._moduleListsSelector).live('keyup', function () {
                 self._validateCamelCaseName(this);
+                if (typeof oData !== 'undefined') {
+                    self._validateEnteredValueFromRepeat(oData['aNewLists'], this);
+                }
             });
 
             jQuery(this._moduleWidgetsSelector).live('keyup', function () {
                 self._validateCamelCaseName(this);
+                if (typeof oData !== 'undefined') {
+                    self._validateEnteredValueFromRepeat(oData['aNewWidgets'], this);
+                }
             });
 
             jQuery(this._moduleBlocksSelector).live('keyup', function () {
                 self._validateBlocksFieldEntry(this);
+                if (typeof oData !== 'undefined') {
+                    self._validateEnteredValueFromRepeat(oData['aNewBlocks'], this);
+                }
             });
             jQuery(this._moduleSettingsNameSelector).live('keyup', function () {
                 self._validateCamelCaseName(this);
+                if (typeof oData !== 'undefined') {
+                    self._validateEnteredValueFromRepeat(oData['aModuleSettings'], this);
+                }
             });
         },
 
@@ -356,7 +384,10 @@ jQuery.widget(
                     .html(self.options.notificationExistingSettings + '<hr>' + sNewSettings)
                     .slideDown(self.options.notificationSlideDownSpeed);
             }
+
+            self._validateComponentName(oData);
         },
+
 
         /**
          * Return JSON response with extendable classes if exist.
@@ -551,7 +582,6 @@ jQuery.widget(
         _showCorrectNotification: function (oElement, sRegexFunction) {
             var self = this;
             var notice = document.querySelectorAll('.js-notice-block');
-
             self._errorText = self._getValidErrorMessage(oElement, this) + ' ' + self._errorMessageExamples.find(function(variable) {
                 return variable.element === self._getSettingName(jQuery(oElement).attr('name'));
             }).example;

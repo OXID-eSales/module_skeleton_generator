@@ -132,10 +132,6 @@ jQuery.widget(
             'oxSession', 'oxSuperCfg', 'oxStdClass', 'oxSystemComponentException', 'oxSysRequirements', 'oxUtils', 'oxUtilsFile', 'oxUtilsObject',
             'oxUtilsServer', 'oxConfigFile', 'oxRegistry', 'oxShopControl'
         ],
-        //can be overloaded but some classes extend it
-        _canBeOverladableClasses:[
-            'aList', 'Details'
-        ],
 
         /**
          * Widget Constructor
@@ -548,42 +544,52 @@ jQuery.widget(
             });
         },
 
+        _getNotOverloadableClasses: function(extendableClassesArray, notOverloadableClasses){
+            var self = this;
+
+            extendableClassesArray.forEach(function(element) {
+                if(typeof self._findValInArray(self._notOverloadableClasses, element) !== 'undefined')
+                    notOverloadableClasses.push(element);
+            });
+
+            if(typeof self._findValInArray(extendableClassesArray, notOverloadableClasses[notOverloadableClasses.length-1]) === 'undefined')
+                notOverloadableClasses.splice(notOverloadableClasses.length, 1);
+
+            return notOverloadableClasses;
+        },
+
+        _showNotificationHelper: function(oElement, noticeType, noticeText, borderColor, textColor, disabled){
+            document.querySelector(this._moduleSubmitButton).disabled = disabled;
+            this._showNotification(oElement, noticeType, noticeText);
+            this._changeFieldColor(oElement, borderColor, textColor);
+        },
+
         /**
+         * Method checks in overloadable classes array for newly typed classes
+         * If class exist show error notification else info notification which classes
+         * was recognized
          *
          * @param {object} oElement
          * @param {object} oData
          * TODO: refactor everything to smaller parts
-         * TODO: comments on methods
          * TODO: Problem: if user write class not in camel case, program can't detect it.
          */
         _showExtendClassesHtmlResponse: function (oElement, oData) {
-            var submitButton = document.querySelector(this._moduleSubmitButton);
-            var self = this;
-            var notOverloadable = [];
+            var notOverloadableClasses = [];
+
             if (this._isEmptyField(oElement)) {
                 this._hideNotification(oElement);
             } else {
                 var extendableClassesResponse = this._buildHtmlResponse(oData, true, ', ');
                 var extendableClassesArray = extendableClassesResponse.split(", ");
-                var response = this.options.notificationValidClassesText + extendableClassesArray;
+                var response = this.options.notificationValidClassesText + extendableClassesResponse;
 
-                extendableClassesArray.forEach(function(element) {
-                    if(typeof self._findValInArray(self._notOverloadableClasses, element) !== 'undefined')
-                        notOverloadable.push(element);
-                });
+                notOverloadableClasses = this._getNotOverloadableClasses(extendableClassesArray, notOverloadableClasses);
 
-                if(typeof self._findValInArray(extendableClassesArray, notOverloadable[notOverloadable.length-1]) === 'undefined')
-                    notOverloadable.splice(notOverloadable.length, 1);
-
-                if(notOverloadable.length > 0) {
-                    this._showNotification(oElement, 'error', this.options.notificationErrorTextNotOverloadable);
-                    submitButton.disabled = true;
-                    this._changeFieldColor(oElement, "red", "red");
-                } else {
-                    this._showNotification(oElement, 'info', response);
-                    submitButton.disabled = false;
-                    this._changeFieldColor(oElement, '#808080', 'black');
-                }
+                if(notOverloadableClasses.length > 0)
+                    this._showNotificationHelper(oElement, 'error',this.options.notificationErrorTextNotOverloadable, 'red', 'red', true);
+                else
+                    this._showNotificationHelper(oElement, 'info',response, '#808080', 'black', false);
             }
         },
 
@@ -742,7 +748,7 @@ jQuery.widget(
         _showCorrectNotification: function (oElement, sRegexFunction) {
             var self = this;
 
-            var notice = document.querySelectorAll('.js-notice-block');//+
+            var notice = document.querySelectorAll('.js-notice-block');
 
             self._errorText = self._getValidErrorMessage(oElement, this) + ' ' + self._errorMessageExamples.find(function(variable) {
                 return variable.element === self._getSettingName(jQuery(oElement).attr('name'));
@@ -754,7 +760,7 @@ jQuery.widget(
 
                 //If setting field is empty hide it
                 if (self._hasClass(oElement, 'js-setting-element'))
-                    self._showSettingNotification(notice[self._getIndexFromString(oElement.getAttribute("name"))], 'hidden', '');//+
+                    self._showSettingNotification(notice[self._getIndexFromString(oElement.getAttribute("name"))], 'hidden', '');
             }
             else if ((self._countNewLines(sEnteredInput)) > 0) {
                 if (Object.values(self._splitNewLines(sEnteredInput, sRegexFunction)).indexOf(false) !== -1) {
@@ -956,7 +962,6 @@ jQuery.widget(
             if (jQuery('.messagebox').length) {
                 jQuery(':input', '#modulegenerator_form')
                     .not(":button, :submit, :reset, [name='modulegenerator_module_name']")
-                    // .removeAttr('checked')
                     .removeAttr('selected')
                     .val('');
             }

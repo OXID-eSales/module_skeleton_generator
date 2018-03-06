@@ -38,6 +38,7 @@ jQuery.widget(
             notificationErrorExcludedModuleText: '',
             notificationWarningText: '',
             notificationValidClassesText: '',
+            notificationErrorTextOfRepeating: '',
 
             notificationExistingClasses: '',
             notificationExistingControllers: '',
@@ -100,6 +101,7 @@ jQuery.widget(
         _moduleBlocksSelector: "textarea[name='modulegenerator_blocks']",
         _moduleSettingsNameSelector: "input[name^='modulegenerator_settings']",
         _moduleSettingsAllInputSelector: "[name^='modulegenerator_settings[']",
+        _moduleSubmitButton: "input[name^='modulegenerator_submit']",
 
         _moduleClassesSelectorNoticeDiv: ".component-existing-classes",
         _moduleControllersSelectorNoticeDiv: ".component-existing-controllers",
@@ -231,29 +233,20 @@ jQuery.widget(
             });
         },
 
+        //TODO: make button disabled, clear not needed methods
         _validateEnteredValueFromRepeat: function(oData, oElement){
             var namesArray = this._getArrayFromObject(oData);
+            var submitButton = document.querySelector(this._moduleSubmitButton);
 
             if ( typeof this._orExist(namesArray, jQuery(oElement).val()) !== 'undefined') {
-                this._showValidationNotification(oElement, 'error', 'ERROR: Components are repeating');
+                submitButton.disabled = true;
+                this._validateRepeatInput(oElement, 'red', 'red');
+                this._showNotification(oElement, 'error', this.options.notificationErrorTextOfRepeating);
             } else {
+                submitButton.disabled = false;
                 this._validateRepeatInput(oElement, '#808080', 'black');
             }
 
-        },
-        /**
-         * @param {object} oElement
-         * @param {string} sNoticeType
-         * @param {string} sNoticeText
-         */
-        _showValidationNotification: function (oElement, sNoticeType, sNoticeText) {
-            this._validateRepeatInput(oElement, 'red', 'red');
-            jQuery(oElement).siblings(this._cssNoticeSelectorClass)
-                .fadeIn(1000)
-                .attr('class', 'notice')
-                .addClass('notice-' + sNoticeType)
-                .text(sNoticeText)
-            ;
         },
 
         _validateRepeatInput: function(oElement, borderColor, textColor){

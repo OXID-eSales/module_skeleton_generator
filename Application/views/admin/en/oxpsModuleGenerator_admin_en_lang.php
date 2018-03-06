@@ -95,6 +95,7 @@ $aLang = array(
 
     // Module generation form JavaScript notifications
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_SUCCESS'                           => 'SUCCESS: Entered value is valid',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_ERROR_REPEAT'                      => 'ERROR: This name repeats with the previous one!',
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_ERROR'                             => 'ERROR: Entered value is invalid you should use camel case name, e.g.',
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_ERROR_BLOCK'                       => 'ERROR: Entered block name and template path should be separated by "@", e.g.',
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXCLUDED_MODULE_ERROR'             => 'NOTICE: Existing module is excluded from Edit Mode',

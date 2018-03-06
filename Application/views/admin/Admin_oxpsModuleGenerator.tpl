@@ -8,6 +8,7 @@
 
 [{assign var="sNotificationSuccessText" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_SUCCESS"|oxmultilangassign}]
 [{assign var="sNotificationErrorText" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_ERROR"|oxmultilangassign}]
+[{assign var="sNotificationErrorTextOfRepeating" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_ERROR_REPEAT"|oxmultilangassign}]
 [{assign var="sNotificationBlockErrorText" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_ERROR_BLOCK"|oxmultilangassign}]
 [{assign var="sNotificationErrorExcludedModuleText" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXCLUDED_MODULE_ERROR"|oxmultilangassign}]
 [{assign var="sNotificationWarningText" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_WARNING"|oxmultilangassign}]
@@ -43,6 +44,7 @@
                     notificationBlockErrorText: '`$sNotificationBlockErrorText`',
                     notificationErrorText: '`$sNotificationErrorText`',
                     notificationErrorExcludedModuleText: '`$sNotificationErrorExcludedModuleText`',
+                    notificationErrorTextOfRepeating: '$sNotificationErrorTextOfRepeating',
                     notificationWarningText: '`$sNotificationWarningText`',
                     notificationValidClassesText: '`$sNotificationValidClassesText`',
 

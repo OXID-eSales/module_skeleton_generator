@@ -216,6 +216,13 @@ jQuery.widget(
             });
         },
 
+        /**
+         * Method takes object and returns array
+         *
+         * @param obj
+         * @returns {Array}
+         * @private
+         */
         _getArrayFromObject:function(obj){
             var array = [];
             for (var key in obj) {
@@ -227,18 +234,32 @@ jQuery.widget(
             return array;
         },
 
-        _orExist:function(array, inputValue){
+        /**
+         * Method loops through all array and checks or given value exist in it
+         *
+         * @param array
+         * @param inputValue
+         * @private
+         */
+        _findValInArray:function(array, inputValue){
             return array.find(function(variable) {
                 return (variable === inputValue)
             });
         },
 
-        //TODO: make button disabled, clear not needed methods
+        /**
+         * Validate each input on edit mode if written value is not implemented in metadata.
+         * If user type implemented name then method show error notification, make input red and disabled submit button.
+         *
+         * @param oData
+         * @param oElement
+         * @private
+         */
         _validateEnteredValueFromRepeat: function(oData, oElement){
             var namesArray = this._getArrayFromObject(oData);
             var submitButton = document.querySelector(this._moduleSubmitButton);
 
-            if ( typeof this._orExist(namesArray, jQuery(oElement).val()) !== 'undefined') {
+            if ( typeof this._findValInArray(namesArray, jQuery(oElement).val()) !== 'undefined') {
                 submitButton.disabled = true;
                 this._validateRepeatInput(oElement, 'red', 'red');
                 this._showNotification(oElement, 'error', this.options.notificationErrorTextOfRepeating);
@@ -249,6 +270,14 @@ jQuery.widget(
 
         },
 
+        /**
+         * Method change given element border color and text color by given parameters
+         *
+         * @param {object} oElement
+         * @param {string} borderColor
+         * @param {string} textColor
+         * @private
+         */
         _validateRepeatInput: function(oElement, borderColor, textColor){
             jQuery(oElement)
                 .css('border-color', borderColor)

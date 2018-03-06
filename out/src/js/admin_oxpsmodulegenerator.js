@@ -247,6 +247,14 @@ jQuery.widget(
             });
         },
 
+        /**
+         * Because settings have specific structure of object this method helps
+         * to get data from setting and push them to array
+         *
+         * @param {object} obj
+         * @returns {Array}
+         * @private
+         */
         _getAllSettingsNames:function(obj){
             var array = [];
             for (var key in obj) {
@@ -258,6 +266,14 @@ jQuery.widget(
             return array;
         },
 
+        /**
+         * Because blocks have specific structure of object this method helps
+         * to get data from it and push them to array.
+         *
+         * @param {object} obj
+         * @returns {Array}
+         * @private
+         */
         _getAllBlockNames:function(obj){
             var array = [];
             for (var key in obj) {
@@ -269,11 +285,10 @@ jQuery.widget(
             return array;
         },
 
-
         /**
          * Validate each input on edit mode if written value is not implemented in metadata.
          * If user type implemented name then method show error notification, make input red and disabled submit button.
-         *
+         * TODO: IMPROVE SETTINGS NOTIFICATION!!
          * @param {object} oData
          * @param {object} oElement
          * @param {boolean} orSettings
@@ -283,7 +298,6 @@ jQuery.widget(
         _validateEnteredValueFromRepeat: function(oData, oElement, orSettings, orBlock){
             var namesArray = [];
             var submitButton = document.querySelector(this._moduleSubmitButton);
-            console.log(oData);
 
             if(orSettings){
                 namesArray = this._getAllSettingsNames(oData);

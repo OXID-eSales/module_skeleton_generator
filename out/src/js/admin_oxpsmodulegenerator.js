@@ -247,6 +247,14 @@ jQuery.widget(
             });
         },
 
+        /**
+         * Because settings have specific structure of object this method helps
+         * to get data from setting and push them to array
+         *
+         * @param {object} obj
+         * @returns {Array}
+         * @private
+         */
         _getAllSettingsNames:function(obj){
             var array = [];
             for (var key in obj) {
@@ -258,6 +266,14 @@ jQuery.widget(
             return array;
         },
 
+        /**
+         * Because blocks have specific structure of object this method helps
+         * to get data from it and push them to array.
+         *
+         * @param {object} obj
+         * @returns {Array}
+         * @private
+         */
         _getAllBlockNames:function(obj){
             var array = [];
             for (var key in obj) {
@@ -269,11 +285,10 @@ jQuery.widget(
             return array;
         },
 
-
         /**
          * Validate each input on edit mode if written value is not implemented in metadata.
          * If user type implemented name then method show error notification, make input red and disabled submit button.
-         *
+         * TODO: IMPROVE SETTINGS NOTIFICATION!!
          * @param {object} oData
          * @param {object} oElement
          * @param {boolean} orSettings
@@ -283,7 +298,9 @@ jQuery.widget(
         _validateEnteredValueFromRepeat: function(oData, oElement, orSettings, orBlock){
             var namesArray = [];
             var submitButton = document.querySelector(this._moduleSubmitButton);
-            console.log(oData);
+            var addNewSettingButton = document.querySelector(this._cssAddSettingsLineButtonId);
+
+            var notice = document.querySelectorAll('.js-notice-block');//+
 
             if(orSettings){
                 namesArray = this._getAllSettingsNames(oData);
@@ -294,13 +311,17 @@ jQuery.widget(
                 namesArray = this._getArrayFromObject(oData);
             }
 
-            console.log(namesArray);
-
-            if ( typeof this._findValInArray(namesArray, jQuery(oElement).val()) !== 'undefined') {
+            if ( typeof this._findValInArray(namesArray, jQuery(oElement).val().trim()) !== 'undefined') {
                 submitButton.disabled = true;
                 this._validateRepeatInput(oElement, 'red', 'red');
                 this._showNotification(oElement, 'error', this.options.notificationErrorTextOfRepeating);
+
+                if (this._hasClass(oElement, 'js-setting-element')) {
+                    addNewSettingButton.disabled = true;
+                    this._showSettingNotification(notice[this._getIndexFromString(oElement.getAttribute("name"))], 'error', this.options.notificationErrorTextOfRepeating);
+                }
             } else {
+                addNewSettingButton.disabled = false;
                 submitButton.disabled = false;
                 this._validateRepeatInput(oElement, '#808080', 'black');
             }
@@ -432,7 +453,6 @@ jQuery.widget(
          */
         _showModuleNameHtmlResponse: function (oData) {
             var self = this;
-            console.log(oData);
             var sExtendClasses = self._buildHtmlResponse(oData['aExtendClasses'], true, '<br />');
             var sNewControllers = self._buildHtmlResponse(oData['aNewControllers'], false, '<br />');
             var sNewModels = self._buildHtmlResponse(oData['aNewModels'], false, '<br />');
@@ -460,7 +480,7 @@ jQuery.widget(
                     .html(self.options.notificationExistingModels + '<hr>' + sNewModels)
                     .slideDown(self.options.notificationSlideDownSpeed);
             }
-            console.log(sNewLists);
+
             if (sNewLists) {
                 jQuery(self._moduleListsSelectorNoticeDiv)
                     .html(self.options.notificationExistingLists + '<hr>' + sNewLists)
@@ -679,7 +699,9 @@ jQuery.widget(
          */
         _showCorrectNotification: function (oElement, sRegexFunction) {
             var self = this;
-            var notice = document.querySelectorAll('.js-notice-block');
+
+            var notice = document.querySelectorAll('.js-notice-block');//+
+
             self._errorText = self._getValidErrorMessage(oElement, this) + ' ' + self._errorMessageExamples.find(function(variable) {
                 return variable.element === self._getSettingName(jQuery(oElement).attr('name'));
             }).example;
@@ -690,7 +712,7 @@ jQuery.widget(
 
                 //If setting field is empty hide it
                 if (self._hasClass(oElement, 'js-setting-element'))
-                    self._showSettingNotification(notice[self._getIndexFromString(oElement.getAttribute("name"))], 'hidden', '');
+                    self._showSettingNotification(notice[self._getIndexFromString(oElement.getAttribute("name"))], 'hidden', '');//+
             }
             else if ((self._countNewLines(sEnteredInput)) > 0) {
                 if (Object.values(self._splitNewLines(sEnteredInput, sRegexFunction)).indexOf(false) !== -1) {

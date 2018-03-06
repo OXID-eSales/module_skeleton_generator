@@ -302,7 +302,7 @@ jQuery.widget(
         /**
          * Validate each input on edit mode if written value is not implemented in metadata.
          * If user type implemented name then method show error notification, make input red and disabled submit button.
-         * TODO: IMPROVE SETTINGS NOTIFICATION!!
+         *
          * @param {object} oData
          * @param {object} oElement
          * @param {boolean} orSettings
@@ -311,10 +311,6 @@ jQuery.widget(
          */
         _validateEnteredValueFromRepeat: function(oData, oElement, orSettings, orBlock){
             var namesArray = [];
-            var submitButton = document.querySelector(this._moduleSubmitButton);
-            var addNewSettingButton = document.querySelector(this._cssAddSettingsLineButtonId);
-
-            var notice = document.querySelectorAll('.js-notice-block');
 
             if(orSettings){
                 namesArray = this._getAllSettingsNames(oData);
@@ -324,6 +320,24 @@ jQuery.widget(
             else{
                 namesArray = this._getArrayFromObject(oData);
             }
+
+            this._showNotificationForRepeatableNames(oElement, namesArray);
+
+        },
+
+        /**
+         * Method gets names array which one can't be repeated
+         * If name is repeated then shows error notification
+         * make input border color ant text color red. Otherwise makes them default.
+         *
+         * @param {object} oElement
+         * @param {array} namesArray
+         * @private
+         */
+        _showNotificationForRepeatableNames: function(oElement, namesArray){
+            var submitButton = document.querySelector(this._moduleSubmitButton);
+            var addNewSettingButton = document.querySelector(this._cssAddSettingsLineButtonId);
+            var notice = document.querySelectorAll('.js-notice-block');
 
             if ( typeof this._findValInArray(namesArray, jQuery(oElement).val().trim()) !== 'undefined') {
                 submitButton.disabled = true;
@@ -339,7 +353,22 @@ jQuery.widget(
                 submitButton.disabled = false;
                 this._changeFieldColor(oElement, '#808080', 'black');
             }
+        },
 
+
+        /**
+         * @param oElement
+         * @param noticeType
+         * @param noticeText
+         * @param borderColor
+         * @param textColor
+         * @param disabled
+         * @private
+         */
+        _showNotificationHelper: function(oElement, noticeType, noticeText, borderColor, textColor, disabled){
+            document.querySelector(this._moduleSubmitButton).disabled = disabled;
+            this._showNotification(oElement, noticeType, noticeText);
+            this._changeFieldColor(oElement, borderColor, textColor);
         },
 
         /**
@@ -545,6 +574,13 @@ jQuery.widget(
             });
         },
 
+        /**
+         *
+         * @param extendableClassesArray
+         * @param notOverloadableClasses
+         * @returns {Array}
+         * @private
+         */
         _getNotOverloadableClasses: function(extendableClassesArray, notOverloadableClasses){
             var self = this;
 
@@ -559,12 +595,6 @@ jQuery.widget(
             return notOverloadableClasses;
         },
 
-        _showNotificationHelper: function(oElement, noticeType, noticeText, borderColor, textColor, disabled){
-            document.querySelector(this._moduleSubmitButton).disabled = disabled;
-            this._showNotification(oElement, noticeType, noticeText);
-            this._changeFieldColor(oElement, borderColor, textColor);
-        },
-
         /**
          * Method checks in overloadable classes array for newly typed classes
          * If class exist show error notification else info notification which classes
@@ -572,7 +602,6 @@ jQuery.widget(
          *
          * @param {object} oElement
          * @param {object} oData
-         * TODO: Problem: if user write class not in camel case, program can't detect it.
          */
         _showExtendClassesHtmlResponse: function (oElement, oData) {
             var notOverloadableClasses = [];

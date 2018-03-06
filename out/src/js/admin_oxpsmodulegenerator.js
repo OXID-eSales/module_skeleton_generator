@@ -120,6 +120,22 @@ jQuery.widget(
         _cssRemoveSettingsLineButtonClass: ".removeLineButton",
         _settingsRowNumber: 0,
 
+        _notOverloadableClasses: [
+            'oxAdminDetails', 'oxAdminList', 'oxAdminView', 'dyn_interface', 'Dynscreen', 'DynExportBase',
+            'Article_List', 'GenImport_Main', 'Efire', 'Object_Seo', 'Order_List', 'Shop_Config', 'User_List',
+
+            'oxView', 'oxStart', 'oxUBase', 'Account', 'GuestBook', 'User',
+
+            'oxBase', 'oxDb', 'oxLegacyDb', 'oxConfig', 'oxConnectionException', 'oxDynImgGenerator', 'oxErpBase', 'oxErpCsv', 'oxErpGenImport',
+            'oxExceptionToDisplay', 'oxField', 'oxI18n', 'oxLdap', 'oxList', 'oxOpenIdDb', 'oxOpenIdHTTPFetcher', 'oxSeoEncoder',
+            'oxSession', 'oxSuperCfg', 'oxStdClass', 'oxSystemComponentException', 'oxSysRequirements', 'oxUtils', 'oxUtilsFile', 'oxUtilsObject',
+            'oxUtilsServer', 'oxConfigFile', 'oxRegistry', 'oxShopControl'
+        ],
+        //can be overloaded but some classes extend it
+        _canBeOverladableClasses:[
+            'aList', 'Details'
+        ],
+
         /**
          * Widget Constructor
          */

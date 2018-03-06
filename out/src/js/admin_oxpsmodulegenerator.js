@@ -247,17 +247,54 @@ jQuery.widget(
             });
         },
 
+        _getAllSettingsNames:function(obj){
+            var array = [];
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    array.push(obj[key].name);
+                }
+            }
+
+            return array;
+        },
+
+        _getAllBlockNames:function(obj){
+            var array = [];
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    array.push(obj[key].block +"@"+ obj[key].template);
+                }
+            }
+
+            return array;
+        },
+
+
         /**
          * Validate each input on edit mode if written value is not implemented in metadata.
          * If user type implemented name then method show error notification, make input red and disabled submit button.
          *
-         * @param oData
-         * @param oElement
+         * @param {object} oData
+         * @param {object} oElement
+         * @param {boolean} orSettings
+         * @param {boolean} orBlock
          * @private
          */
-        _validateEnteredValueFromRepeat: function(oData, oElement){
-            var namesArray = this._getArrayFromObject(oData);
+        _validateEnteredValueFromRepeat: function(oData, oElement, orSettings, orBlock){
+            var namesArray = [];
             var submitButton = document.querySelector(this._moduleSubmitButton);
+            console.log(oData);
+
+            if(orSettings){
+                namesArray = this._getAllSettingsNames(oData);
+            } else if(orBlock){
+                namesArray = this._getAllBlockNames(oData);
+            }
+            else{
+                namesArray = this._getArrayFromObject(oData);
+            }
+
+            console.log(namesArray);
 
             if ( typeof this._findValInArray(namesArray, jQuery(oElement).val()) !== 'undefined') {
                 submitButton.disabled = true;
@@ -299,48 +336,48 @@ jQuery.widget(
             jQuery(this._moduleClassesSelector).live('keyup', function () {
                 self._requestExtendClassesJsonResponse(this);
                 if (typeof oData !== 'undefined') {
-                    self._validateEnteredValueFromRepeat(oData['aExtendClasses'], this);
+                    self._validateEnteredValueFromRepeat(oData['aExtendClasses'], this, false, false);
                 }
             });
 
             jQuery(this._moduleControllersSelector).live('keyup', function () {
                 self._validateCamelCaseName(this);
                 if (typeof oData !== 'undefined') {
-                    self._validateEnteredValueFromRepeat(oData['aNewControllers'], this);
+                    self._validateEnteredValueFromRepeat(oData['aNewControllers'], this, false, false);
                 }
             });
 
             jQuery(this._moduleModelsSelector).live('keyup', function () {
                 self._validateCamelCaseName(this);
                 if (typeof oData !== 'undefined') {
-                    self._validateEnteredValueFromRepeat(oData['aNewModels'], this);
+                    self._validateEnteredValueFromRepeat(oData['aNewModels'], this, false, false);
                 }
             });
 
             jQuery(this._moduleListsSelector).live('keyup', function () {
                 self._validateCamelCaseName(this);
                 if (typeof oData !== 'undefined') {
-                    self._validateEnteredValueFromRepeat(oData['aNewLists'], this);
+                    self._validateEnteredValueFromRepeat(oData['aNewLists'], this, false, false);
                 }
             });
 
             jQuery(this._moduleWidgetsSelector).live('keyup', function () {
                 self._validateCamelCaseName(this);
                 if (typeof oData !== 'undefined') {
-                    self._validateEnteredValueFromRepeat(oData['aNewWidgets'], this);
+                    self._validateEnteredValueFromRepeat(oData['aNewWidgets'], this, false, false);
                 }
             });
 
             jQuery(this._moduleBlocksSelector).live('keyup', function () {
                 self._validateBlocksFieldEntry(this);
                 if (typeof oData !== 'undefined') {
-                    self._validateEnteredValueFromRepeat(oData['aNewBlocks'], this);
+                    self._validateEnteredValueFromRepeat(oData['aNewBlocks'], this, false, true);
                 }
             });
             jQuery(this._moduleSettingsNameSelector).live('keyup', function () {
                 self._validateCamelCaseName(this);
                 if (typeof oData !== 'undefined') {
-                    self._validateEnteredValueFromRepeat(oData['aModuleSettings'], this);
+                    self._validateEnteredValueFromRepeat(oData['aModuleSettings'], this, true, false);
                 }
             });
         },
@@ -395,7 +432,7 @@ jQuery.widget(
          */
         _showModuleNameHtmlResponse: function (oData) {
             var self = this;
-
+            console.log(oData);
             var sExtendClasses = self._buildHtmlResponse(oData['aExtendClasses'], true, '<br />');
             var sNewControllers = self._buildHtmlResponse(oData['aNewControllers'], false, '<br />');
             var sNewModels = self._buildHtmlResponse(oData['aNewModels'], false, '<br />');
@@ -423,7 +460,7 @@ jQuery.widget(
                     .html(self.options.notificationExistingModels + '<hr>' + sNewModels)
                     .slideDown(self.options.notificationSlideDownSpeed);
             }
-
+            console.log(sNewLists);
             if (sNewLists) {
                 jQuery(self._moduleListsSelectorNoticeDiv)
                     .html(self.options.notificationExistingLists + '<hr>' + sNewLists)
@@ -528,7 +565,6 @@ jQuery.widget(
         _buildSelectiveHtmlResponse: function (oMetaObject, blBlock) {
             var sFormattedValue = '';
             var aObjectData = Object.keys(oMetaObject);
-
             if (blBlock) {
                 for (var b in aObjectData) {
                     sFormattedValue += oMetaObject[aObjectData[b]]['block']
@@ -553,7 +589,6 @@ jQuery.widget(
                     sFormattedValue += "</table>";
                 }
             }
-
             return sFormattedValue;
         },
 

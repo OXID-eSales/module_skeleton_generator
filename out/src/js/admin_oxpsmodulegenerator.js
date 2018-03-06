@@ -93,6 +93,7 @@ jQuery.widget(
             }
         ],
         _errorText: '',
+
         _moduleNameSelector: "input[name='modulegenerator_module_name']",
         _moduleClassesSelector: "textarea[name='modulegenerator_extend_classes']",
         _moduleControllersSelector: "textarea[name='modulegenerator_controllers']",
@@ -571,7 +572,6 @@ jQuery.widget(
          *
          * @param {object} oElement
          * @param {object} oData
-         * TODO: refactor everything to smaller parts
          * TODO: Problem: if user write class not in camel case, program can't detect it.
          */
         _showExtendClassesHtmlResponse: function (oElement, oData) {
@@ -733,56 +733,74 @@ jQuery.widget(
         },
 
         /**
-         * Show notification depending on various states of input field.
+         * Method checks or triggered field is setting field then
+         * shows or hides notification.
          *
-         * self._errorText gets error message which should be render if user value is invalid.
+         * @param {object} oElement
+         * @param {string} noticeType
+         * @param {string} noticeText
+         * @private
+         */
+        _changeSettingNotification: function(oElement, noticeType, noticeText){
+            var self = this;
+            var noticeObj = document.querySelectorAll('.js-notice-block');
+
+            if (self._hasClass(oElement, 'js-setting-element'))
+                self._showSettingNotification(noticeObj[self._getIndexFromString(oElement.getAttribute("name"))], noticeType, noticeText);
+        },
+
+        /**
+         * Method returns error message which should be render if user value is invalid.
          * This message combines from two strings: translatable error message text and example by field which one is invalid
          *
-         * TODO: This logic could be refactored to smaller parts
+         *
+         * @param {object} oElement
+         * @returns {string}
+         * @private
+         */
+        _getNotificationErrorText: function(oElement){
+            var self = this;
+
+            return self._getValidErrorMessage(oElement, this) + ' ' + self._errorMessageExamples.find(function(variable) {
+                return variable.element === self._getSettingName(jQuery(oElement).attr('name'));
+            }).example;
+
+        },
+
+        /**
+         * Show notification depending on various states of input fields
          *
          * @param oElement
          * @param sRegexFunction
-         *
          * @returns {boolean}
          */
         _showCorrectNotification: function (oElement, sRegexFunction) {
             var self = this;
-
-            var notice = document.querySelectorAll('.js-notice-block');
-
-            self._errorText = self._getValidErrorMessage(oElement, this) + ' ' + self._errorMessageExamples.find(function(variable) {
-                return variable.element === self._getSettingName(jQuery(oElement).attr('name'));
-            }).example;
-
+            var errorText = self._getNotificationErrorText(oElement);
             var sEnteredInput = jQuery(oElement).val();
+
             if (self._isEmptyField(oElement)) {
                 self._hideNotification(oElement);
 
                 //If setting field is empty hide it
-                if (self._hasClass(oElement, 'js-setting-element'))
-                    self._showSettingNotification(notice[self._getIndexFromString(oElement.getAttribute("name"))], 'hidden', '');
+                self._changeSettingNotification(oElement, 'hidden', '');
             }
             else if ((self._countNewLines(sEnteredInput)) > 0) {
-                if (Object.values(self._splitNewLines(sEnteredInput, sRegexFunction)).indexOf(false) !== -1) {
+                if (Object.values(self._splitNewLines(sEnteredInput, sRegexFunction)).indexOf(false) !== -1)
                     self._showNotification(oElement, 'error', self.options.notificationErrorText);
-                } else {
+                else {
                     self._showNotification(oElement, 'success', self.options.notificationSuccessText);
                     return true;
                 }
             } else if (self[sRegexFunction](sEnteredInput)) {
-
                 //If setting field is written correctly hide it.
-                if (self._hasClass(oElement, 'js-setting-element')) {
-                    self._showSettingNotification(notice[self._getIndexFromString(oElement.getAttribute("name"))], 'hidden', '');
-                }
+                self._changeSettingNotification(oElement, 'hidden', '');
                 self._showNotification(oElement, 'success', self.options.notificationSuccessText);
 
                 return true;
             } else {
-                if (self._hasClass(oElement, 'js-setting-element'))
-                    self._showSettingNotification(notice[self._getIndexFromString(oElement.getAttribute("name"))], 'error', self._errorText);
-
-                self._showNotification(oElement, 'error', self._errorText);
+                self._changeSettingNotification(oElement, 'error', errorText);
+                self._showNotification(oElement, 'error', errorText);
             }
         },
 

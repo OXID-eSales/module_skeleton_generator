@@ -552,6 +552,9 @@ jQuery.widget(
          *
          * @param {object} oElement
          * @param {object} oData
+         * TODO: refactor everything to smaller parts
+         * TODO: comments on methods
+         * TODO: Problem: if user write class not in camel case, program can't detect it.
          */
         _showExtendClassesHtmlResponse: function (oElement, oData) {
             var submitButton = document.querySelector(this._moduleSubmitButton);

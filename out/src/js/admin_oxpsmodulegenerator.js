@@ -34,6 +34,7 @@ jQuery.widget(
 
             notificationSuccessText: '',
             notificationErrorText: '',
+            notificationErrorTextNotOverloadable: '',
             notificationBlockErrorText: '',
             notificationErrorExcludedModuleText: '',
             notificationWarningText: '',
@@ -316,7 +317,7 @@ jQuery.widget(
             var submitButton = document.querySelector(this._moduleSubmitButton);
             var addNewSettingButton = document.querySelector(this._cssAddSettingsLineButtonId);
 
-            var notice = document.querySelectorAll('.js-notice-block');//+
+            var notice = document.querySelectorAll('.js-notice-block');
 
             if(orSettings){
                 namesArray = this._getAllSettingsNames(oData);
@@ -329,7 +330,7 @@ jQuery.widget(
 
             if ( typeof this._findValInArray(namesArray, jQuery(oElement).val().trim()) !== 'undefined') {
                 submitButton.disabled = true;
-                this._validateRepeatInput(oElement, 'red', 'red');
+                this._changeFieldColor(oElement, 'red', 'red');
                 this._showNotification(oElement, 'error', this.options.notificationErrorTextOfRepeating);
 
                 if (this._hasClass(oElement, 'js-setting-element')) {
@@ -339,7 +340,7 @@ jQuery.widget(
             } else {
                 addNewSettingButton.disabled = false;
                 submitButton.disabled = false;
-                this._validateRepeatInput(oElement, '#808080', 'black');
+                this._changeFieldColor(oElement, '#808080', 'black');
             }
 
         },
@@ -352,7 +353,7 @@ jQuery.widget(
          * @param {string} textColor
          * @private
          */
-        _validateRepeatInput: function(oElement, borderColor, textColor){
+        _changeFieldColor: function(oElement, borderColor, textColor){
             jQuery(oElement)
                 .css('border-color', borderColor)
                 .css('color', textColor)
@@ -553,11 +554,33 @@ jQuery.widget(
          * @param {object} oData
          */
         _showExtendClassesHtmlResponse: function (oElement, oData) {
+            var submitButton = document.querySelector(this._moduleSubmitButton);
+            var self = this;
+            var notOverloadable = [];
             if (this._isEmptyField(oElement)) {
                 this._hideNotification(oElement);
             } else {
-                var response = this.options.notificationValidClassesText + this._buildHtmlResponse(oData, true, ', ');
-                this._showNotification(oElement, 'info', response);
+                var extendableClassesResponse = this._buildHtmlResponse(oData, true, ', ');
+                var extendableClassesArray = extendableClassesResponse.split(", ");
+                var response = this.options.notificationValidClassesText + extendableClassesArray;
+
+                extendableClassesArray.forEach(function(element) {
+                    if(typeof self._findValInArray(self._notOverloadableClasses, element) !== 'undefined')
+                        notOverloadable.push(element);
+                });
+
+                if(typeof self._findValInArray(extendableClassesArray, notOverloadable[notOverloadable.length-1]) === 'undefined')
+                    notOverloadable.splice(notOverloadable.length, 1);
+
+                if(notOverloadable.length > 0) {
+                    this._showNotification(oElement, 'error', this.options.notificationErrorTextNotOverloadable);
+                    submitButton.disabled = true;
+                    this._changeFieldColor(oElement, "red", "red");
+                } else {
+                    this._showNotification(oElement, 'info', response);
+                    submitButton.disabled = false;
+                    this._changeFieldColor(oElement, '#808080', 'black');
+                }
             }
         },
 

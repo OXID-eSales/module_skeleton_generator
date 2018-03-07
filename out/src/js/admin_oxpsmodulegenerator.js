@@ -92,7 +92,36 @@ jQuery.widget(
                 example: document.querySelector('.notification-error-examples').dataset.settingName
             }
         ],
-        _errorText: '',
+        _disabledSubmitButton: [
+            {
+                elementName:'modulegenerator_module_name',
+                disabled: false
+            },
+            {
+                elementName: 'modulegenerator_extend_classes',
+                disabled: false
+            },
+            {
+                elementName: 'modulegenerator_controllers',
+                disabled: false
+            },
+            {
+                elementName: 'modulegenerator_models',
+                disabled: false
+            },
+            {
+                elementName: 'modulegenerator_lists',
+                disabled: false
+            },
+            {
+                elementName: 'modulegenerator_blocks',
+                disabled: false
+            },
+            {
+                elementName: 'modulegenerator_settings',
+                disabled: false
+            }
+        ],
 
         _moduleNameSelector: "input[name='modulegenerator_module_name']",
         _moduleClassesSelector: "textarea[name='modulegenerator_extend_classes']",
@@ -166,11 +195,13 @@ jQuery.widget(
          */
         _validateEnteredModuleName: function (oElement) {
             if (this._isEmptyField(oElement)) {
+                this._checkSubmitButton(jQuery(oElement).attr('name'), false);
                 this._hideNotification(oElement);
                 this._hideExistingComponentNotification();
             } else if (this._validateCamelCaseName(oElement)) {
                 // Check if entered module name is in excluded array
                 if (this._isExcludedName(oElement)) {
+                    this._checkSubmitButton(jQuery(oElement).attr('name'), false);
                     this._showNotification(oElement, 'notice', this.options.notificationErrorExcludedModuleText);
                     this._hideExistingComponentNotification();
                 } else {
@@ -178,10 +209,11 @@ jQuery.widget(
                 }
             } else {
                 //combines two strings: translatable error text and camelCase examples by field
-                this._errorText = this.options.notificationErrorText + ' ' + this._errorMessageExamples.find(function(variable) {
+                var errorText = this.options.notificationErrorText + ' ' + this._errorMessageExamples.find(function(variable) {
                     return variable.element === jQuery(oElement).attr('name');
                 }).example;
-                this._showNotification(oElement, 'error', this._errorText);
+                this._checkSubmitButton(jQuery(oElement).attr('name'), true);
+                this._showNotification(oElement, 'error', errorText);
                 this._hideExistingComponentNotification();
             }
         },
@@ -335,22 +367,21 @@ jQuery.widget(
          * @private
          */
         _showNotificationForRepeatableNames: function(oElement, namesArray){
-            var submitButton = document.querySelector(this._moduleSubmitButton);
             var addNewSettingButton = document.querySelector(this._cssAddSettingsLineButtonId);
             var notice = document.querySelectorAll('.js-notice-block');
 
             if ( typeof this._findValInArray(namesArray, jQuery(oElement).val().trim()) !== 'undefined') {
-                submitButton.disabled = true;
+                this._checkSubmitButton(jQuery(oElement).attr('name'), true);
                 this._changeFieldColor(oElement, 'red', 'red');
                 this._showNotification(oElement, 'error', this.options.notificationErrorTextOfRepeating);
 
                 if (this._hasClass(oElement, 'js-setting-element')) {
                     addNewSettingButton.disabled = true;
+                    this._checkSubmitButton(jQuery(oElement).attr('name'), true);
                     this._showSettingNotification(notice[this._getIndexFromString(oElement.getAttribute("name"))], 'error', this.options.notificationErrorTextOfRepeating);
                 }
             } else {
                 addNewSettingButton.disabled = false;
-                submitButton.disabled = false;
                 this._changeFieldColor(oElement, '#808080', 'black');
             }
         },
@@ -365,8 +396,7 @@ jQuery.widget(
          * @param disabled
          * @private
          */
-        _showNotificationHelper: function(oElement, noticeType, noticeText, borderColor, textColor, disabled){
-            document.querySelector(this._moduleSubmitButton).disabled = disabled;
+        _showNotificationHelper: function(oElement, noticeType, noticeText, borderColor, textColor){
             this._showNotification(oElement, noticeType, noticeText);
             this._changeFieldColor(oElement, borderColor, textColor);
         },
@@ -444,6 +474,7 @@ jQuery.widget(
                     self._validateEnteredValueFromRepeat(oData['aModuleSettings'], this, true, false);
                 }
             });
+
         },
 
         /**
@@ -615,10 +646,14 @@ jQuery.widget(
 
                 notOverloadableClasses = this._getNotOverloadableClasses(extendableClassesArray, notOverloadableClasses);
 
-                if(notOverloadableClasses.length > 0)
-                    this._showNotificationHelper(oElement, 'error',this.options.notificationErrorTextNotOverloadable, 'red', 'red', true);
-                else
-                    this._showNotificationHelper(oElement, 'info',response, '#808080', 'black', false);
+                if(notOverloadableClasses.length > 0) {
+                    this._checkSubmitButton(jQuery(oElement).attr('name'), true);
+                    this._showNotificationHelper(oElement, 'error', this.options.notificationErrorTextNotOverloadable, 'red', 'red');
+                }
+                else {
+                    this._checkSubmitButton(jQuery(oElement).attr('name'), false);
+                    this._showNotificationHelper(oElement, 'info', response, '#808080', 'black');
+                }
             }
         },
 
@@ -797,6 +832,42 @@ jQuery.widget(
         },
 
         /**
+         * if notificaitonType is true when it's error and submit button will be disabled
+         * else turn it on.
+         *
+         * @param {string} oElementName
+         * @param {boolean} notificationType
+         * @private
+         */
+        _checkSubmitButton: function(oElementName, notificationType){
+            var self = this;
+            self._disabledSubmitButton.find(function(variable) {
+                 if( variable.elementName === self._getSettingName(oElementName)){
+                    variable.disabled = notificationType;
+                 }
+            });
+            self._setSubmitButtonType();
+        },
+
+        /**
+         * Turns on or off submit button by _disabledSubmitButton object elements value.
+         *
+         * @private
+         */
+        _setSubmitButtonType: function(){
+            var self = this;
+            var submitButton = document.querySelector(this._moduleSubmitButton);
+            var counter = 0;
+            self._disabledSubmitButton.find(function(variable) {
+                if( variable.disabled === true){
+                    counter++;
+                }
+            });
+
+            submitButton.disabled = counter > 0;
+        },
+
+        /**
          * Show notification depending on various states of input fields
          *
          * @param oElement
@@ -810,24 +881,30 @@ jQuery.widget(
 
             if (self._isEmptyField(oElement)) {
                 self._hideNotification(oElement);
-
-                //If setting field is empty hide it
+                this._checkSubmitButton(jQuery(oElement).attr('name'), false);
                 self._changeSettingNotification(oElement, 'hidden', '');
             }
             else if ((self._countNewLines(sEnteredInput)) > 0) {
-                if (Object.values(self._splitNewLines(sEnteredInput, sRegexFunction)).indexOf(false) !== -1)
+
+                if (Object.values(self._splitNewLines(sEnteredInput, sRegexFunction)).indexOf(false) !== -1){
+                    this._checkSubmitButton(jQuery(oElement).attr('name'), true);
                     self._showNotification(oElement, 'error', self.options.notificationErrorText);
+                }
                 else {
+                    this._checkSubmitButton(jQuery(oElement).attr('name'), false);
                     self._showNotification(oElement, 'success', self.options.notificationSuccessText);
                     return true;
                 }
+
             } else if (self[sRegexFunction](sEnteredInput)) {
                 //If setting field is written correctly hide it.
+                this._checkSubmitButton(jQuery(oElement).attr('name'), false);
                 self._changeSettingNotification(oElement, 'hidden', '');
                 self._showNotification(oElement, 'success', self.options.notificationSuccessText);
 
                 return true;
             } else {
+                this._checkSubmitButton(jQuery(oElement).attr('name'), true);
                 self._changeSettingNotification(oElement, 'error', errorText);
                 self._showNotification(oElement, 'error', errorText);
             }

@@ -967,12 +967,13 @@ jQuery.widget(
          * @param {string} sNoticeText
          */
         _showNotification: function (oElement, sNoticeType, sNoticeText) {
-            jQuery(oElement).siblings(this._cssNoticeSelectorClass)
-                .fadeIn(1000)
-                .attr('class', 'notice')
-                .addClass('notice-' + sNoticeType)
-                .text(sNoticeText)
-            ;
+            if(jQuery(oElement).val().length > 1) {
+                jQuery(oElement).siblings(this._cssNoticeSelectorClass)
+                    .fadeIn(1200)
+                    .attr('class', 'notice')
+                    .addClass('notice-' + sNoticeType)
+                    .text(sNoticeText);
+            }
         },
 
         /**

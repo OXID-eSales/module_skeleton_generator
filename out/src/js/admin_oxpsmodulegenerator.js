@@ -393,7 +393,6 @@ jQuery.widget(
          * @param noticeText
          * @param borderColor
          * @param textColor
-         * @param disabled
          * @private
          */
         _showNotificationHelper: function(oElement, noticeType, noticeText, borderColor, textColor){
@@ -423,15 +422,8 @@ jQuery.widget(
         _validateComponentName: function(oData) {
             var self = this;
             // From jQuery 1.7+ live() is deprecated and should be changed to on() method after jQuery version update.
-            jQuery(this._moduleNameSelector).live('keyup change', function (e) {
-                // event.preventDefault();
-                var self = this;
-                var timeout = null;
-                clearTimeout(timeout);
-                timeout = setTimeout(function () {
-                    console.log('Input Value:', self.value);
-                }, 1000);
-                console.log(timeout);
+            jQuery(this._moduleNameSelector).live('keyup change', function () {
+                self._validateEnteredModuleName(this);
             });
 
             jQuery(this._moduleClassesSelector).live('keyup', function (e) {
@@ -463,7 +455,6 @@ jQuery.widget(
             });
 
             jQuery(this._moduleWidgetsSelector).live('keyup', function (e) {
-                // setTimeout(function(){console.log("dabar!")}, 1000);
                 self._validateCamelCaseName(this);
                 if (typeof oData !== 'undefined') {
                     self._validateEnteredValueFromRepeat(oData['aNewWidgets'], this, false, false);

@@ -151,6 +151,7 @@ jQuery.widget(
         _cssRemoveSettingsLineButtonClass: ".removeLineButton",
         _settingsRowNumber: 0,
 
+        //Link to all listed not overloadable classes: https://oxidforge.org/en/list-of-not-overloadable-classes.html
         _notOverloadableClasses: [
             'oxAdminDetails', 'oxAdminList', 'oxAdminView', 'dyn_interface', 'Dynscreen', 'DynExportBase',
             'Article_List', 'GenImport_Main', 'Efire', 'Object_Seo', 'Order_List', 'Shop_Config', 'User_List',
@@ -269,7 +270,7 @@ jQuery.widget(
          * @returns {Array}
          * @private
          */
-        _getArrayFromObject:function(obj){
+        _getArrayFromObject: function(obj){
             var array = [];
             for (var key in obj) {
                 if (obj.hasOwnProperty(key)) {
@@ -287,7 +288,7 @@ jQuery.widget(
          * @param inputValue
          * @private
          */
-        _findValInArray:function(array, inputValue){
+        _findValInArray: function(array, inputValue){
             return array.find(function(variable) {
                 return (variable === inputValue)
             });
@@ -301,7 +302,7 @@ jQuery.widget(
          * @returns {Array}
          * @privatedd
          */
-        _getAllSettingsNames:function(obj){
+        _getAllSettingsNames: function(obj){
             var array = [];
             for (var key in obj) {
                 if (obj.hasOwnProperty(key)) {
@@ -320,7 +321,7 @@ jQuery.widget(
          * @returns {Array}
          * @private
          */
-        _getAllBlockNames:function(obj){
+        _getAllBlockNames: function(obj){
             var array = [];
             for (var key in obj) {
                 if (obj.hasOwnProperty(key)) {
@@ -375,7 +376,7 @@ jQuery.widget(
                 this._changeFieldColor(oElement, 'red', 'red');
                 this._showNotification(oElement, 'error', this.options.notificationErrorTextOfRepeating);
 
-                if (this._hasClass(oElement, 'js-setting-element')) {
+                if (jQuery(oElement).hasClass('js-setting-element')) {
                     addNewSettingButton.disabled = true;
                     this._checkSubmitButton(jQuery(oElement).attr('name'), true);
                     this._showSettingNotification(notice[this._getIndexFromString(oElement.getAttribute("name"))], 'error', this.options.notificationErrorTextOfRepeating);
@@ -615,12 +616,14 @@ jQuery.widget(
             var self = this;
 
             extendableClassesArray.forEach(function(element) {
-                if(typeof self._findValInArray(self._notOverloadableClasses, element) !== 'undefined')
+                if(typeof self._findValInArray(self._notOverloadableClasses, element) !== 'undefined') {
                     notOverloadableClasses.push(element);
+                }
             });
 
-            if(typeof self._findValInArray(extendableClassesArray, notOverloadableClasses[notOverloadableClasses.length-1]) === 'undefined')
+            if(typeof self._findValInArray(extendableClassesArray, notOverloadableClasses[notOverloadableClasses.length-1]) === 'undefined') {
                 notOverloadableClasses.splice(notOverloadableClasses.length, 1);
+            }
 
             return notOverloadableClasses;
         },
@@ -745,7 +748,7 @@ jQuery.widget(
         },
 
         /**
-         * Checks or triggered field is a block element
+         * Checks if triggered field is a block element
          * And returns a certain error message
          *
          * @param {object} oElement
@@ -757,19 +760,6 @@ jQuery.widget(
 
             return (oElement === blockElement)? self.options.notificationBlockErrorText: self.options.notificationErrorText;
         },
-
-        /**
-         * Checks or object has given through parameters(cls) class
-         *
-         * @param {object} element
-         * @param cls
-         * @returns {boolean}
-         * @private
-         */
-        _hasClass: function (element, cls) {
-            return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
-        },
-
 
         /**
          *  Using for slicing settings name input and returning index of it.
@@ -792,7 +782,7 @@ jQuery.widget(
          * @returns {string}
          * @private
          */
-        _getSettingName:function(str){
+        _getSettingName: function(str){
             return str.split('[')[0];
         },
 

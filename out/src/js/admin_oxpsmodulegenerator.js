@@ -799,14 +799,14 @@ jQuery.widget(
             var self = this;
             var noticeObj = document.querySelectorAll('.js-notice-block');
 
-            if (self._hasClass(oElement, 'js-setting-element'))
+            if (jQuery(oElement).hasClass('js-setting-element')) {
                 self._showSettingNotification(noticeObj[self._getIndexFromString(oElement.getAttribute("name"))], noticeType, noticeText);
+            }
         },
 
         /**
          * Method returns error message which should be render if user value is invalid.
          * This message combines from two strings: translatable error message text and example by field which one is invalid
-         *
          *
          * @param {object} oElement
          * @returns {string}

@@ -415,6 +415,9 @@ jQuery.widget(
                 .css('color', textColor)
             ;
         },
+        temp: function(oElement){
+            this._validateEnteredModuleName(oElement);
+        },
 
         /**
          * Validate entered various components' names.
@@ -422,56 +425,66 @@ jQuery.widget(
          */
         _validateComponentName: function(oData) {
             var self = this;
+            var timeout = 1000;
             // From jQuery 1.7+ live() is deprecated and should be changed to on() method after jQuery version update.
             jQuery(this._moduleNameSelector).live('keyup change', function () {
-                self._validateEnteredModuleName(this);
+                var element = this;
+                setTimeout(function() {self._validateEnteredModuleName(element);}, timeout);
             });
 
+
             jQuery(this._moduleClassesSelector).live('keyup', function () {
-                self._requestExtendClassesJsonResponse(this);
+                var element = this;
+                setTimeout(function() {self._requestExtendClassesJsonResponse(element);}, 100);
                 if (typeof oData !== 'undefined') {
                     self._validateEnteredValueFromRepeat(oData['aExtendClasses'], this, false, false);
                 }
             });
 
             jQuery(this._moduleControllersSelector).live('keyup', function () {
-                self._validateCamelCaseName(this);
+                var element = this;
+                setTimeout(function() {self._validateCamelCaseName(element);}, timeout);
                 if (typeof oData !== 'undefined') {
-                    self._validateEnteredValueFromRepeat(oData['aNewControllers'], this, false, false);
+                    setTimeout(function() {self._validateEnteredValueFromRepeat(oData['aNewControllers'], element, false, false);}, timeout);
                 }
             });
 
             jQuery(this._moduleModelsSelector).live('keyup', function () {
-                self._validateCamelCaseName(this);
+                var element = this;
+                setTimeout(function() {self._validateCamelCaseName(element);}, timeout);
                 if (typeof oData !== 'undefined') {
-                    self._validateEnteredValueFromRepeat(oData['aNewModels'], this, false, false);
+                    setTimeout(function() {self._validateEnteredValueFromRepeat(oData['aNewModels'], element, false, false);}, timeout);
                 }
             });
 
             jQuery(this._moduleListsSelector).live('keyup', function () {
-                self._validateCamelCaseName(this);
+                var element = this;
+                setTimeout(function() {self._validateCamelCaseName(this);}, timeout);
                 if (typeof oData !== 'undefined') {
-                    self._validateEnteredValueFromRepeat(oData['aNewLists'], this, false, false);
+                    setTimeout(function() {self._validateEnteredValueFromRepeat(oData['aNewLists'], element, false, false);}, timeout);
                 }
             });
 
             jQuery(this._moduleWidgetsSelector).live('keyup', function () {
-                self._validateCamelCaseName(this);
+                var element = this;
+                setTimeout(function() {self._validateCamelCaseName(element);}, timeout);
                 if (typeof oData !== 'undefined') {
-                    self._validateEnteredValueFromRepeat(oData['aNewWidgets'], this, false, false);
+                    setTimeout(function() {self._validateEnteredValueFromRepeat(oData['aNewWidgets'], element, false, false);}, timeout);
                 }
             });
 
             jQuery(this._moduleBlocksSelector).live('keyup', function () {
-                self._validateBlocksFieldEntry(this);
+                var element = this;
+                setTimeout(function() {self._validateBlocksFieldEntry(element);}, timeout);
                 if (typeof oData !== 'undefined') {
-                    self._validateEnteredValueFromRepeat(oData['aNewBlocks'], this, false, true);
+                    setTimeout(function() {self._validateEnteredValueFromRepeat(oData['aNewBlocks'], element, false, true);}, timeout);
                 }
             });
             jQuery(this._moduleSettingsNameSelector).live('keyup', function () {
-                self._validateCamelCaseName(this);
+                var element = this;
+                setTimeout(function() {self._validateCamelCaseName(element);}, timeout);
                 if (typeof oData !== 'undefined') {
-                    self._validateEnteredValueFromRepeat(oData['aModuleSettings'], this, true, false);
+                    setTimeout(function() {self._validateEnteredValueFromRepeat(oData['aModuleSettings'], element, true, false);}, timeout);
                 }
             });
 
@@ -935,6 +948,7 @@ jQuery.widget(
         },
 
         /**
+         *
          * @param oElement
          *
          * @returns {boolean}

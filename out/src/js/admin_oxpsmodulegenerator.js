@@ -122,7 +122,7 @@ jQuery.widget(
                 disabled: false
             }
         ],
-
+        _inputValue: '',
         _moduleNameSelector: "input[name='modulegenerator_module_name']",
         _moduleClassesSelector: "textarea[name='modulegenerator_extend_classes']",
         _moduleControllersSelector: "textarea[name='modulegenerator_controllers']",
@@ -299,7 +299,7 @@ jQuery.widget(
          *
          * @param {object} obj
          * @returns {Array}
-         * @private
+         * @privatedd
          */
         _getAllSettingsNames:function(obj){
             var array = [];
@@ -420,55 +420,63 @@ jQuery.widget(
          * Validate entered various components' names.
          * (Module name, extended class, controller, model, list, widget and block)
          */
-        _validateComponentName: function (oData) {
+        _validateComponentName: function(oData) {
             var self = this;
             // From jQuery 1.7+ live() is deprecated and should be changed to on() method after jQuery version update.
-            jQuery(this._moduleNameSelector).live('keyup change', function () {
-                self._validateEnteredModuleName(this);
+            jQuery(this._moduleNameSelector).live('keyup change', function (e) {
+                // event.preventDefault();
+                var self = this;
+                var timeout = null;
+                clearTimeout(timeout);
+                timeout = setTimeout(function () {
+                    console.log('Input Value:', self.value);
+                }, 1000);
+                console.log(timeout);
             });
 
-            jQuery(this._moduleClassesSelector).live('keyup', function () {
+            jQuery(this._moduleClassesSelector).live('keyup', function (e) {
                 self._requestExtendClassesJsonResponse(this);
                 if (typeof oData !== 'undefined') {
                     self._validateEnteredValueFromRepeat(oData['aExtendClasses'], this, false, false);
                 }
             });
 
-            jQuery(this._moduleControllersSelector).live('keyup', function () {
+            jQuery(this._moduleControllersSelector).live('keyup', function (e) {
                 self._validateCamelCaseName(this);
                 if (typeof oData !== 'undefined') {
                     self._validateEnteredValueFromRepeat(oData['aNewControllers'], this, false, false);
                 }
             });
 
-            jQuery(this._moduleModelsSelector).live('keyup', function () {
+            jQuery(this._moduleModelsSelector).live('keyup', function (e) {
                 self._validateCamelCaseName(this);
                 if (typeof oData !== 'undefined') {
                     self._validateEnteredValueFromRepeat(oData['aNewModels'], this, false, false);
                 }
             });
 
-            jQuery(this._moduleListsSelector).live('keyup', function () {
+            jQuery(this._moduleListsSelector).live('keyup', function (e) {
                 self._validateCamelCaseName(this);
                 if (typeof oData !== 'undefined') {
                     self._validateEnteredValueFromRepeat(oData['aNewLists'], this, false, false);
                 }
             });
 
-            jQuery(this._moduleWidgetsSelector).live('keyup', function () {
+            jQuery(this._moduleWidgetsSelector).live('keyup', function (e) {
+                // setTimeout(function(){console.log("dabar!")}, 1000);
                 self._validateCamelCaseName(this);
                 if (typeof oData !== 'undefined') {
                     self._validateEnteredValueFromRepeat(oData['aNewWidgets'], this, false, false);
                 }
             });
 
-            jQuery(this._moduleBlocksSelector).live('keyup', function () {
+            jQuery(this._moduleBlocksSelector).live('keyup', function (e) {
                 self._validateBlocksFieldEntry(this);
                 if (typeof oData !== 'undefined') {
                     self._validateEnteredValueFromRepeat(oData['aNewBlocks'], this, false, true);
                 }
             });
-            jQuery(this._moduleSettingsNameSelector).live('keyup', function () {
+            jQuery(this._moduleSettingsNameSelector).live('keyup', function (e) {
                 self._validateCamelCaseName(this);
                 if (typeof oData !== 'undefined') {
                     self._validateEnteredValueFromRepeat(oData['aModuleSettings'], this, true, false);
@@ -730,6 +738,7 @@ jQuery.widget(
          * @returns {boolean}
          */
         _validateCamelCaseName: function (oElement) {
+            // event.preventDefault();
             return this._showCorrectNotification(oElement, '_camelCaseRegex');
         },
 
@@ -960,20 +969,17 @@ jQuery.widget(
             }
         },
 
-
         /**
          * @param {object} oElement
          * @param {string} sNoticeType
          * @param {string} sNoticeText
          */
         _showNotification: function (oElement, sNoticeType, sNoticeText) {
-            if(jQuery(oElement).val().length > 1) {
-                jQuery(oElement).siblings(this._cssNoticeSelectorClass)
-                    .fadeIn(1200)
-                    .attr('class', 'notice')
-                    .addClass('notice-' + sNoticeType)
-                    .text(sNoticeText);
-            }
+            jQuery(oElement).siblings(this._cssNoticeSelectorClass)
+                .fadeIn(1200)
+                .attr('class', 'notice')
+                .addClass('notice-' + sNoticeType)
+                .text(sNoticeText);
         },
 
         /**

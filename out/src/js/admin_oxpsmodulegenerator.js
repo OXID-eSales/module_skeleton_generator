@@ -427,48 +427,48 @@ jQuery.widget(
                 self._validateEnteredModuleName(this);
             });
 
-            jQuery(this._moduleClassesSelector).live('keyup', function (e) {
+            jQuery(this._moduleClassesSelector).live('keyup', function () {
                 self._requestExtendClassesJsonResponse(this);
                 if (typeof oData !== 'undefined') {
                     self._validateEnteredValueFromRepeat(oData['aExtendClasses'], this, false, false);
                 }
             });
 
-            jQuery(this._moduleControllersSelector).live('keyup', function (e) {
+            jQuery(this._moduleControllersSelector).live('keyup', function () {
                 self._validateCamelCaseName(this);
                 if (typeof oData !== 'undefined') {
                     self._validateEnteredValueFromRepeat(oData['aNewControllers'], this, false, false);
                 }
             });
 
-            jQuery(this._moduleModelsSelector).live('keyup', function (e) {
+            jQuery(this._moduleModelsSelector).live('keyup', function () {
                 self._validateCamelCaseName(this);
                 if (typeof oData !== 'undefined') {
                     self._validateEnteredValueFromRepeat(oData['aNewModels'], this, false, false);
                 }
             });
 
-            jQuery(this._moduleListsSelector).live('keyup', function (e) {
+            jQuery(this._moduleListsSelector).live('keyup', function () {
                 self._validateCamelCaseName(this);
                 if (typeof oData !== 'undefined') {
                     self._validateEnteredValueFromRepeat(oData['aNewLists'], this, false, false);
                 }
             });
 
-            jQuery(this._moduleWidgetsSelector).live('keyup', function (e) {
+            jQuery(this._moduleWidgetsSelector).live('keyup', function () {
                 self._validateCamelCaseName(this);
                 if (typeof oData !== 'undefined') {
                     self._validateEnteredValueFromRepeat(oData['aNewWidgets'], this, false, false);
                 }
             });
 
-            jQuery(this._moduleBlocksSelector).live('keyup', function (e) {
+            jQuery(this._moduleBlocksSelector).live('keyup', function () {
                 self._validateBlocksFieldEntry(this);
                 if (typeof oData !== 'undefined') {
                     self._validateEnteredValueFromRepeat(oData['aNewBlocks'], this, false, true);
                 }
             });
-            jQuery(this._moduleSettingsNameSelector).live('keyup', function (e) {
+            jQuery(this._moduleSettingsNameSelector).live('keyup', function () {
                 self._validateCamelCaseName(this);
                 if (typeof oData !== 'undefined') {
                     self._validateEnteredValueFromRepeat(oData['aModuleSettings'], this, true, false);

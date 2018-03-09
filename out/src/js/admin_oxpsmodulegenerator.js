@@ -618,6 +618,21 @@ jQuery.widget(
                 }
             });
         },
+        /**
+         * Method which one make all array lower cased
+         *
+         * @param array
+         * @returns {Array}
+         * @private
+         */
+        _getLowerCaseArray: function(array){
+            var lowerCaseArray = [];
+            for (var i = 0; i < array.length; i++) {
+                lowerCaseArray.push(array[i].toLowerCase());
+            }
+
+            return lowerCaseArray;
+        },
 
         /**
          *
@@ -628,9 +643,11 @@ jQuery.widget(
          */
         _getNotOverloadableClasses: function(extendableClassesArray, notOverloadableClasses){
             var self = this;
+            var notOverloadableLowerCasedClasses = this._getLowerCaseArray(self._notOverloadableClasses);
+            var extendableLowerCasedClassesArray = this._getLowerCaseArray(extendableClassesArray);
 
-            extendableClassesArray.forEach(function(element) {
-                if(typeof self._findValInArray(self._notOverloadableClasses, element) !== 'undefined') {
+            extendableLowerCasedClassesArray.forEach(function(element) {
+                if(typeof self._findValInArray(notOverloadableLowerCasedClasses, element) !== 'undefined') {
                     notOverloadableClasses.push(element);
                 }
             });
@@ -879,7 +896,6 @@ jQuery.widget(
          */
         _showCorrectNotification: function (oElement, sRegexFunction) {
             var self = this;
-            console.log(oElement);
             var errorText = self._getNotificationErrorText(oElement);
             var sEnteredInput = jQuery(oElement).val();
 

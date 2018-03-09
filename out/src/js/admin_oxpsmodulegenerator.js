@@ -421,19 +421,20 @@ jQuery.widget(
 
         /**
          * Validate entered various components' names.
-         * (Module name, extended class, controller, model, list, widget and block)
+         * (Module name, extended class, controller, model, list, widget and block)at
          */
         _validateComponentName: function(oData) {
             var self = this;
             var timeout = 1000;
+            var moduleGeneratorForm = jQuery('#modulegenerator_form');
             // From jQuery 1.7+ live() is deprecated and should be changed to on() method after jQuery version update.
-            jQuery(this._moduleNameSelector).live('keyup change', function () {
+            moduleGeneratorForm.delegate(this._moduleNameSelector, 'keyup change', function () {
                 var element = this;
                 setTimeout(function() {self._validateEnteredModuleName(element);}, timeout);
             });
 
 
-            jQuery(this._moduleClassesSelector).live('keyup', function () {
+            moduleGeneratorForm.delegate(this._moduleClassesSelector, 'keyup', function () {
                 var element = this;
                 setTimeout(function() {self._requestExtendClassesJsonResponse(element);}, 100);
                 if (typeof oData !== 'undefined') {
@@ -441,7 +442,7 @@ jQuery.widget(
                 }
             });
 
-            jQuery(this._moduleControllersSelector).live('keyup', function () {
+            moduleGeneratorForm.delegate(this._moduleControllersSelector, 'keyup', function () {
                 var element = this;
                 setTimeout(function() {self._validateCamelCaseName(element);}, timeout);
                 if (typeof oData !== 'undefined') {
@@ -449,7 +450,7 @@ jQuery.widget(
                 }
             });
 
-            jQuery(this._moduleModelsSelector).live('keyup', function () {
+            moduleGeneratorForm.delegate(this._moduleModelsSelector,'keyup', function () {
                 var element = this;
                 setTimeout(function() {self._validateCamelCaseName(element);}, timeout);
                 if (typeof oData !== 'undefined') {
@@ -457,15 +458,15 @@ jQuery.widget(
                 }
             });
 
-            jQuery(this._moduleListsSelector).live('keyup', function () {
+            moduleGeneratorForm.delegate(this._moduleListsSelector, 'keyup', function () {
                 var element = this;
-                setTimeout(function() {self._validateCamelCaseName(this);}, timeout);
+                setTimeout(function() {self._validateCamelCaseName(element);}, timeout);
                 if (typeof oData !== 'undefined') {
                     setTimeout(function() {self._validateEnteredValueFromRepeat(oData['aNewLists'], element, false, false);}, timeout);
                 }
             });
 
-            jQuery(this._moduleWidgetsSelector).live('keyup', function () {
+            moduleGeneratorForm.delegate(this._moduleWidgetsSelector, 'keyup', function () {
                 var element = this;
                 setTimeout(function() {self._validateCamelCaseName(element);}, timeout);
                 if (typeof oData !== 'undefined') {
@@ -473,14 +474,14 @@ jQuery.widget(
                 }
             });
 
-            jQuery(this._moduleBlocksSelector).live('keyup', function () {
+            moduleGeneratorForm.delegate(this._moduleBlocksSelector, 'keyup', function () {
                 var element = this;
                 setTimeout(function() {self._validateBlocksFieldEntry(element);}, timeout);
                 if (typeof oData !== 'undefined') {
                     setTimeout(function() {self._validateEnteredValueFromRepeat(oData['aNewBlocks'], element, false, true);}, timeout);
                 }
             });
-            jQuery(this._moduleSettingsNameSelector).live('keyup', function () {
+            moduleGeneratorForm.delegate(this._moduleSettingsNameSelector, 'keyup', function () {
                 var element = this;
                 setTimeout(function() {self._validateCamelCaseName(element);}, timeout);
                 if (typeof oData !== 'undefined') {
@@ -745,7 +746,6 @@ jQuery.widget(
          * @returns {boolean}
          */
         _validateCamelCaseName: function (oElement) {
-            // event.preventDefault();
             return this._showCorrectNotification(oElement, '_camelCaseRegex');
         },
 
@@ -879,6 +879,7 @@ jQuery.widget(
          */
         _showCorrectNotification: function (oElement, sRegexFunction) {
             var self = this;
+            console.log(oElement);
             var errorText = self._getNotificationErrorText(oElement);
             var sEnteredInput = jQuery(oElement).val();
 

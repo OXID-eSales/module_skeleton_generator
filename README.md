@@ -69,7 +69,6 @@ Folders structure, empty classes and metadata generation for new OXID eShop modu
  - Update composer.json and run 'composer dump-autoload' (refer to the notification that appears after module generation for more detailed info)
  - And the module could be activated already in _Extensions -> Modules_
 ## Screenshots
- ![alt text](out/pictures/module_generator.png)
  ![alt text](out/pictures/module_generator_zoom.png)
  ![alt text](out/pictures/edit_mode.png)
 

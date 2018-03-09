@@ -66,7 +66,7 @@ Folders structure, empty classes and metadata generation for new OXID eShop modu
 ## Screenshots
  ![alt text](out/pictures/module_generator.png)
  ![alt text](out/pictures/module_generator_zoom.png)
- 
+
 ## To do and nice to have features for future releases
  - Refactor longer classes to move some methods elsewhere
  - Extend blocks definition validation and blocks templates naming

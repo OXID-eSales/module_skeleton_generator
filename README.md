@@ -49,6 +49,7 @@ Folders structure, empty classes and metadata generation for new OXID eShop modu
 ## Installation
  - Copy the content of `copy_this/` folder to OXID eShop root folder
  - Make sure the Module Generator directory in module dir follows Pascal case naming pattern - `modules/oxps/ModuleGenerator`
+ - Run `composer require oxid-esales/module-generator:v6.x-dev -d /var/www/oxideshop`
  - Activate the module in administration area
  - Set eShop `modules/` folder writable while generating new modules
 

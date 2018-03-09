@@ -63,11 +63,7 @@ Folders structure, empty classes and metadata generation for new OXID eShop modu
  - The module skeleton source is now available in Your vendor sub-folder
  - Update composer.json and run 'composer dump-autoload' (refer to the notification that appears after module generation for more detailed info)
  - And the module could be activated already in _Extensions -> Modules_
-## Screenshots
- <img src="out/pictures/module_generator.png" width="800" style = "-webkit-transition: all 2s ease;
-     -moz-transition: all 2s ease;
-      -ms-transition: all 2s ease;
-          transition: all 2s ease;" >
+
 ## To do and nice to have features for future releases
  - Refactor longer classes to move some methods elsewhere
  - Extend blocks definition validation and blocks templates naming

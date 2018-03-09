@@ -52,6 +52,11 @@ Folders structure, empty classes and metadata generation for new OXID eShop modu
  - Activate the module in administration area
  - Set eShop `modules/` folder writable while generating new modules
 
+## Installation
+ - `vagrant up`
+ - `vagrant ssh`
+ - Run `composer require oxid-esales/module-generator:v6.x-dev -d /var/www/oxideshop`
+
 ## Usage
  - Make sure eShop `modules/` folder (and also Your vendor sub-folder, if it exists) is writable
  - Log in to eShop administration area
@@ -66,6 +71,7 @@ Folders structure, empty classes and metadata generation for new OXID eShop modu
 ## Screenshots
  ![alt text](out/pictures/module_generator.png)
  ![alt text](out/pictures/module_generator_zoom.png)
+ ![alt text](out/pictures/edit_mode.png)
 
 ## To do and nice to have features for future releases
  - Refactor longer classes to move some methods elsewhere

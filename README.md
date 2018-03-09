@@ -67,10 +67,10 @@ Folders structure, empty classes and metadata generation for new OXID eShop modu
 ## Screenshots
  
  - Module generator
- ![alt text](out/pictures/module_generator_zoom.png)
+ ![module generator](out/pictures/module_generator_zoom.png)
  
  - Edit mode
- ![alt text](out/pictures/edit_mode.png)
+ ![edit mode](out/pictures/edit_mode.png)
 
 ## To do and nice to have features for future releases
  - Refactor longer classes to move some methods elsewhere

@@ -112,7 +112,7 @@ class oxpsModuleGeneratorHelper extends Base
             '/**' . PHP_EOL .
             ' * Metadata version' . PHP_EOL .
             ' */' . PHP_EOL .
-            '$sVendorMetadataVersion = \'1.0\';' . PHP_EOL,
+            '$sVendorMetadataVersion = \'2.0\';' . PHP_EOL,
             true
         );
     }
@@ -126,6 +126,7 @@ class oxpsModuleGeneratorHelper extends Base
      */
     public function createClassesToExtend($sClassExtendTemplatePath)
     {
+        var_dump("suveikia createClassesToExtend");
         $oFileSystemHelper = $this->getFileSystemHelper();
         $oModule = $this->getModule();
 
@@ -144,12 +145,13 @@ class oxpsModuleGeneratorHelper extends Base
             $sDestinationPath = $sModulePath . $sInModulePath;
             $sClassFileName = $aClassData['v6ClassName'] . '.php';
             $sClassFilePath = $sDestinationPath . $sClassFileName;
-
+            var_dump($sClassFilePath);
             $oFileSystemHelper->copyFile($sClassExtendTemplatePath, $sClassFilePath);
 
             $aExtendedClasses[$sInModulePath . $sClassFileName] = $aClassData;
         }
-
+        var_dump("createClassesToExtend grazina: ");
+        var_dump($aExtendedClasses);
         return $aExtendedClasses;
     }
 
@@ -217,7 +219,7 @@ class oxpsModuleGeneratorHelper extends Base
         array $aClassesToExtend,
         array $aNewClasses
     ) {
-    
+        var_dump("Suveikia fillTestsFolder");
         $aAllFiles = array_merge($aClassesToExtend, $aNewClasses);
         $sTemplate = sprintf('%sCore/module.tpl/oxpsTestClass.php.tpl', $sModuleGeneratorPath);
         $aNewFiles = (array) $this->_copyNewClasses($aAllFiles, $sTemplate, 'tests/Unit/', true);
@@ -237,12 +239,42 @@ class oxpsModuleGeneratorHelper extends Base
      */
     protected function _getPathInsideModule($sModulePath, $mInnerPath)
     {
-        if (!empty($mInnerPath) and $this->getFileSystemHelper()->isDir($sModulePath . $mInnerPath)) {
-            $sPathInsideModule = $mInnerPath;
+        var_dump("suveikia getPathInsideModule: pirma reiksme:");
+        var_dump($sModulePath);
+        var_dump("antra reiksme:");
+        var_dump($mInnerPath);
+        $classPath = $mInnerPath;
+        $pos = strpos($classPath, 'source/') + strlen('source/');
+        $classPath = substr($classPath, $pos, strlen($classPath));
+        
+        
+        
+        var_dump("gautas kelias:");
+        var_dump($sModulePath.$classPath);
+        var_dump("ar sis kelias tuscias?");
+        if(!empty($sModulePath.$classPath)){
+            var_dump("netuscias");
+        }
+        else{
+            var_dump("tuscias");
+        }
+        
+        var_dump("Antras klausimas");
+        if($this->getFileSystemHelper()->isDir($sModulePath . $classPath)){
+            var_dump("netuscias");
+        }
+        else{
+            var_dump("tuscias");
+        }
+        
+        
+        if (!empty($sModulePath.$classPath) and $this->getFileSystemHelper()->isDir($sModulePath . $classPath)) {
+            var_dump("veikia ifas");
+            $sPathInsideModule = $classPath;
         } else {
             $sPathInsideModule = 'Core/';
         }
-
+        var_dump("getPathInsideModule, grazina: ".$sPathInsideModule);
         return $sPathInsideModule;
     }
 
@@ -259,7 +291,6 @@ class oxpsModuleGeneratorHelper extends Base
     protected function _createNewClasses(array $aClasses, $sClassTemplate, $sClassPath, $sModuleGeneratorPath)
     {
         $aNewFiles = array();
-
         if (!empty($sClassTemplate) and !empty($sClassPath)) {
             $sTemplatePath = sprintf('%sCore/module.tpl/%s', $sModuleGeneratorPath, $sClassTemplate);
             $aNewFiles = $this->_copyNewClasses($aClasses, $sTemplatePath, $sClassPath);
@@ -363,6 +394,7 @@ class oxpsModuleGeneratorHelper extends Base
      */
     protected function _getNewClassPathAndKey($mKey, $sClass, $sInModulePath, $blTestClasses = false)
     {
+        var_dump("suveikia getNewClassPathKey:");
         $oModule = $this->getModule();
 
         $sModuleId = $oModule->getModuleId();
@@ -379,6 +411,9 @@ class oxpsModuleGeneratorHelper extends Base
             $sClassFilePath = $sClassDirPath . $sClassFileName;
             $sProcessedFileKey = $sInModulePath . dirname($mKey) . DIRECTORY_SEPARATOR . $sClassFileName;
         }
+        
+        var_dump($sClassFilePath);
+        var_dump($sProcessedFileKey);
 
         return array($sClassFilePath, $sProcessedFileKey);
     }

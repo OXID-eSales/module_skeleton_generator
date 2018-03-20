@@ -1,5 +1,4 @@
 /* OXID Module Skeleton Generator - Admin Styles */
-
 div.box {
     border: none;
     height: 100% !important;
@@ -35,19 +34,39 @@ table.oxpsmodulegenerator-wrapper {
 }
 
 table.oxpsmodulegenerator-wrapper td.edittext {
-    padding: 5px 10px;
+    padding: 5px 8px;
 }
 
 table.oxpsmodulegenerator-wrapper td.edittext-label {
     width: 180px;
+    font-size:13px;
+    font-weight: bold;
 }
 
+div#oxpsmodulegenerator input#addNewSettingsLine:hover,
+div#oxpsmodulegenerator input[type="submit"]:hover{
+    box-shadow: 1px 1px 2px #919191;
+    background-color: #fff;
+}
+div#oxpsmodulegenerator input[type="button"] {
+    transform: translate(0px, -6px);
+}
+div#oxpsmodulegenerator input[type="submit"],
+div#oxpsmodulegenerator input[type="button"],
 div#oxpsmodulegenerator input[type="text"],
 div#oxpsmodulegenerator select,
 div#oxpsmodulegenerator textarea {
-    border: 1px solid #808080;
+    border: 1px solid #d4d4d4;
+    box-shadow: 1px 2px 6px #919191;
+    font-size:13px;
 }
 
+div#oxpsmodulegenerator input[type="submit"]:focus,
+div#oxpsmodulegenerator input[type="text"]:focus,
+div#oxpsmodulegenerator textarea:focus {
+    outline: none !important;
+    box-shadow: 3px 3px 12px #919191;
+}
 div#oxpsmodulegenerator input[type="text"],
 div#oxpsmodulegenerator select {
     height: 20px;
@@ -79,10 +98,16 @@ div#oxpsmodulegenerator input[type="submit"] {
 }
 
 div#oxpsmodulegenerator input.removeLineButton  {
-    background-color: maroon;
+    background-color: #b8332b;
     color: white;
     font-weight: bold;
     font-size: 10px;
+    border: 1px solid #b8332b;
+}
+
+div#oxpsmodulegenerator input.removeLineButton:hover{
+    box-shadow: 1px 1px 2px #919191;
+    background-color: #b8332b
 }
 
 div#oxpsmodulegenerator div.warning pre {
@@ -111,23 +136,27 @@ div#oxpsmodulegenerator .notice {
 }
 
 div#oxpsmodulegenerator .notice-error  {
-    background-color: red;
-    border: 1px solid #a60000;
+    background-color: #ff333e;
+    border: 1px solid #ff3642;
+    box-shadow: 1px 2px 6px #919191;
 }
 
 div#oxpsmodulegenerator .notice-success  {
-    background-color: #009a22;
-    border: 1px solid #006500;
+    background-color: #3fab5e;
+    border: 1px solid #3ca955;
+    box-shadow: 1px 2px 6px #919191;
 }
 
 div#oxpsmodulegenerator .notice-info  {
-    background-color: #008fcd;
-    border: 1px solid #054a91;
+    background-color: #36accd;
+    border: 1px solid #3b9cae;
+    box-shadow: 1px 2px 6px #919191;
 }
 
 div#oxpsmodulegenerator .notice-notice  {
     background-color: #ff8000;
     border: 1px solid #a44300;
+    box-shadow: 1px 2px 6px #919191;
 }
 
 div#oxpsmodulegenerator div.warning a {
@@ -177,10 +206,11 @@ div#oxpsmodulegenerator .component-existing-lists,
 div#oxpsmodulegenerator .component-existing-widgets,
 div#oxpsmodulegenerator .component-existing-blocks,
 div#oxpsmodulegenerator .component-existing-settings {
-    background-color: rgba(255, 204, 51, 0.30);
-    border: 1px solid rgba(255, 204, 51, 1);
-    margin: 0 0 3px 0;
+    background-color: #faf2cc;;
+    border: 1px solid #c7bf9a;
+    margin: 0 0 5px;
     line-height: 16px;
+    box-shadow: 1px 2px 2px #919191;
 }
 
 /**

@@ -1,6 +1,8 @@
 [{include file="headitem.tpl" title="OXPS_MODULEGENERATOR_ADMIN_TITLE"|oxmultilangassign}]
 [{oxscript include="js/libs/jquery.min.js"}]
 [{oxscript include="js/libs/jquery-ui.min.js"}]
+[{oxstyle include=$oViewConf->getModuleUrl('oxps/ModuleGenerator', 'out/src/css/admin_oxpsmodulegenerator.css')}]
+[{oxstyle}]
 [{oxscript include=$oViewConf->getModuleUrl('oxps/ModuleGenerator', 'out/src/js/admin_oxpsmodulegenerator.js')}]
 [{oxscript add="$.noConflict();" priority=10}]
 [{assign var="sModuleNameValidationUrl" value=$oView->generateAjaxResponseUrl('getModuleData')}]
@@ -64,15 +66,6 @@
                 });
             });"
            priority=10}]
-<div class = "notification-error-examples"
-     data-module-name = "[{$sNotificationExampleModuleName}]"
-     data-controller-name = "[{$sNotificationExampleControllerName}]"
-     data-model-name = "[{$sNotificationExampleModelName}]"
-     data-list-name = "[{$sNotificationExampleListName}]"
-     data-widget-name = "[{$sNotificationExampleWidgetName}]"
-     data-block-name = "[{$sNotificationExampleBlockName}]"
-     data-setting-name = "[{$sNotificationExampleSettingName}]"
-></div>
 <script type="application/javascript">
     /**
      * Themes list disabling/enabling event depending on "no themes" checkbox status.
@@ -82,8 +75,15 @@
         document.getElementById('theme_list').disabled = document.getElementById('theme_none').checked;
     }
 </script>
-[{oxstyle include=$oViewConf->getModuleUrl('oxps/ModuleGenerator', 'out/src/css/admin_oxpsmodulegenerator.css')}]
-[{oxstyle}]
+<div class = "notification-error-examples"
+     data-module-name = "[{$sNotificationExampleModuleName}]"
+     data-controller-name = "[{$sNotificationExampleControllerName}]"
+     data-model-name = "[{$sNotificationExampleModelName}]"
+     data-list-name = "[{$sNotificationExampleListName}]"
+     data-widget-name = "[{$sNotificationExampleWidgetName}]"
+     data-block-name = "[{$sNotificationExampleBlockName}]"
+     data-setting-name = "[{$sNotificationExampleSettingName}]"
+></div>
 <div id="oxpsmodulegenerator">
 <div class="export">
     <span>[{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_TITLE"}]</span>
@@ -131,7 +131,7 @@
                                     <span class="req"> *</span>
                                 </td>
                                 <td class="edittext">
-                                    <input type="text" name="modulegenerator_module_name" value="[{$oValues->name}]"
+                                    <input type="text" name="modulegenerator_module_name" class = "form-field" value="[{$oValues->name}]"
                                            maxlength="20"/>
                                     [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_MODULE_NAME_HINT"}]
                                     <span class="notice notice-hidden"></span>

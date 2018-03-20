@@ -201,8 +201,6 @@ class oxpsModuleGeneratorValidator extends Base
                 } else {
                     $sClassData['classPath'] = str_replace($sBasePath, '', dirname($sClassData['classPath'])) . DIRECTORY_SEPARATOR;
                 }
-                var_dump("veikia validateAndLinkClasses");
-                var_dump($sClassData);
 
                 $aValidLinkedClasses[$sClassName] = $sClassData;
             }
@@ -361,7 +359,6 @@ class oxpsModuleGeneratorValidator extends Base
         /** @var \OxidEsales\Eshop\Core\StrMb|\OxidEsales\Eshop\Core\StrRegular $oStr */
         $oStr = Str::getStr();
         $aResult = array();
-        var_dump($sClassName);
         $oReflection = new ReflectionClass(new $sClassName());
         $aResult['classPath'] = (string) $oReflection->getFilename();
         if (false !== $oStr->strpos($aResult['classPath'], self::OXPS_BACKWARD_COMPATIBILITY_FOLDER)) {
@@ -369,8 +366,10 @@ class oxpsModuleGeneratorValidator extends Base
             $aResult['classPath'] = $sClassPath = (string) $oReflection->getFilename();
             $aResult['v6ClassName'] = $sNewClassName = (string) $oReflection->getShortName();
             $aResult['v6Namespace'] = (string) $this->_unifyNamespace($oReflection->getNamespaceName());
-            $aResult['v6NamespaceDirectory'] = substr($aResult['classPath'], strpos($aResult['classPath'], 'source/') + strlen('source/'), strlen($aResult['classPath']));
-            $aResult['v6NamespaceDirectory'] = substr($aResult['v6NamespaceDirectory'], 0, strrpos($aResult['v6NamespaceDirectory'], '/') + strlen('/'));
+            
+            //Making part of namespace (like /Application/Controller/Admin/...) for metadata.
+            $aResult['v6ModuleNamespace'] = substr($aResult['classPath'], strpos($aResult['classPath'], 'source/') + strlen('source/'), strlen($aResult['classPath']));
+            $aResult['v6ModuleNamespace'] = substr($aResult['v6ModuleNamespace'], 0, strrpos($aResult['v6ModuleNamespace'], '/') + strlen('/'));
         }
 
         return $aResult;

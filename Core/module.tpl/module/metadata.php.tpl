@@ -48,7 +48,7 @@ $aModule = array(
     'extend'      => array(
 [{if $aExtendClasses}]
 [{foreach from=$aExtendClasses key='sLegacyClass' item='aV6ClassData'}]
-        \[{$aV6ClassData.v6Namespace}]\[{$aV6ClassData.v6ClassName}]::class => [{$sVendorDir|ucfirst}]\[{$sModuleFolderName}]\[{$aV6ClassData.v6NamespaceDirectory|replace:"/":"\\"}][{$aV6ClassData.v6ClassName}]::class,
+        \[{$aV6ClassData.v6Namespace}]\[{$aV6ClassData.v6ClassName}]::class => [{$sVendorDir|ucfirst}]\[{$sModuleFolderName}]\[{$aV6ClassData.v6ModuleNamespace|replace:"/":"\\"}][{$aV6ClassData.v6ClassName}]::class,
 [{/foreach}]
 [{/if}]
         [{if $oModule->renderSamples()}]//'[ParentClassName]' => '[{$sVendorDir}]/[{$sModuleFolderName}]/[appropriate_folder]/[{$sModuleCamelCaseId}][parent_class_name]',

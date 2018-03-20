@@ -133,8 +133,6 @@ class oxpsModuleGeneratorMetadata extends Base
     {
         $this->_aMetadata = $aMetadata;
         $this->_sModulePath = $sModulePath;
-        var_dump("suveikia parseMetadata");
-        var_dump($this->_parseMetadataExtendClasses('extend'));
         $aGenerationOptions = [
             'aExtendClasses'  => $this->_parseMetadataExtendClasses('extend'),
             'aNewControllers' => $this->_parseMetadataControllers('controllers'),
@@ -158,7 +156,6 @@ class oxpsModuleGeneratorMetadata extends Base
     protected function _parseMetadataExtendClasses($sMetadataArrayKey)
     {
         $aMetadataExtendClasses = [];
-        var_dump("dsafdfasdfsadfsd..........................................");
         if ($this->_isValidMetadataKey($sMetadataArrayKey)) {
             $aMetadataExtendClassKeys = array_keys($this->_aMetadata[$sMetadataArrayKey]);
             $aMetadataExtendClasses = $this->_getValidator()->validateAndLinkClasses(

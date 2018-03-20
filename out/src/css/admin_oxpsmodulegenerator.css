@@ -51,12 +51,21 @@ div#oxpsmodulegenerator input[type="submit"]:hover{
 div#oxpsmodulegenerator input[type="button"] {
     transform: translate(0px, -6px);
 }
+
 div#oxpsmodulegenerator input[type="submit"],
-div#oxpsmodulegenerator input[type="button"],
+div#oxpsmodulegenerator input[type="button"]{
+    color: #3d3d3d;
+    border: 1px solid #bebebe;
+    box-shadow: 1px 2px 6px #919191;
+    font-size:13px;
+    font-weight: bolder;
+}
+
 div#oxpsmodulegenerator input[type="text"],
 div#oxpsmodulegenerator select,
 div#oxpsmodulegenerator textarea {
-    border: 1px solid #d4d4d4;
+    color: #555;
+    border: 1px solid #bebebe;
     box-shadow: 1px 2px 6px #919191;
     font-size:13px;
 }
@@ -66,6 +75,7 @@ div#oxpsmodulegenerator input[type="text"]:focus,
 div#oxpsmodulegenerator textarea:focus {
     outline: none !important;
     box-shadow: 3px 3px 12px #919191;
+    border: 1px solid #bebebe;
 }
 div#oxpsmodulegenerator input[type="text"],
 div#oxpsmodulegenerator select {

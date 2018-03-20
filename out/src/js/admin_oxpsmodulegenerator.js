@@ -383,7 +383,7 @@ jQuery.widget(
                 }
             } else {
                 addNewSettingButton.disabled = false;
-                this._changeFieldColor(oElement, '#808080', 'black');
+                this._changeFieldColor(oElement, '#bebebe', '#555');
             }
         },
 
@@ -685,7 +685,7 @@ jQuery.widget(
                 }
                 else {
                     this._checkSubmitButton(jQuery(oElement).attr('name'), false);
-                    this._showNotificationHelper(oElement, 'info', response, '#808080', 'black');
+                    this._showNotificationHelper(oElement, 'info', response, '#bebebe', '#555');
                 }
             }
         },

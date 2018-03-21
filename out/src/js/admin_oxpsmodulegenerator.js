@@ -916,7 +916,7 @@ jQuery.widget(
             } else if (self[sRegexFunction](sEnteredInput)) {
                 //If setting field is written correctly hide it.
                 this._checkSubmitButton(jQuery(oElement).attr('name'), false);
-                self._changeSettingNotification(oElement, 'hidden', '');
+                self._changeSettingNotification(oElement, 'success', self.options.notificationSuccessText);
                 self._showNotification(oElement, 'success', self.options.notificationSuccessText);
 
                 return true;

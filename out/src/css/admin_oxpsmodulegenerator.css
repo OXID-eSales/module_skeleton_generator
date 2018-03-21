@@ -38,7 +38,7 @@ table.oxpsmodulegenerator-wrapper td.edittext {
 }
 
 table.oxpsmodulegenerator-wrapper td.edittext-label {
-    width: 180px;
+    width: 170px;
     font-size:13px;
     font-weight: bold;
 }
@@ -216,7 +216,7 @@ div#oxpsmodulegenerator .component-existing-lists,
 div#oxpsmodulegenerator .component-existing-widgets,
 div#oxpsmodulegenerator .component-existing-blocks,
 div#oxpsmodulegenerator .component-existing-settings {
-    background-color: #faf2cc;;
+    background-color: #faf2cc;
     border: 1px solid #c7bf9a;
     margin: 0 0 5px;
     line-height: 16px;
@@ -239,4 +239,83 @@ div#oxpsmodulegenerator .correct-settings-color {
 div#oxpsmodulegenerator .invalid-settings-color {
     background-color: #FFE2DE;
     color: red;
+}
+
+
+/**
+    Module settings div
+ */
+
+/*Settings head*/
+.module-settings{
+    padding-top: 15px;
+}
+.module-settings-head{
+    padding-bottom:15px;
+}
+
+span.module-settings-head__name{
+    padding-left:90px;
+    padding-right:90px;
+    font-size: 14px;
+    color:#344950;
+    font-weight: bold;
+}
+span.module-settings-head__type{
+    padding-left:25px;
+    padding-right:25px;
+    font-size: 14px;
+    color:#344950;
+    font-weight: bold;
+}
+span.module-settings-head__default-value{
+    padding-left:70px;
+    padding-right:70px;
+    font-size: 14px;
+    color:#344950;
+    font-weight: bold;
+}
+
+/*Settings body*/
+.module-settings-body{
+    width:100%;
+}
+.settingsLine{
+    width:550px;
+}
+
+.settingsLine__name{
+    float:left;
+    margin-top:7px;
+}
+
+.settingsLine__type{
+    float:left;
+    margin-left:5px;
+    margin-top:8px;
+}
+
+.settingsLine__value{
+    float:left;
+    margin-left:5px;
+}
+.module-settings__add-new-button{
+    float:left;
+    margin-top:20px;
+    width:100%;
+}
+.settingsLine__notice{
+    height:45px;
+    float:left;
+}
+
+span.js-notice-block{
+    margin-top:10px;
+    position:absolute;
+}
+
+.removeLineButton{
+    width:526px;
+    float:left;
+    margin-top:10px;
 }

@@ -220,62 +220,70 @@
                             </td>
                             <td class="edittext">
                                 <div class="component component-existing-settings component-hidden"></div>
-                                <table>
-                                    <thead>
-                                    <tr>
-                                        <th>[{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_MODULE_SETTING_NAME"}]
-                                        </th>
-                                        <th>[{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_MODULE_SETTING_TYPE"}]
-                                        </th>
-                                        <th>
+
+                                <div class = "module-settings">
+
+                                    <div class = "module-settings-head">
+                                        <span class = "module-settings-head__name">
+                                            [{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_MODULE_SETTING_NAME"}]
+                                        </span>
+                                        <span class = "module-settings-head__type">
+                                            [{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_MODULE_SETTING_TYPE"}]
+                                        </span>
+                                        <span class = "module-settings-head__default-value">
                                             [{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_MODULE_SETTING_VALUE"}]
-                                        </th>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="settingsBody">
-                                    [{section name=settings start=0 loop=1}]
-                                        [{assign var='i' value=$smarty.section.settings.index}]
-                                        [{assign var='aSetting' value=$oValues->settings.$i}]
-                                        [{assign var='sType' value=$aSetting.type}]
-                                        [{if not $sType}]
-                                            [{assign var='sType' value='str'}]
-                                        [{/if}]
-                                        <tr class="settingsLine" id="settingsLine[{$i}]">
-                                            <td>
-                                                <input type="text" name="modulegenerator_settings[[{$i}]][name]" class = "js-setting-element"
-                                                       value="[{$aSetting.name}]" maxlength="12"/>
-                                            </td>
-                                            <td>
-                                                <select name="modulegenerator_settings[[{$i}]][type]">
-                                                    [{* todo (nice2have) get possible options as array from view *}]
-                                                    <option value="str"
-                                                            [{if $sType eq 'str'}]selected[{/if}]>String</option>
-                                                    <option value="bool"
-                                                            [{if $sType eq 'bool'}]selected[{/if}]>Checkbox</option>
-                                                    <option value="num"
-                                                            [{if $sType eq 'num'}]selected[{/if}]>Number</option>
-                                                    <option value="arr"
-                                                            [{if $sType eq 'arr'}]selected[{/if}]>Array</option>
-                                                    <option value="aarr"
-                                                            [{if $sType eq 'aarr'}]selected[{/if}]>Assoc Array</option>
-                                                    <option value="select"
-                                                            [{if $sType eq 'select'}]selected[{/if}]>Dropdown</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <textarea name="modulegenerator_settings[[{$i}]][value]" cols="10"
-                                                          rows="1">[{$aSetting.value}]</textarea>
-                                            </td>
-                                            <td>
-                                                <span class="notice notice-hidden js-notice-block"></span>
-                                            </td>
-                                        </tr>
+                                        </span>
+                                    </div>
+
+                                    <div class = "module-settings-body" id="settingsBody">
+
+                                        [{section name=settings start=0 loop=1}]
+                                            [{assign var='i' value=$smarty.section.settings.index}]
+                                            [{assign var='aSetting' value=$oValues->settings.$i}]
+                                            [{assign var='sType' value=$aSetting.type}]
+
+                                            [{if not $sType}]
+                                                [{assign var='sType' value='str'}]
+                                            [{/if}]
+
+                                            <div class="settingsLine" id="settingsLine[{$i}]">
+                                                <div class = "settingsLine__name">
+                                                    <input type="text" name="modulegenerator_settings[[{$i}]][name]" class = "js-setting-element"
+                                                           value="[{$aSetting.name}]" maxlength="12"/>
+                                                </div>
+                                                <div class = "settingsLine__type">
+                                                    <select name="modulegenerator_settings[[{$i}]][type]">
+                                                            [{* todo (nice2have) get possible options as array from view *}]
+                                                            <option value="str"
+                                                                    [{if $sType eq 'str'}]selected[{/if}]>String</option>
+                                                            <option value="bool"
+                                                                    [{if $sType eq 'bool'}]selected[{/if}]>Checkbox</option>
+                                                            <option value="num"
+                                                                    [{if $sType eq 'num'}]selected[{/if}]>Number</option>
+                                                            <option value="arr"
+                                                                    [{if $sType eq 'arr'}]selected[{/if}]>Array</option>
+                                                            <option value="aarr"
+                                                                    [{if $sType eq 'aarr'}]selected[{/if}]>Assoc Array</option>
+                                                            <option value="select"
+                                                                    [{if $sType eq 'select'}]selected[{/if}]>Dropdown</option>
+                                                    </select>
+                                                </div>
+                                                <div class = "settingsLine__value">
+                                                    <textarea name="modulegenerator_settings[[{$i}]][value]" cols="10"
+                                                                rows="1">[{$aSetting.value}]</textarea>
+                                                </div>
+                                                <div class = "settingsLine__notice"><span class="notice notice-hidden js-notice-block"></span></div>
+                                            </div>
                                         [{/section}]
-                                    </tbody>
-                                </table>
-                                <input type="button" name="modulegenerator_addNewSettingsLine" id="addNewSettingsLine"
-                                       value="[{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_MODULE_ADD_SETTINGS_LINE"}]"/>
-                                [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_SETTINGS_HINT"}]
+                                    </div>
+
+                                    <div class = "module-settings__add-new-button">
+                                        <input type="button" name="modulegenerator_addNewSettingsLine" id="addNewSettingsLine"
+                                               value="[{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_MODULE_ADD_SETTINGS_LINE"}]"/>
+                                        [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_SETTINGS_HINT"}]
+                                    </div>
+                                </div>
+
                             </td>
                             <tr>
                                 <td colspan="2">&nbsp;</td>
@@ -302,9 +310,6 @@
                                     </script>
                                     [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_MODULE_THEMES_HINT"}]
                                 </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2">&nbsp;</td>
                             </tr>
                             <tr>
                                 <td class="edittext edittext-label">

@@ -23,8 +23,10 @@
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2017
  */
+
 namespace Oxps\ModuleGenerator\Core;
 
+use OxidEsales\Eshop\Application\Model\Content;
 use \OxidEsales\Eshop\Core\Module\Module as BaseModel;
 use \OxidEsales\Eshop\Core\Registry;
 
@@ -53,7 +55,7 @@ class Module extends BaseModel
 
         $this->load($sModuleId);
 
-        Registry::set('oxpsModuleGeneratorModule', $this);
+        Registry::set(Module::class, $this);
     }
 
 
@@ -128,8 +130,8 @@ class Module extends BaseModel
     {
         $sValue = '';
 
-        /** @var \OxidEsales\Eshop\Application\Model\Content|\OxidEsales\Eshop\Core\Model\MultiLanguageModel $oContent */
-        $oContent = oxNew(\OxidEsales\Eshop\Application\Model\Content::class);
+        /** @var Content|\OxidEsales\Eshop\Core\Model\MultiLanguageModel $oContent */
+        $oContent = oxNew(Content::class);
         $oContent->loadByIdent(trim((string) $sIdentifier));
 
         if (!empty($oContent->oxcontents__oxcontent)) {

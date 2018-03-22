@@ -23,8 +23,11 @@
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2017
  */
+
 namespace Oxps\ModuleGenerator\Core;
+
 use OxidEsales\Eshop\Core\Base;
+use OxidEsales\Eshop\Core\Registry;
 
 /**
  * Class oxpsModuleGeneratorMetaData is used for Module Generator's
@@ -101,19 +104,19 @@ class Metadata extends Base
     /**
      * Keep instance of Admin_oxpsModuleGenerator controller
      *
-     * @var null|oxpsModuleGeneratorValidator
+     * @var null|Validator
      */
     protected $_oValidator;
 
     /**
      *
-     * @return oxpsModuleGeneratorValidator
+     * @return Validator
      */
     protected function _getValidator()
     {
         if (null === $this->_oValidator) {
-            /** @var oxpsModuleGeneratorValidator oValidator */
-            $this->_oValidator = oxNew('oxpsModuleGeneratorValidator');
+            /** @var Validator oValidator */
+            $this->_oValidator = oxNew(Validator::class);
         }
 
         return $this->_oValidator;
@@ -146,13 +149,14 @@ class Metadata extends Base
 
         return $aGenerationOptions;
     }
-
+    
     /**
      * Parse extended classes from existing metadata
      *
      * @param string $sMetadataArrayKey
      *
      * @return array
+     * @throws \ReflectionException
      */
     protected function _parseMetadataExtendClasses($sMetadataArrayKey)
     {
@@ -220,7 +224,7 @@ class Metadata extends Base
      */
     protected function _parseFilesFromDir($sSubDirPath, $blRemoveFileExt = true)
     {
-        $oFilesystemHelper = \OxidEsales\Eshop\Core\Registry::get('oxpsModuleGeneratorFileSystem');
+        $oFilesystemHelper = Registry::get(FileSystem::class);
         return $oFilesystemHelper->scanDirForFiles($this->_sModulePath . $sSubDirPath, $blRemoveFileExt);
     }
 

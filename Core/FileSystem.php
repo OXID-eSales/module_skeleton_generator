@@ -23,6 +23,7 @@
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2017
  */
+
 namespace Oxps\ModuleGenerator\Core;
 
 use \OxidEsales\Eshop\Core\Base;

@@ -571,7 +571,7 @@ class OxModule extends OxModule_parent
     public function renderFileComment($sSubPackage = '')
     {
         /** @var render $oRenderHelper */
-        $oRenderHelper = Registry::get('render');
+        $oRenderHelper = Registry::get(Render::class);
         $oRenderHelper->init($this);
 
         return $oRenderHelper->renderFileComment($sSubPackage);
@@ -775,7 +775,7 @@ class OxModule extends OxModule_parent
         $this->setNewModuleData($blAppendMetadata);
 
         // Get new module and module generation template full paths
-        $sModuleGeneratorPath = Registry::get('oxpsModuleGeneratorModule')->getPath();
+        $sModuleGeneratorPath = Registry::get(Module::class)->getPath();
         $sModulePath = $this->getFullPath();
 
         // Copy the module from a folder structure with templates to a new module path

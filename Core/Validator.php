@@ -23,10 +23,13 @@
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2017
  */
+
 namespace Oxps\ModuleGenerator\Core;
+
 use \OxidEsales\Eshop\Core\Base;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Str;
+use ReflectionClass;
 
 /**
  * Class oxpsModuleGeneratorValidator.
@@ -43,12 +46,12 @@ class Validator extends Base
     /**
      * Module instance used as information container for new module generation.
      *
-     * @var oxpsModuleGeneratorOxModule
+     * @var OxModule
      */
     protected $_oOxModule;
 
     /**
-     * @var oxpsModuleGeneratorModule
+     * @var Module
      */
     protected $_oModule;
 
@@ -69,12 +72,12 @@ class Validator extends Base
     /**
      * Get oxModule instance or set it if not available.
      *
-     * @return oxpsModuleGeneratorOxModule
+     * @return OxModule
      */
     public function getOxModule()
     {
         if (null === $this->_oOxModule) {
-            $this->_oOxModule = oxNew('oxpsModuleGeneratorOxModule');
+            $this->_oOxModule = oxNew(OxModule::class);
         }
 
         return $this->_oOxModule;
@@ -83,12 +86,12 @@ class Validator extends Base
     /**
      * Get Module instance or set it if not available.
      *
-     * @return oxpsModuleGeneratorModule
+     * @return Module
      */
     public function getModule()
     {
         if (null === $this->_oModule) {
-            $this->_oModule = oxNew('oxpsModuleGeneratorModule');
+            $this->_oModule = oxNew(Module::class);
         }
 
         return $this->_oModule;
@@ -171,18 +174,19 @@ class Validator extends Base
 
         return settype($mValue, $sType) ? $mValue : null;
     }
-
+    
     /**
      * Check list of classes and link it with its relative path for each valid class.
      *
      * @param string $sClasses List of classes names separated with a new line.
      *
      * @return array With relative application path as value and clean class name as key for each valid class.
+     * @throws \ReflectionException
      */
     public function validateAndLinkClasses($sClasses)
     {
-        /** @var oxpsModuleGeneratorFileSystem $oFileSystemHelper */
-        $oFileSystemHelper = Registry::get('oxpsModuleGeneratorFileSystem');
+        /** @var FileSystem $oFileSystemHelper */
+        $oFileSystemHelper = Registry::get(FileSystem::class);
         $aClasses = $this->parseMultiLineInput($sClasses, 'not_empty');
         $aValidLinkedClasses = array();
         $oConfig = Registry::getConfig();
@@ -279,8 +283,8 @@ class Validator extends Base
     {
         $this->getOxModule()->init($sModuleName, [], $this->getModule()->getSetting('VendorPrefix'));
 
-        /** @var oxpsModuleGeneratorFileSystem $oFileSystemHelper */
-        $oFileSystemHelper = Registry::get('oxpsModuleGeneratorFileSystem');
+        /** @var FileSystem $oFileSystemHelper */
+        $oFileSystemHelper = Registry::get(FileSystem::class);
 
         return $oFileSystemHelper->isDir($this->getOxModule()->getVendorPath() . $sModuleName)
                && !empty($sModuleName);
@@ -333,15 +337,15 @@ class Validator extends Base
                 break;
 
             case 'camel_case':
-                /** @var oxpsModuleGeneratorValidator $oValidator */
-                $oValidator = Registry::get('oxpsModuleGeneratorValidator');
+                /** @var Validator $oValidator */
+                $oValidator = Registry::get(Validator::class);
                 $blIsValid = (bool) $oValidator->validateCamelCaseName($sValue);
                 break;
         }
 
         return $blIsValid;
     }
-
+    
     /**
      * Build reflection object to get path to a class.
      * In case of old class name (backwards compatibility), use new class name of parent reflection
@@ -353,6 +357,7 @@ class Validator extends Base
      *                  'classPath' - path to a class
      *                  'v6ClassName - Oxid version 6 class name
      *                  'v6Namespace' - Class namespace
+     * @throws \ReflectionException
      */
     protected function _getClassPath($sClassName)
     {

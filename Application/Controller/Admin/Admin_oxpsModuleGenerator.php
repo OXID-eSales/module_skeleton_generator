@@ -222,11 +222,12 @@ class Admin_oxpsModuleGenerator extends AdminController
             $this->setViewData(array_merge($this->getViewData(), $aViewData));
         }
     }
-
+    
     /**
      * Collect request data, parse it and compile to module generation options array.
      *
      * @return array
+     * @throws \ReflectionException
      */
     protected function _getGenerationOptions()
     {
@@ -268,11 +269,12 @@ class Admin_oxpsModuleGenerator extends AdminController
 
         return $this->_filterListModels($aGenerationOptions);
     }
-
+    
     /**
      * Get initial form values for a case when the form was submitted.
      *
      * @return array
+     * @throws \ReflectionException
      */
     protected function _getFormValues()
     {

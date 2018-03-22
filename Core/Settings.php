@@ -23,6 +23,7 @@
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2017
  */
+
 namespace Oxps\ModuleGenerator\Core;
 
 use \OxidEsales\Eshop\Core\Base;
@@ -45,7 +46,7 @@ class Settings extends Base
      */
     public function getModuleSettings(array $aModuleSettings)
     {
-        /** @var oxpsModuleGeneratorValidator $oValidator */
+        /** @var Validator $oValidator */
         $oValidator = Registry::get('oxpsModuleGeneratorValidator');
 
         $aCleanSettings = array();

@@ -23,9 +23,11 @@
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2017
  */
+
 namespace Oxps\ModuleGenerator\Application\Controller\Admin;
 
 use OxidEsales\Eshop\Application\Controller\Admin\AdminController;
+use OxidEsales\Eshop\Core\Registry;
 use Oxps\ModuleGenerator\Core\Module;
 use Oxps\ModuleGenerator\Core\OxModule;
 use Oxps\ModuleGenerator\Core\Validator;
@@ -119,9 +121,11 @@ class Admin_oxpsAjaxDataProvider extends AdminController
             $this->_returnJsonResponse([]);
         }
     }
-
+    
     /**
      * Validate extended classes names and return JSON with module's metadata.
+     *
+     * @throws \ReflectionException
      */
     public function validateExtendClassNames()
     {
@@ -156,7 +160,7 @@ class Admin_oxpsAjaxDataProvider extends AdminController
     protected function _returnJsonResponse(array $aExistingModuleSettings)
     {
         header('Content-Type: application/json');
-        OxidEsales\Eshop\Core\Registry::getUtils()->showMessageAndExit(
+        Registry::getUtils()->showMessageAndExit(
             json_encode($aExistingModuleSettings, JSON_FORCE_OBJECT)
         );
     }

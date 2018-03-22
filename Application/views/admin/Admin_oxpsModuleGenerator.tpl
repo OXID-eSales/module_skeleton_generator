@@ -247,10 +247,12 @@
                                             [{/if}]
 
                                             <div class="settingsLine" id="settingsLine[{$i}]">
+
                                                 <div class = "settingsLine__name">
                                                     <input type="text" name="modulegenerator_settings[[{$i}]][name]" class = "js-setting-element"
                                                            value="[{$aSetting.name}]" maxlength="12"/>
                                                 </div>
+
                                                 <div class = "settingsLine__type">
                                                     <select name="modulegenerator_settings[[{$i}]][type]">
                                                             [{* todo (nice2have) get possible options as array from view *}]
@@ -268,11 +270,15 @@
                                                                     [{if $sType eq 'select'}]selected[{/if}]>Dropdown</option>
                                                     </select>
                                                 </div>
+
                                                 <div class = "settingsLine__value">
                                                     <textarea name="modulegenerator_settings[[{$i}]][value]" cols="10"
                                                                 rows="1">[{$aSetting.value}]</textarea>
                                                 </div>
-                                                <div class = "settingsLine__notice"><span class="notice notice-hidden js-notice-block"></span></div>
+
+                                                <div class = "settingsLine__notice">
+                                                    <span class="notice notice-hidden js-notice-block"></span>
+                                                </div>
                                             </div>
                                         [{/section}]
                                     </div>

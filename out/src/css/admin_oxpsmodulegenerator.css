@@ -249,10 +249,9 @@ div#oxpsmodulegenerator .invalid-settings-color {
 
 
 /**
-    Module settings div
+    Module settings for div structure
  */
 
-/*Settings head*/
 .module-settings{
     padding-top: 15px;
 }
@@ -260,6 +259,7 @@ div#oxpsmodulegenerator .invalid-settings-color {
     padding-bottom:15px;
 }
 
+/*Settings labels*/
 span.module-settings-head__name{
     padding-left:90px;
     padding-right:90px;
@@ -282,7 +282,6 @@ span.module-settings-head__default-value{
     font-weight: bold;
 }
 
-/*Settings body*/
 .module-settings-body{
     width:100%;
 }
@@ -290,6 +289,7 @@ span.module-settings-head__default-value{
     width:550px;
 }
 
+/*Settings fields position*/
 .settingsLine__name{
     float:left;
     margin-top:7px;
@@ -305,11 +305,15 @@ span.module-settings-head__default-value{
     float:left;
     margin-left:5px;
 }
+
+/*Settings "Add new line button position"*/
 .module-settings__add-new-button{
     float:left;
     margin-top:10px;
     width:100%;
 }
+
+/*Notice position*/
 .settingsLine__notice{
     height:45px;
     float:left;

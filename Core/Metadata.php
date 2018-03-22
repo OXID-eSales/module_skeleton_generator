@@ -23,7 +23,7 @@
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2017
  */
-
+namespace Oxps\ModuleGenerator\Core;
 use OxidEsales\Eshop\Core\Base;
 
 /**
@@ -31,7 +31,7 @@ use OxidEsales\Eshop\Core\Base;
  * Edit Mode as a parser getting info from existing metadata.php file and
  * converting it to Generation Options data structure to show module components.
  */
-class oxpsModuleGeneratorMetadata extends Base
+class Metadata extends Base
 {
 
     /**

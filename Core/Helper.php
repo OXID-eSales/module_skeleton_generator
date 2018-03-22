@@ -23,7 +23,7 @@
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2017
  */
-
+namespace Oxps\ModuleGenerator\Core;
 use \OxidEsales\Eshop\Core\Base;
 use \OxidEsales\Eshop\Core\Registry;
 
@@ -31,7 +31,7 @@ use \OxidEsales\Eshop\Core\Registry;
  * Class oxpsModuleGeneratorHelper.
  * Implement helpers and additional methods for module generation.
  */
-class oxpsModuleGeneratorHelper extends Base
+class Helper extends Base
 {
 
     /**

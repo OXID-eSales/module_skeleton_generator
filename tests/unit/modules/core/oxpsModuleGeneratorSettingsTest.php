@@ -28,7 +28,7 @@
  * Class oxpsModuleGeneratorSettingsTest
  * UNIT tests for core class oxpsModuleGeneratorSettings.
  *
- * @see oxpsModuleGeneratorSettings
+ * @see settings
  */
 class oxpsModuleGeneratorSettingsTest extends \OxidEsales\TestingLibrary\UnitTestCase
 {
@@ -36,7 +36,7 @@ class oxpsModuleGeneratorSettingsTest extends \OxidEsales\TestingLibrary\UnitTes
     /**
      * Subject under the test.
      *
-     * @var oxpsModuleGeneratorSettings
+     * @var settings
      */
     protected $SUT;
 
@@ -48,7 +48,7 @@ class oxpsModuleGeneratorSettingsTest extends \OxidEsales\TestingLibrary\UnitTes
     {
         parent::setUp();
 
-        $this->SUT = $this->getMock('oxpsModuleGeneratorSettings', array('__call'));
+        $this->SUT = $this->getMock('settings', array('__call'));
     }
 
 

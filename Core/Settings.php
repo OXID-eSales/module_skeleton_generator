@@ -23,6 +23,7 @@
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2017
  */
+namespace Oxps\ModuleGenerator\Core;
 
 use \OxidEsales\Eshop\Core\Base;
 use \OxidEsales\Eshop\Core\Registry;
@@ -32,7 +33,7 @@ use \OxidEsales\Eshop\Core\Str;
  * Class oxpsModuleGeneratorSettings
  * Generated module settings parsing and validation helper.
  */
-class oxpsModuleGeneratorSettings extends Base
+class Settings extends Base
 {
 
     /**

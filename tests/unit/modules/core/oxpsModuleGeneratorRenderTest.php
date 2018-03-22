@@ -28,7 +28,7 @@
  * Class oxpsModuleGeneratorRenderTest
  * UNIT tests for core class oxpsModuleGeneratorRender.
  *
- * @see oxpsModuleGeneratorRender
+ * @see render
  */
 class oxpsModuleGeneratorRenderTest extends \OxidEsales\TestingLibrary\UnitTestCase
 {
@@ -36,7 +36,7 @@ class oxpsModuleGeneratorRenderTest extends \OxidEsales\TestingLibrary\UnitTestC
     /**
      * Subject under the test.
      *
-     * @var oxpsModuleGeneratorRender
+     * @var render
      */
     protected $SUT;
 
@@ -48,7 +48,7 @@ class oxpsModuleGeneratorRenderTest extends \OxidEsales\TestingLibrary\UnitTestC
     {
         parent::setUp();
 
-        $this->SUT = $this->getMock('oxpsModuleGeneratorRender', array('__call'));
+        $this->SUT = $this->getMock('render', array('__call'));
     }
 
 

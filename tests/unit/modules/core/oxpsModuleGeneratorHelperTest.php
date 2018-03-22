@@ -546,7 +546,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
             ->will($this->returnValue('/path/to/modules/oxps/mymodule/'));
 
         // Render helper mock
-        $oRenderHelper = $this->getMock('oxpsModuleGeneratorRender', array('__call', 'renderWithSmartyAndRename'));
+        $oRenderHelper = $this->getMock('render', array('__call', 'renderWithSmartyAndRename'));
         $oRenderHelper->expects($this->never())->method('renderWithSmartyAndRename');
 
         // File system helper mock
@@ -581,7 +581,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
             ->will($this->returnValue('/path/to/modules/oxps/mymodule/'));
 
         // Render helper mock
-        $oRenderHelper = $this->getMock('oxpsModuleGeneratorRender', array('__call', 'renderWithSmartyAndRename'));
+        $oRenderHelper = $this->getMock('render', array('__call', 'renderWithSmartyAndRename'));
         $oRenderHelper->expects($this->never())->method('renderWithSmartyAndRename');
 
         // File system helper mock
@@ -619,7 +619,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
             ->will($this->returnValue('/path/to/modules/oxps/mymodule/'));
 
         // Render helper mock
-        $oRenderHelper = $this->getMock('oxpsModuleGeneratorRender', array('__call', 'renderWithSmartyAndRename'));
+        $oRenderHelper = $this->getMock('render', array('__call', 'renderWithSmartyAndRename'));
         $oRenderHelper->expects($this->never())->method('renderWithSmartyAndRename');
 
         // File system helper mock
@@ -657,7 +657,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
             ->will($this->returnValue('/path/to/modules/oxps/mymodule/'));
 
         // Render helper mock
-        $oRenderHelper = $this->getMock('oxpsModuleGeneratorRender', array('__call', 'renderWithSmartyAndRename'));
+        $oRenderHelper = $this->getMock('render', array('__call', 'renderWithSmartyAndRename'));
         $oRenderHelper->expects($this->never())->method('renderWithSmartyAndRename');
 
         // File system helper mock
@@ -698,7 +698,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
             ->will($this->returnValue('/path/to/modules/oxps/mymodule/'));
 
         // Render helper mock
-        $oRenderHelper = $this->getMock('oxpsModuleGeneratorRender', array('__call', 'renderWithSmartyAndRename'));
+        $oRenderHelper = $this->getMock('render', array('__call', 'renderWithSmartyAndRename'));
         $oRenderHelper->expects($this->once())->method('renderWithSmartyAndRename')->with(
             array(
                 'tests/Unit/models/oxpsmymoduleoxarticleTest.php',

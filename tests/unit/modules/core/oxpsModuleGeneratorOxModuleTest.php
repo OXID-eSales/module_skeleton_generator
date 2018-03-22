@@ -528,13 +528,13 @@ class oxpsModuleGeneratorOxModuleTest extends \OxidEsales\TestingLibrary\UnitTes
         );
 
         // Render helper mock
-        $oRenderHelper = $this->getMock('oxpsModuleGeneratorRender', array('__call', 'init', 'renderModuleFiles'));
+        $oRenderHelper = $this->getMock('render', array('__call', 'init', 'renderModuleFiles'));
         $oRenderHelper->expects($this->once())->method('init')->with($this->isInstanceOf(get_class($this->SUT)));
         $oRenderHelper->expects($this->once())->method('renderModuleFiles')->with(
             array('models/oxpsmymoduleoxarticle.php' => 'oxArticle'),
             array('models/oxpsmymoduleitem.php' => 'oxpsMyModuleItem')
         );
-        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorRender', $oRenderHelper);
+        \OxidEsales\Eshop\Core\Registry::set('render', $oRenderHelper);
 
         // Module generation helper mock
         $oHelper = $this->getMock(
@@ -661,10 +661,10 @@ class oxpsModuleGeneratorOxModuleTest extends \OxidEsales\TestingLibrary\UnitTes
     public function testRenderFileComment()
     {
         // Render helper mock
-        $oHelper = $this->getMock('oxpsModuleGeneratorRender', array('__call', 'init', 'renderFileComment'));
+        $oHelper = $this->getMock('render', array('__call', 'init', 'renderFileComment'));
         $oHelper->expects($this->once())->method('init')->with($this->isInstanceOf(get_class($this->SUT)));
         $oHelper->expects($this->once())->method('renderFileComment')->with('');
-        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorRender', $oHelper);
+        \OxidEsales\Eshop\Core\Registry::set('render', $oHelper);
 
         $this->SUT->renderFileComment();
     }

@@ -23,6 +23,8 @@
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2017
  */
+    
+namespace Oxps\ModuleGenerator\Core;
 
 use \OxidEsales\Eshop\Core\Registry;
 use \OxidEsales\Eshop\Core\Str;
@@ -35,7 +37,7 @@ use \OxidEsales\Eshop\Core\Str;
  *
  * @see \OxidEsales\Eshop\Core\Module\Module
  */
-class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
+class OxModule extends OxModule_parent
 {
 
     /**
@@ -55,17 +57,17 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
     /**
      * Validator helper instance.
      *
-     * @var null|oxpsModuleGeneratorValidator
+     * @var null|Validator
      */
     protected $_oValidator = null;
 
     /**
-     * @var null|oxpsModuleGeneratorHelper
+     * @var null|Helper
      */
     protected $_oHelper = null;
 
     /**
-     * @var null|oxpsModuleGeneratorRender
+     * @var null|render
      */
     protected $_oRenderHelper = null;
 
@@ -177,12 +179,12 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
     /**
      * Get validation and data access helper instance.
      *
-     * @return oxpsModuleGeneratorValidator
+     * @return Validator
      */
     public function getValidator()
     {
         if (is_null($this->_oValidator)) {
-            $this->_oValidator = Registry::get('oxpsModuleGeneratorValidator');
+            $this->_oValidator = Registry::get(Validator::class);
         }
 
         return $this->_oValidator;
@@ -460,12 +462,12 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
         $this->init($sModuleName, $aGenerationOptions);
 
         // Initialize helpers
-        /** @var oxpsModuleGeneratorHelper $oHelper */
-        $this->_oHelper = Registry::get('oxpsModuleGeneratorHelper');
+        /** @var Helper $oHelper */
+        $this->_oHelper = Registry::get(Helper::class);
         $this->_oHelper->init($this);
 
-        /** @var oxpsModuleGeneratorRender $oRenderHelper */
-        $this->_oRenderHelper = Registry::get('oxpsModuleGeneratorRender');
+        /** @var render $oRenderHelper */
+        $this->_oRenderHelper = Registry::get('render');
         $this->_oRenderHelper->init($this);
 
         $this->_moduleGeneration();
@@ -568,8 +570,8 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     public function renderFileComment($sSubPackage = '')
     {
-        /** @var oxpsModuleGeneratorRender $oRenderHelper */
-        $oRenderHelper = Registry::get('oxpsModuleGeneratorRender');
+        /** @var render $oRenderHelper */
+        $oRenderHelper = Registry::get('render');
         $oRenderHelper->init($this);
 
         return $oRenderHelper->renderFileComment($sSubPackage);
@@ -642,8 +644,8 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
 
         $aMetadata = $this->_getMetadataInfo($sModuleName);
         if (!empty($aMetadata)) {
-            /** @var oxpsModuleGeneratorMetadata $oMetadataParser */
-            $oMetadataParser = Registry::get('oxpsModuleGeneratorMetadata');
+            /** @var Metadata $oMetadataParser */
+            $oMetadataParser = Registry::get(Metadata::class);
             $aGenerationOptions = $oMetadataParser->parseMetadata($aMetadata, $this->getVendorPrefix(), $sModuleName, $this->getVendorPath() . $sModuleName);
         }
 
@@ -658,8 +660,8 @@ class oxpsModuleGeneratorOxModule extends oxpsModuleGeneratorOxModule_parent
      */
     protected function _setNewModuleData($sModuleName, array $aOptions = array())
     {
-        /** @var oxpsModuleGeneratorSettings $oSettingsParser */
-        $oSettingsParser = Registry::get('oxpsModuleGeneratorSettings');
+        /** @var settings $oSettingsParser */
+        $oSettingsParser = Registry::get($oSettingsParser);
 
         /** @var \OxidEsales\Eshop\Core\StrMb|\OxidEsales\Eshop\Core\StrRegular $oStr */
         $oStr = Str::getStr();

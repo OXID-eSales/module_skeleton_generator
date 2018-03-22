@@ -23,7 +23,7 @@
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2017
  */
-
+namespace Oxps\ModuleGenerator\Core;
 use \OxidEsales\Eshop\Core\Base;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Str;
@@ -32,7 +32,7 @@ use OxidEsales\Eshop\Core\Str;
  * Class oxpsModuleGeneratorValidator.
  * Validation helpers used in module generation processes and data access helpers.
  */
-class oxpsModuleGeneratorValidator extends Base
+class Validator extends Base
 {
 
     /**

@@ -23,15 +23,16 @@
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2017
  */
+namespace Oxps\ModuleGenerator\Core;
 
-use \OxidEsales\Eshop\Core\Module\Module;
+use \OxidEsales\Eshop\Core\Module\Module as BaseModel;
 use \OxidEsales\Eshop\Core\Registry;
 
 /**
  * Class oxpsModuleGeneratorModule.
  * Handles module setup, provides additional tools and module related helpers.
  */
-class oxpsModuleGeneratorModule extends Module
+class Module extends BaseModel
 {
 
     /**

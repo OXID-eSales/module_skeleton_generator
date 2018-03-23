@@ -23,6 +23,11 @@
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2014
  */
+ 
+namespace Oxps\ModuleGenerator\Tests\Unit\Modules\Core;
+
+use OxidEsales\TestingLibrary\UnitTestCase;
+use Oxps\ModuleGenerator\Core\Module;
 
 /**
  * Class oxpsModuleGeneratorModuleTest
@@ -30,13 +35,13 @@
  *
  * @see oxpsModuleGeneratorModule
  */
-class oxpsModuleGeneratorModuleTest extends \OxidEsales\TestingLibrary\UnitTestCase
+class ModuleTest extends UnitTestCase
 {
 
     /**
      * Subject under the test.
      *
-     * @var oxpsModuleGeneratorModule
+     * @var Module
      */
     protected $SUT;
 
@@ -48,7 +53,7 @@ class oxpsModuleGeneratorModuleTest extends \OxidEsales\TestingLibrary\UnitTestC
     {
         parent::setUp();
 
-        $this->SUT = new oxpsModuleGeneratorModule();
+        $this->SUT = new Module();
     }
 
 

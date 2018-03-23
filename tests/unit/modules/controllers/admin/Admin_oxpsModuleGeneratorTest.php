@@ -23,6 +23,13 @@
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2014
  */
+    
+namespace Oxps\ModuleGenerator\Tests\Unit\Modules\Controllers\Admin;
+
+use OxidEsales\TestingLibrary\UnitTestCase;
+use Oxps\ModuleGenerator\Application\Controller\Admin\Admin_oxpsModuleGenerator;
+use Oxps\ModuleGenerator\Core\Render;
+use oxTestModules;
 
 if (!class_exists('Smarty')) {
     include dirname(__FILE__) . '../../../../../../../../../vendor/smarty/smarty/libs/Smarty.class.php';
@@ -35,7 +42,7 @@ if (!class_exists('Smarty')) {
  *
  * @see Admin_oxpsModuleGenerator
  */
-class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCase
+class Admin_oxpsModuleGeneratorTest extends UnitTestCase
 {
 
     /**
@@ -570,7 +577,7 @@ class Admin_oxpsModuleGeneratorTest extends OxidEsales\TestingLibrary\UnitTestCa
         include($this->_getTestPath('modules/test/Ctrl1/Application/Controller/Page.php'));
         $this->assertTrue(class_exists('Test\Ctrl1\Application\Controller\Page'));
         $oClass = new Test\Ctrl1\Application\Controller\Page();
-        $this->assertTrue(method_exists($oClass, 'render'));
+        $this->assertTrue(method_exists($oClass, Render::class));
     }
 
     public function testGenerateModule_sameControllersSetMultipleTimes_generateModuleSkeletonWithUniqueControllersClasses()

@@ -23,6 +23,12 @@
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2014
  */
+ 
+namespace Oxps\ModuleGenerator\Tests\Unit\Modules\Core;
+
+use OxidEsales\TestingLibrary\UnitTestCase;
+use Oxps\ModuleGenerator\Core\Validator;
+use PHPUnit_Framework_MockObject_MockObject;
 
 /**
  * Class oxpsModuleGeneratorValidatorTest
@@ -30,13 +36,13 @@
  *
  * @see oxpsModuleGeneratorValidator
  */
-class oxpsModuleGeneratorValidatorTest extends OxidEsales\TestingLibrary\UnitTestCase
+class ValidatorTest extends UnitTestCase
 {
 
     /**
      * Subject under the test.
      *
-     * @var oxpsModuleGeneratorValidator|PHPUnit_Framework_MockObject_MockObject
+     * @var Validator|PHPUnit_Framework_MockObject_MockObject
      */
     protected $SUT;
 

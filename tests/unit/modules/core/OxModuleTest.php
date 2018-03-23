@@ -23,6 +23,13 @@
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2014
  */
+ 
+namespace Oxps\ModuleGenerator\Tests\Unit\Modules\Core;
+
+use OxidEsales\Eshop\Core\Registry;
+use Oxps\ModuleGenerator\Core\Module;
+use Oxps\ModuleGenerator\Core\OxModule;
+use Oxps\ModuleGenerator\Core\Render;
 
 /**
  * Class oxpsModuleGeneratorOxModuleTest
@@ -31,13 +38,13 @@
  *
  * @see oxpsModuleGeneratorOxModule
  */
-class oxpsModuleGeneratorOxModuleTest extends \OxidEsales\TestingLibrary\UnitTestCase
+class OxModuleTest extends \OxidEsales\TestingLibrary\UnitTestCase
 {
 
     /**
      * Subject under the test.
      *
-     * @var oxpsModuleGeneratorOxModule|\OxidEsales\EshopCommunity\Core\Module|
+     * @var OxModule|Module|
      */
     protected $SUT;
 
@@ -485,7 +492,7 @@ class oxpsModuleGeneratorOxModuleTest extends \OxidEsales\TestingLibrary\UnitTes
         $oConfig = $this->getMock(\OxidEsales\Eshop\Core\Config::class, array('getModulesDir'));
         $oConfig->expects($this->once())->method('getModulesDir')->will($this->returnValue('/path/to/modules/'));
 
-        \OxidEsales\Eshop\Core\Registry::set(\OxidEsales\Eshop\Core\Config::class, $oConfig);
+        Registry::set(\OxidEsales\Eshop\Core\Config::class, $oConfig);
 
         $this->SUT->setVendorPrefix('oxps');
 
@@ -499,7 +506,7 @@ class oxpsModuleGeneratorOxModuleTest extends \OxidEsales\TestingLibrary\UnitTes
         $oConfig = $this->getMock(\OxidEsales\Eshop\Core\Config::class, array('getModulesDir'));
         $oConfig->expects($this->once())->method('getModulesDir')->will($this->returnValue('/path/to/modules/'));
 
-        \OxidEsales\Eshop\Core\Registry::set(\OxidEsales\Eshop\Core\Config::class, $oConfig);
+        Registry::set(\OxidEsales\Eshop\Core\Config::class, $oConfig);
 
         $this->SUT->setVendorPrefix('oxps');
         $this->SUT->setModuleData(array('oxpsmodulegenerator_folder' => 'testmodule'));
@@ -513,12 +520,12 @@ class oxpsModuleGeneratorOxModuleTest extends \OxidEsales\TestingLibrary\UnitTes
         // Config mock
         $oConfig = $this->getMock(\OxidEsales\Eshop\Core\Config::class, array('getModulesDir'));
         $oConfig->expects($this->any())->method('getModulesDir')->will($this->returnValue('/path/to/modules/'));
-        \OxidEsales\Eshop\Core\Registry::set(\OxidEsales\Eshop\Core\Config::class, $oConfig);
+        Registry::set(\OxidEsales\Eshop\Core\Config::class, $oConfig);
 
         // The generator module main class mock
         $oGeneratorModule = $this->getMock('oxpsModuleGeneratorModule', array('__construct', '__call', 'getPath'));
 
-        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorModule', $oGeneratorModule);
+        Registry::set('oxpsModuleGeneratorModule', $oGeneratorModule);
 
         // File system helper mock
         $oFileSystem = $this->getMock('oxpsModuleGeneratorFileSystem', array('__call', 'copyFolder'));
@@ -528,13 +535,13 @@ class oxpsModuleGeneratorOxModuleTest extends \OxidEsales\TestingLibrary\UnitTes
         );
 
         // Render helper mock
-        $oRenderHelper = $this->getMock('render', array('__call', 'init', 'renderModuleFiles'));
+        $oRenderHelper = $this->getMock(Render::class, array('__call', 'init', 'renderModuleFiles'));
         $oRenderHelper->expects($this->once())->method('init')->with($this->isInstanceOf(get_class($this->SUT)));
         $oRenderHelper->expects($this->once())->method('renderModuleFiles')->with(
             array('models/oxpsmymoduleoxarticle.php' => 'oxArticle'),
             array('models/oxpsmymoduleitem.php' => 'oxpsMyModuleItem')
         );
-        \OxidEsales\Eshop\Core\Registry::set('render', $oRenderHelper);
+        Registry::set(Render::class, $oRenderHelper);
 
         // Module generation helper mock
         $oHelper = $this->getMock(
@@ -566,7 +573,7 @@ class oxpsModuleGeneratorOxModuleTest extends \OxidEsales\TestingLibrary\UnitTes
             array('models/oxpsmymoduleoxarticle.php' => 'oxArticle'),
             array('models/oxpsmymoduleitem.php' => 'oxpsMyModuleItem')
         );
-        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorHelper', $oHelper);
+        Registry::set('oxpsModuleGeneratorHelper', $oHelper);
 
         $this->SUT->setVendorPrefix('oxps');
 
@@ -635,12 +642,12 @@ class oxpsModuleGeneratorOxModuleTest extends \OxidEsales\TestingLibrary\UnitTes
      */
     public function testGetFileNameSuffix($sFilePath, $sExpectedSuffix)
     {
-        $SUT = $this->GetMock('oxpsModuleGeneratorOxModule', array('__call', 'getInfo'));
+        $SUT = $this->GetMock(OxModule::class, array('__call', 'getInfo'));
         $SUT->expects($this->any())->method('getInfo')
             ->will($this->returnValue('oxpsmymodule'))
         ;
 
-        /** @var oxpsModuleGeneratorOxModule $SUT */
+        /** @var OxModule $SUT */
         $this->assertSame($sExpectedSuffix, $SUT->getFileNameSuffix($sFilePath));
     }
 
@@ -661,10 +668,10 @@ class oxpsModuleGeneratorOxModuleTest extends \OxidEsales\TestingLibrary\UnitTes
     public function testRenderFileComment()
     {
         // Render helper mock
-        $oHelper = $this->getMock('render', array('__call', 'init', 'renderFileComment'));
+        $oHelper = $this->getMock(Render::class, array('__call', 'init', 'renderFileComment'));
         $oHelper->expects($this->once())->method('init')->with($this->isInstanceOf(get_class($this->SUT)));
         $oHelper->expects($this->once())->method('renderFileComment')->with('');
-        \OxidEsales\Eshop\Core\Registry::set('render', $oHelper);
+        Registry::set(Render::class, $oHelper);
 
         $this->SUT->renderFileComment();
     }

@@ -23,21 +23,26 @@
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2014
  */
+namespace Oxps\ModuleGenerator\Tests\Unit\Modules\Core;
 
 use org\bovigo\vfs\vfsStream;
+use OxidEsales\TestingLibrary\UnitTestCase;
+use Oxps\ModuleGenerator\Core\Metadata;
+use PHPUnit_Framework_MockObject_MockObject;
+
 /**
  * Class oxpsModuleGeneratorMetadataTest
  * UNIT tests for core class oxpsModuleGeneratorMetadata.
  *
  * @see oxpsModuleGenratorMetadata
  */
-class oxpsModuleGeneratorMetadataTest extends OxidEsales\TestingLibrary\UnitTestCase
+class MetadataTest extends UnitTestCase
 {
 
     /**
      * Subject under the test.
      *
-     * @var oxpsModuleGeneratorMetadata|PHPUnit_Framework_MockObject_MockObject
+     * @var Metadata|PHPUnit_Framework_MockObject_MockObject
      */
     protected $SUT;
 

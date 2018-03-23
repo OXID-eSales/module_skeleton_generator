@@ -23,6 +23,11 @@
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2014
  */
+ 
+namespace Oxps\ModuleGenerator\Tests\Unit\Modules\Core;
+
+use OxidEsales\TestingLibrary\UnitTestCase;
+use Oxps\ModuleGenerator\Core\Render;
 
 /**
  * Class oxpsModuleGeneratorRenderTest
@@ -30,7 +35,7 @@
  *
  * @see render
  */
-class oxpsModuleGeneratorRenderTest extends \OxidEsales\TestingLibrary\UnitTestCase
+class RenderTest extends UnitTestCase
 {
 
     /**

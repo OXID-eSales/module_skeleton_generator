@@ -466,8 +466,8 @@ class OxModule extends OxModule_parent
         $this->_oHelper = Registry::get(Helper::class);
         $this->_oHelper->init($this);
 
-        /** @var render $oRenderHelper */
-        $this->_oRenderHelper = Registry::get('render');
+        /** @var Render $oRenderHelper */
+        $this->_oRenderHelper = Registry::get(Render::class);
         $this->_oRenderHelper->init($this);
 
         $this->_moduleGeneration();
@@ -570,7 +570,7 @@ class OxModule extends OxModule_parent
      */
     public function renderFileComment($sSubPackage = '')
     {
-        /** @var render $oRenderHelper */
+        /** @var Render $oRenderHelper */
         $oRenderHelper = Registry::get(Render::class);
         $oRenderHelper->init($this);
 

@@ -23,20 +23,25 @@
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2014
  */
+ 
+namespace Oxps\ModuleGenerator\Tests\Unit\Modules\Core;
+
+use OxidEsales\TestingLibrary\UnitTestCase;
+use Oxps\ModuleGenerator\Core\FileSystem;
 
 /**
  * Class oxpsModuleGeneratorFileSystemTest
- * INTEGRATION tests for core class oxpsModuleGeneratorFileSystem.
+ * INTEGRATION tests for core class FileSystem.
  *
  * @see oxpsModuleGeneratorFileSystem
  */
-class oxpsModuleGeneratorFileSystemTest extends \OxidEsales\TestingLibrary\UnitTestCase
+class FileSystemTest extends UnitTestCase
 {
 
     /**
      * Subject under the test.
      *
-     * @var oxpsModuleGeneratorFileSystem
+     * @var FileSystem
      */
     protected $SUT;
 
@@ -49,7 +54,7 @@ class oxpsModuleGeneratorFileSystemTest extends \OxidEsales\TestingLibrary\UnitT
     {
         parent::setUp();
 
-        $this->SUT = new oxpsModuleGeneratorFileSystem();
+        $this->SUT = new FileSystem();
 
         @mkdir($this->_getTestPath());
         @mkdir($this->_getTestPath('folder'));

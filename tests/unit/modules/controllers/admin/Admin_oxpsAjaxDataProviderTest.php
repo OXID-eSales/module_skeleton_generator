@@ -25,11 +25,17 @@
  * @copyright (C) OXID eSales AG 2003-2014
  */
 
+namespace Oxps\ModuleGenerator\Tests\Unit\Modules\Controllers\Admin;
+
+use OxidEsales\TestingLibrary\UnitTestCase;
+use Oxps\ModuleGenerator\Application\Controller\Admin\Admin_oxpsAjaxDataProvider;
+use PHPUnit_Framework_MockObject_MockObject;
+
 if (!class_exists('Smarty')) {
     include dirname(__FILE__) . '../../../../../../../../../vendor/smarty/smarty/libs/Smarty.class.php';
 }
 
-class Admin_oxpsAjaxDataProviderTest extends OxidEsales\TestingLibrary\UnitTestCase
+class Admin_oxpsAjaxDataProviderTest extends UnitTestCase
 {
 
     /**

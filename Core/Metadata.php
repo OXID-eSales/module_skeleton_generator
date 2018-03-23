@@ -121,7 +121,7 @@ class Metadata extends Base
 
         return $this->_oValidator;
     }
-
+    
     /**
      * Parse existing metadata to Generation Options array
      *
@@ -131,6 +131,7 @@ class Metadata extends Base
      * @param string $sModulePath
      *
      * @return array
+     * @throws \ReflectionException
      */
     public function parseMetadata(array $aMetadata, $sVendorPrefix, $sModuleName, $sModulePath)
     {

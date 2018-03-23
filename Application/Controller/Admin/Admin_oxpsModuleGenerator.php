@@ -77,12 +77,13 @@ class Admin_oxpsModuleGenerator extends AdminController
         // Parent call
         $this->_Admin_oxpsModuleGenerator_init_parent();
     }
-
+    
     /**
      * Overridden parent method.
      * Adds module instance to view data.
      *
      * @return string
+     * @throws \ReflectionException
      */
     public function render()
     {

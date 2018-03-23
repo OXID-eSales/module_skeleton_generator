@@ -29,6 +29,8 @@ namespace Oxps\ModuleGenerator\Core;
 use \OxidEsales\Eshop\Core\Base;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Str;
+use OxidEsales\Eshop\Core\StrMb;
+use OxidEsales\Eshop\Core\StrRegular;
 use ReflectionClass;
 
 /**
@@ -361,7 +363,7 @@ class Validator extends Base
      */
     protected function _getClassPath($sClassName)
     {
-        /** @var \OxidEsales\Eshop\Core\StrMb|\OxidEsales\Eshop\Core\StrRegular $oStr */
+        /** @var StrMb|StrRegular $oStr */
         $oStr = Str::getStr();
         $aResult = array();
 

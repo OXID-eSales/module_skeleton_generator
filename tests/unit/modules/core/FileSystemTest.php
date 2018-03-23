@@ -26,14 +26,15 @@
  
 namespace Oxps\ModuleGenerator\Tests\Unit\Modules\Core;
 
+use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use Oxps\ModuleGenerator\Core\FileSystem;
 
 /**
- * Class oxpsModuleGeneratorFileSystemTest
+ * Class FileSystemTest
  * INTEGRATION tests for core class FileSystem.
  *
- * @see oxpsModuleGeneratorFileSystem
+ * @see FileSystem
  */
 class FileSystemTest extends UnitTestCase
 {
@@ -294,7 +295,7 @@ class FileSystemTest extends UnitTestCase
      */
     protected function _getTestPath($sPathSuffix = '')
     {
-        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('sCompileDir') . DIRECTORY_SEPARATOR .
+        return Registry::getConfig()->getConfigParam('sCompileDir') . DIRECTORY_SEPARATOR .
                'test' . DIRECTORY_SEPARATOR . (string) $sPathSuffix;
     }
 }

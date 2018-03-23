@@ -26,12 +26,16 @@
  
 namespace Oxps\ModuleGenerator\Tests\Unit\Modules\Core;
 
+use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\UtilsView;
 use OxidEsales\TestingLibrary\UnitTestCase;
+use Oxps\ModuleGenerator\Core\FileSystem;
+use Oxps\ModuleGenerator\Core\OxModule;
 use Oxps\ModuleGenerator\Core\Render;
 
 /**
- * Class oxpsModuleGeneratorRenderTest
- * UNIT tests for core class oxpsModuleGeneratorRender.
+ * Class RenderTest
+ * UNIT tests for core class Render.
  *
  * @see render
  */
@@ -53,14 +57,14 @@ class RenderTest extends UnitTestCase
     {
         parent::setUp();
 
-        $this->SUT = $this->getMock('render', array('__call'));
+        $this->SUT = $this->getMock(Render::class, array('__call'));
     }
 
 
     public function testInit()
     {
         // Module instance mock
-        $oModule = $this->getMock('oxpsModuleGeneratorOxModule', array('__construct', '__call'));
+        $oModule = $this->getMock(OxModule::class, array('__construct', '__call'));
 
         $this->SUT->init($oModule);
 
@@ -71,7 +75,7 @@ class RenderTest extends UnitTestCase
     public function testGetModule()
     {
         // Module instance mock
-        $oModule = $this->getMock('oxpsModuleGeneratorOxModule', array('__construct', '__call'));
+        $oModule = $this->getMock(OxModule::class, array('__construct', '__call'));
 
         $this->SUT->setModule($oModule);
 
@@ -105,7 +109,7 @@ class RenderTest extends UnitTestCase
     {
         // File system helper mock
         $oFileSystem = $this->getMock(
-            'oxpsModuleGeneratorFileSystem',
+            FileSystem::class,
             array('__call', 'createFile', 'renameFile', 'isFile')
         );
 
@@ -135,11 +139,11 @@ class RenderTest extends UnitTestCase
         $oFileSystem->expects($this->at(35))->method('createFile')
             ->with('/path/to/modules/oxps/mymodule/models/oxpsmymoduleitem.php', '_processed_item_content_');
 
-        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        Registry::set(FileSystem::class, $oFileSystem);
 
         // Module instance mock
         $oModule = $this->getMock(
-            'oxpsModuleGeneratorOxModule',
+            OxModule::class,
             array('__construct', '__call', 'getModuleId', 'getFullPath')
         );
         $oModule->expects($this->once())
@@ -184,9 +188,9 @@ class RenderTest extends UnitTestCase
             ->will($this->returnValue('_processed_item_content_'));
 
         // View utils mock
-        $oViewUtils = $this->getMock(\OxidEsales\Eshop\Core\UtilsView::class, array('__call', 'getSmarty'));
+        $oViewUtils = $this->getMock(UtilsView::class, array('__call', 'getSmarty'));
         $oViewUtils->expects($this->once())->method('getSmarty')->will($this->returnValue($oSmarty));
-        \OxidEsales\Eshop\Core\Registry::set(\OxidEsales\Eshop\Core\UtilsView::class, $oViewUtils, null);
+        Registry::set(UtilsView::class, $oViewUtils, null);
 
         $this->SUT->init($oModule);
 
@@ -205,7 +209,7 @@ class RenderTest extends UnitTestCase
     public function testRenderFileComment_emptyArgument_rendersCommentWithNoSubPackageInfo()
     {
         // Module instance mock
-        $oModule = $this->getMock('oxpsModuleGeneratorOxModule', array('__construct', '__call'));
+        $oModule = $this->getMock(OxModule::class, array('__construct', '__call'));
 
         // Smarty mock
         $oSmarty = $this->getMock('Smarty', array('assign', 'fetch'));
@@ -215,9 +219,9 @@ class RenderTest extends UnitTestCase
             ->will($this->returnValue('_processed_comment_content_'));
 
         // View utils mock
-        $oViewUtils = $this->getMock(\OxidEsales\Eshop\Core\UtilsView::class, array('__call', 'getSmarty'));
+        $oViewUtils = $this->getMock(UtilsView::class, array('__call', 'getSmarty'));
         $oViewUtils->expects($this->once())->method('getSmarty')->will($this->returnValue($oSmarty));
-        \OxidEsales\Eshop\Core\Registry::set(\OxidEsales\Eshop\Core\UtilsView::class, $oViewUtils, null);
+        Registry::set(UtilsView::class, $oViewUtils, null);
 
         $this->SUT->init($oModule);
 
@@ -227,7 +231,7 @@ class RenderTest extends UnitTestCase
     public function testRenderFileComment_argumentNotEmpty_rendersCommentWithSubPackageArgumentInfo()
     {
         // Module instance mock
-        $oModule = $this->getMock('oxpsModuleGeneratorOxModule', array('__construct', '__call'));
+        $oModule = $this->getMock(OxModule::class, array('__construct', '__call'));
 
         // Smarty mock
         $oSmarty = $this->getMock('Smarty', array('assign', 'fetch'));
@@ -238,9 +242,9 @@ class RenderTest extends UnitTestCase
             ->will($this->returnValue('_processed_comment_content_'));
 
         // View utils mock
-        $oViewUtils = $this->getMock(\OxidEsales\Eshop\Core\UtilsView::class, array('__call', 'getSmarty'));
+        $oViewUtils = $this->getMock(UtilsView::class, array('__call', 'getSmarty'));
         $oViewUtils->expects($this->once())->method('getSmarty')->will($this->returnValue($oSmarty));
-        \OxidEsales\Eshop\Core\Registry::set(\OxidEsales\Eshop\Core\UtilsView::class, $oViewUtils, null);
+        Registry::set(UtilsView::class, $oViewUtils, null);
 
         $this->SUT->init($oModule);
 

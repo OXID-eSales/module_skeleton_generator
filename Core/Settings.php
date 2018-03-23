@@ -29,6 +29,8 @@ namespace Oxps\ModuleGenerator\Core;
 use \OxidEsales\Eshop\Core\Base;
 use \OxidEsales\Eshop\Core\Registry;
 use \OxidEsales\Eshop\Core\Str;
+use OxidEsales\Eshop\Core\StrMb;
+use OxidEsales\Eshop\Core\StrRegular;
 
 /**
  * Class oxpsModuleGeneratorSettings
@@ -47,7 +49,7 @@ class Settings extends Base
     public function getModuleSettings(array $aModuleSettings)
     {
         /** @var Validator $oValidator */
-        $oValidator = Registry::get('oxpsModuleGeneratorValidator');
+        $oValidator = Registry::get(Validator::class);
 
         $aCleanSettings = array();
 
@@ -123,7 +125,7 @@ class Settings extends Base
      */
     protected function _getBooleanSettingValue($sInitialValue)
     {
-        /** @var \OxidEsales\Eshop\Core\StrMb|\OxidEsales\Eshop\Core\StrRegular $oStr */
+        /** @var StrMb|StrRegular $oStr */
         $oStr = Str::getStr();
 
         return (empty($sInitialValue) or $oStr->strtolower($sInitialValue) == 'false')

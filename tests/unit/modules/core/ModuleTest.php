@@ -26,14 +26,15 @@
  
 namespace Oxps\ModuleGenerator\Tests\Unit\Modules\Core;
 
+use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use Oxps\ModuleGenerator\Core\Module;
 
 /**
- * Class oxpsModuleGeneratorModuleTest
- * INTEGRATION tests for core class oxpsModuleGeneratorModule.
+ * Class ModuleTest
+ * INTEGRATION tests for core class Module.
  *
- * @see oxpsModuleGeneratorModule
+ * @see Module
  */
 class ModuleTest extends UnitTestCase
 {
@@ -72,7 +73,7 @@ class ModuleTest extends UnitTestCase
 
     public function testOnActivate_clearTempFiles()
     {
-        $sTestFilePath = \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('sCompileDir') . DIRECTORY_SEPARATOR . 'test.file';
+        $sTestFilePath = Registry::getConfig()->getConfigParam('sCompileDir') . DIRECTORY_SEPARATOR . 'test.file';
 
         file_put_contents($sTestFilePath, 'TEST' . PHP_EOL);
 
@@ -87,7 +88,7 @@ class ModuleTest extends UnitTestCase
 
     public function testOnDeactivate_clearTempFiles()
     {
-        $sTestFilePath = \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('sCompileDir') . DIRECTORY_SEPARATOR . 'test.file';
+        $sTestFilePath = Registry::getConfig()->getConfigParam('sCompileDir') . DIRECTORY_SEPARATOR . 'test.file';
 
         file_put_contents($sTestFilePath, 'TEST' . PHP_EOL);
 
@@ -102,8 +103,8 @@ class ModuleTest extends UnitTestCase
 
     public function testClearTmp_argumentDirProvided_clearsOnlyInsideProvidedDirectory()
     {
-        $sTestFilePath = \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('sCompileDir') . DIRECTORY_SEPARATOR . 'test.file';
-        $sSmartyFilePath = \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('sCompileDir') . DIRECTORY_SEPARATOR .
+        $sTestFilePath = Registry::getConfig()->getConfigParam('sCompileDir') . DIRECTORY_SEPARATOR . 'test.file';
+        $sSmartyFilePath = Registry::getConfig()->getConfigParam('sCompileDir') . DIRECTORY_SEPARATOR .
                            'smarty' . DIRECTORY_SEPARATOR . 'test.file';
 
         file_put_contents($sTestFilePath, 'TEST' . PHP_EOL);
@@ -113,7 +114,7 @@ class ModuleTest extends UnitTestCase
         $this->assertFileExists($sSmartyFilePath);
 
         $SUT = $this->SUT;
-        $SUT::clearTmp(\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('sCompileDir') . DIRECTORY_SEPARATOR . 'smarty');
+        $SUT::clearTmp(Registry::getConfig()->getConfigParam('sCompileDir') . DIRECTORY_SEPARATOR . 'smarty');
 
         $this->assertFileExists($sTestFilePath);
         $this->assertFileNotExists($sSmartyFilePath);
@@ -121,7 +122,7 @@ class ModuleTest extends UnitTestCase
 
     public function testClearTmp_noArguments_clearsTempFolder()
     {
-        $sTestFilePath = \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('sCompileDir') . DIRECTORY_SEPARATOR . 'test.file';
+        $sTestFilePath = Registry::getConfig()->getConfigParam('sCompileDir') . DIRECTORY_SEPARATOR . 'test.file';
 
         file_put_contents($sTestFilePath, 'TEST' . PHP_EOL);
 
@@ -163,14 +164,14 @@ class ModuleTest extends UnitTestCase
 
     public function testGetSetting_noSecondArgument_returnModuleSettingByItsNameWithNoModulePrefix()
     {
-        \OxidEsales\Eshop\Core\Registry::getConfig()->setConfigParam('oxpsModuleGeneratorVendorPrefix', 'test');
+        Registry::getConfig()->setConfigParam('oxpsModuleGeneratorVendorPrefix', 'test');
 
         $this->assertSame('test', $this->SUT->getSetting('VendorPrefix'));
     }
 
     public function testGetSetting_secondArgumentIsFalse_returnModuleSettingByItsNameWithNoModulePrefix()
     {
-        \OxidEsales\Eshop\Core\Registry::getConfig()->setConfigParam('sAdminEmail', 'test@example.com');
+        Registry::getConfig()->setConfigParam('sAdminEmail', 'test@example.com');
 
         $this->assertSame('test@example.com', $this->SUT->getSetting('sAdminEmail', false));
     }

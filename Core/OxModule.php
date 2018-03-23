@@ -28,6 +28,8 @@ namespace Oxps\ModuleGenerator\Core;
 
 use \OxidEsales\Eshop\Core\Registry;
 use \OxidEsales\Eshop\Core\Str;
+use OxidEsales\Eshop\Core\StrMb;
+use OxidEsales\Eshop\Core\StrRegular;
 
 /**
  * Class oxpsModuleGeneratorOxModule overloads \OxidEsales\Eshop\Core\Module
@@ -39,62 +41,61 @@ use \OxidEsales\Eshop\Core\Str;
  */
 class OxModule extends OxModule_parent
 {
-
+    
     /**
      * Vendor directory name and module vendor prefix.
      *
      * @var string
      */
     protected $_sVendorPrefix = '';
-
+    
     /**
      * Module author/vendor data: name, link, mail, copyright and file comment.
      *
      * @var array
      */
     protected $_aAuthorData = array();
-
+    
     /**
      * Validator helper instance.
      *
      * @var null|Validator
      */
     protected $_oValidator = null;
-
+    
     /**
      * @var null|Helper
      */
     protected $_oHelper = null;
-
     /**
-     * @var null|render
+     * @var null|Render
      */
     protected $_oRenderHelper = null;
-
+    
     /**
      * Edit Mode flag.
      *
      * @var null|bool
      */
     protected $_blEditMode = null;
-
+    
     /**
      * Generated module name.
      *
      * @var string
      */
     protected $_sModuleName = '';
-
+    
     /**
      * @var array
      */
     protected $_aGenerationOptions = [];
-
+    
     /**
      * @var array
      */
     protected $_aParsedMetadataOptions = [];
-
+    
     /**
      * Array for storing filenames that need to be backed up during Edit Mode.
      *
@@ -104,7 +105,7 @@ class OxModule extends OxModule_parent
         'metadata.php',
         '.ide-helper.php',
     ];
-
+    
     /**
      * File templates to ignore in edit mode.
      *
@@ -118,8 +119,7 @@ class OxModule extends OxModule_parent
         'uninstall.sql',
         'composer.json.tpl',
     );
-
-
+    
     /**
      * Set module vendor prefix. It is also a vendor directory name.
      *
@@ -129,7 +129,7 @@ class OxModule extends OxModule_parent
     {
         $this->_sVendorPrefix = $sVendorPrefix;
     }
-
+    
     /**
      * Get module vendor prefix. It is also vendor directory name.
      *
@@ -140,16 +140,13 @@ class OxModule extends OxModule_parent
     public function getVendorPrefix($blUppercase = false)
     {
         if (!empty($blUppercase)) {
-
-            /** @var \OxidEsales\Eshop\Core\StrMb|\OxidEsales\Eshop\Core\StrRegular $oStr */
+            /** @var StrMb|StrRegular $oStr */
             $oStr = Str::getStr();
-
             return $oStr->strtoupper($this->_sVendorPrefix);
         }
-
         return $this->_sVendorPrefix;
     }
-
+    
     /**
      * Set module author/vendor data. It is used in metadata, README file and PHP files comments.
      *
@@ -159,7 +156,7 @@ class OxModule extends OxModule_parent
     {
         $this->_aAuthorData = $aAuthorData;
     }
-
+    
     /**
      * Get module author/vendor data. It is used in metadata, README file and PHP files comments.
      *
@@ -172,10 +169,9 @@ class OxModule extends OxModule_parent
         if (!is_null($mField)) {
             return $this->getArrayValue($this->_aAuthorData, $mField);
         }
-
         return $this->_aAuthorData;
     }
-
+    
     /**
      * Get validation and data access helper instance.
      *
@@ -186,10 +182,9 @@ class OxModule extends OxModule_parent
         if (is_null($this->_oValidator)) {
             $this->_oValidator = Registry::get(Validator::class);
         }
-
         return $this->_oValidator;
     }
-
+    
     /**
      * Get module ID.
      *
@@ -202,7 +197,7 @@ class OxModule extends OxModule_parent
     {
         return empty($blCamelCase) ? $this->getId() : $this->getInfo('oxpsmodulegenerator_class');
     }
-
+    
     /**
      * Get module folder name.
      *
@@ -213,18 +208,14 @@ class OxModule extends OxModule_parent
     public function getModuleFolderName($blUppercase = false)
     {
         $sFolderName = $this->getInfo('oxpsmodulegenerator_folder');
-
         if ($blUppercase and !is_null($sFolderName)) {
-
-            /** @var \OxidEsales\Eshop\Core\StrMb|\OxidEsales\Eshop\Core\StrRegular $oStr */
+            /** @var StrMb|StrRegular $oStr */
             $oStr = Str::getStr();
-
             $sFolderName = $oStr->strtoupper($sFolderName);
         }
-
         return $sFolderName;
     }
-
+    
     /**
      * Get module main class name. An alias for getModuleId method with True argument.
      *
@@ -234,7 +225,7 @@ class OxModule extends OxModule_parent
     {
         return $this->getModuleId(true);
     }
-
+    
     /**
      * Get module name. An alias for getTitle method with own string format logic.
      *
@@ -243,10 +234,9 @@ class OxModule extends OxModule_parent
     public function getModuleTitle()
     {
         $aExplodedTitle = explode(' ', $this->getTitle(), 2);
-
         return implode(' :: ', $aExplodedTitle);
     }
-
+    
     /**
      * Get a list of classes to overload (extend).
      *
@@ -256,7 +246,7 @@ class OxModule extends OxModule_parent
     {
         return (array) $this->getInfo('oxpsmodulegenerator_extend_classes');
     }
-
+    
     /**
      * Get a list of new classes to create.
      * Each entry comes as array with:
@@ -296,21 +286,18 @@ class OxModule extends OxModule_parent
                 'sInModulePath' => 'Application/Model/',
             ),
         );
-
         if (!is_null($sObjectType)) {
             // Get only one type of classes
             $mData = (array) $this->getArrayValue($mData, $sObjectType, 'array');
-
             if (!is_null($sObjectsParam)) {
                 // Get only one param of one class type
                 $sType = ($sObjectsParam == 'aClasses') ? 'array' : 'string';
                 $mData = $this->getArrayValue($mData, $sObjectsParam, $sType);
             }
         }
-
         return $mData;
     }
-
+    
     /**
      * Get module blocks array.
      *
@@ -320,7 +307,7 @@ class OxModule extends OxModule_parent
     {
         return (array) $this->getInfo('oxpsmodulegenerator_blocks');
     }
-
+    
     /**
      * Get module settings array.
      *
@@ -330,7 +317,7 @@ class OxModule extends OxModule_parent
     {
         return (array) $this->getInfo('oxpsmodulegenerator_module_settings');
     }
-
+    
     /**
      * Parser setting type "select" options.
      *
@@ -342,7 +329,7 @@ class OxModule extends OxModule_parent
     {
         return (array) explode('|', str_replace("'", "", trim($sOptions)));
     }
-
+    
     /**
      * Get a list of theme IDs to generate tempalte for - multi-theme support.
      * List with empty string means use default templates generation - same for all themes.
@@ -354,12 +341,10 @@ class OxModule extends OxModule_parent
         if ($this->getInfo('oxpsmodulegenerator_module_theme_none')) {
             return array('');
         }
-
         $aThemes = (array) $this->getInfo('oxpsmodulegenerator_module_theme_list');
-
         return empty($aThemes) ? array('') : $aThemes;
     }
-
+    
     /**
      * Get module version.
      *
@@ -369,7 +354,7 @@ class OxModule extends OxModule_parent
     {
         return (string) $this->getInfo('oxpsmodulegenerator_module_init_version');
     }
-
+    
     /**
      * Should the generator render "To Do" hints and tasks, e.g. hints how to use metadata samples, etc.
      *
@@ -379,7 +364,7 @@ class OxModule extends OxModule_parent
     {
         return (bool) $this->getInfo('oxpsmodulegenerator_render_tasks');
     }
-
+    
     /**
      * Should the generator render sample data and example code, e.g. sample metadata lines, etc.
      *
@@ -389,7 +374,7 @@ class OxModule extends OxModule_parent
     {
         return (bool) $this->getInfo('oxpsmodulegenerator_render_samples');
     }
-
+    
     /**
      * Get a full path of vendor directory.
      *
@@ -399,7 +384,7 @@ class OxModule extends OxModule_parent
     {
         return Registry::getConfig()->getModulesDir() . $this->getVendorPrefix() . '/';
     }
-
+    
     /**
      * Get a full path to the module directory.
      *
@@ -409,7 +394,7 @@ class OxModule extends OxModule_parent
     {
         return $this->getVendorPath() . $this->getModuleFolderName() . '/';
     }
-
+    
     /**
      * Initialization for module generation method.
      *
@@ -424,7 +409,6 @@ class OxModule extends OxModule_parent
         }
         // Set field for generated module name
         $this->_sModuleName = $sModuleName;
-
         // TODO [nice2have]: Maybe isEditMode() check should be changed to not call init() for the second time,
         // TODO [nice2have]: then IF is not needed
         // Set field for Generation Options from Generator submitted form
@@ -432,7 +416,7 @@ class OxModule extends OxModule_parent
             $this->_aGenerationOptions = $aGenerationOptions;
         }
     }
-
+    
     /**
      * Generate a module.
      * Creates blank pre-configure module skeleton in a vendor folder.
@@ -460,21 +444,17 @@ class OxModule extends OxModule_parent
     public function generateModule($sModuleName, array $aGenerationOptions = array())
     {
         $this->init($sModuleName, $aGenerationOptions);
-
         // Initialize helpers
         /** @var Helper $oHelper */
         $this->_oHelper = Registry::get(Helper::class);
         $this->_oHelper->init($this);
-
         /** @var Render $oRenderHelper */
         $this->_oRenderHelper = Registry::get(Render::class);
         $this->_oRenderHelper->init($this);
-
         $this->_moduleGeneration();
-
         return true;
     }
-
+    
     /**
      * Set module data with or without existing parsed data depending on bool flag.
      * For example, flag is used to render full metadata.php template, but skip
@@ -485,7 +465,6 @@ class OxModule extends OxModule_parent
     public function setNewModuleData($blAddParsedOptions = false)
     {
         $aOptionsToSet = $this->_aGenerationOptions;
-
         if ($blAddParsedOptions) {
             foreach ($this->_aGenerationOptions as $index => $aGenerationOption) {
                 if (array_key_exists($index, $this->_aParsedMetadataOptions)) {
@@ -499,11 +478,10 @@ class OxModule extends OxModule_parent
                 }
             }
         }
-
         // Set module data - initializes it with new module info
         $this->_setNewModuleData($this->_sModuleName, $aOptionsToSet);
     }
-
+    
     /**
      * Validate new module name: should be "UpperCamelCase".
      *
@@ -515,7 +493,7 @@ class OxModule extends OxModule_parent
     {
         return $this->getValidator()->validateCamelCaseName($sModuleName);
     }
-
+    
     /**
      * Get suffix of module file name by its path.
      * Expects argument to be something like "path/to/[vendor_prefix][module_name][desired_suffix].php"
@@ -528,18 +506,15 @@ class OxModule extends OxModule_parent
     {
         $sSuffix = '';
         $sFileName = basename($sPath);
-
         if (!empty($sFileName)) {
             $aFileName = explode('.', $sFileName);
-
             if (!empty($aFileName[0])) {
                 $sSuffix = str_replace($this->getModuleId(), '', $aFileName[0]);
             }
         }
-
         return $sSuffix;
     }
-
+    
     /**
      * Generates a namespace based on given path to file. Used in templates for namespace generation.
      * Expects argument to be something like "path/to/[vendor_prefix][module_name][desired_suffix].php"
@@ -557,10 +532,9 @@ class OxModule extends OxModule_parent
             $sSuffix = str_replace(array(DIRECTORY_SEPARATOR, '.php'), "\\", $sDir);
             $sSuffix = rtrim($sSuffix, '\\');
         }
-
         return $sSuffix;
     }
-
+    
     /**
      * Render file comment using a template and author/vendor data.
      *
@@ -573,10 +547,9 @@ class OxModule extends OxModule_parent
         /** @var Render $oRenderHelper */
         $oRenderHelper = Registry::get(Render::class);
         $oRenderHelper->init($this);
-
         return $oRenderHelper->renderFileComment($sSubPackage);
     }
-
+    
     /**
      * An alias for validator class method.
      * Converts camel case string to human readable string with spaces between words.
@@ -590,8 +563,7 @@ class OxModule extends OxModule_parent
     {
         return $this->getValidator()->camelCaseToHumanReadable($sCamelCaseString);
     }
-
-
+    
     /**
      * An alias for validator class method.
      * Get array value by key, optionally casting its type to desired one.
@@ -606,7 +578,7 @@ class OxModule extends OxModule_parent
     {
         return $this->getValidator()->getArrayValue($aDataArray, $mArrayKey, $sType);
     }
-
+    
     /**
      * Check if entered module name already exists.
      *
@@ -617,10 +589,9 @@ class OxModule extends OxModule_parent
         if (null === $this->_blEditMode) {
             $this->_blEditMode = $this->getValidator()->moduleExists($this->_sModuleName);
         }
-
         return $this->_blEditMode;
     }
-
+    
     /**
      *
      */
@@ -630,28 +601,27 @@ class OxModule extends OxModule_parent
             $this->_backupFileIfExists($item);
         }
     }
-
+    
     /**
      * Return parsed module metadata info to Generation Options to fill Module Generator form.
      *
      * @param string $sModuleName
      *
      * @return array
+     * @throws \ReflectionException
      */
     public function readGenerationOptions($sModuleName)
     {
         $aGenerationOptions = [];
-
         $aMetadata = $this->_getMetadataInfo($sModuleName);
         if (!empty($aMetadata)) {
             /** @var Metadata $oMetadataParser */
             $oMetadataParser = Registry::get(Metadata::class);
             $aGenerationOptions = $oMetadataParser->parseMetadata($aMetadata, $this->getVendorPrefix(), $sModuleName, $this->getVendorPath() . $sModuleName);
         }
-
         return $aGenerationOptions;
     }
-
+    
     /**
      * Compile additional module params and set all module data.
      *
@@ -660,10 +630,9 @@ class OxModule extends OxModule_parent
      */
     protected function _setNewModuleData($sModuleName, array $aOptions = array())
     {
-        /** @var settings $oSettingsParser */
-        $oSettingsParser = Registry::get($oSettingsParser);
-
-        /** @var \OxidEsales\Eshop\Core\StrMb|\OxidEsales\Eshop\Core\StrRegular $oStr */
+        /** @var Settings $oSettingsParser */
+        $oSettingsParser = Registry::get(Settings::class);
+        /** @var StrMb|StrRegular $oStr */
         $oStr = Str::getStr();
         $sVendorPrefix = $this->getVendorPrefix();
         $sVarPrefix = $oStr->strtoupper($sVendorPrefix);
@@ -676,7 +645,6 @@ class OxModule extends OxModule_parent
             'id'                                      => $sModuleId,
             'title'                                   => $sVarPrefix . ' ' . $sReadableName,
             'description'                             => $sVarPrefix . ' ' . $sReadableName . ' Module',
-
             // Additional params for new module generation
             'oxpsmodulegenerator_name'                => $sModuleName,
             'oxpsmodulegenerator_folder'              => $sModuleFolder,
@@ -698,7 +666,7 @@ class OxModule extends OxModule_parent
         );
         $this->setModuleData($aModuleData);
     }
-
+    
     /**
      * Get Metadata of provided module name.
      *
@@ -721,10 +689,9 @@ class OxModule extends OxModule_parent
                 // TODO #SVO: Optionally it could log to eShop standard exceptions log
             }
         }
-
         return (array) $aModule;
     }
-
+    
     /**
      * Get full path to module metadata.php file
      *
@@ -736,12 +703,10 @@ class OxModule extends OxModule_parent
     protected function _getFullFilePath($sModuleName, $sFilename)
     {
         $sFullModulePath = $this->getVendorPath() . $sModuleName;
-
         $sMetadataPath = $sFullModulePath . "/" . $sFilename;
-
         return (string) $sMetadataPath;
     }
-
+    
     /*    TODO: Method should go to class \oxpsModuleGeneratorFileSystem and use its helpers. Of course parameter*/
     /*    TODO: would become full path, not just file name (full path could be set in new "backupFiles" method).*/
     /**
@@ -757,14 +722,15 @@ class OxModule extends OxModule_parent
             );
         }
     }
-
+    
     /**
      * Module generation action.
+     *
+     * @throws \ReflectionException
      */
     protected function _moduleGeneration()
     {
         $blAppendMetadata = false;
-
         // Check if Edit Mode is activated
         if ($this->isEditMode()) {
             $this->_aParsedMetadataOptions = $this->readGenerationOptions($this->_sModuleName);
@@ -773,11 +739,9 @@ class OxModule extends OxModule_parent
         }
         // Set module data - initializes it with new module info
         $this->setNewModuleData($blAppendMetadata);
-
         // Get new module and module generation template full paths
         $sModuleGeneratorPath = Registry::get(Module::class)->getPath();
         $sModulePath = $this->getFullPath();
-
         // Copy the module from a folder structure with templates to a new module path
         $this->_oHelper->createVendorMetadata($this->getVendorPath());
         $this->_oHelper->getFileSystemHelper()->copyFolder(
@@ -785,21 +749,16 @@ class OxModule extends OxModule_parent
             $sModulePath,
             $this->isEditMode() ? (array) $this->_aIgnoreOnEdit : array()
         );
-
         // Create classes to overload (extend)
         $aClassesToExtend = (array) $this->_oHelper->createClassesToExtend(
             $sModuleGeneratorPath . 'Core/module.tpl/oxpsExtendClass.php.tpl'
         );
-
         // Create new module classes and templates
         $aNewClasses = (array) $this->_oHelper->createNewClassesAndTemplates($sModuleGeneratorPath);
-
         // Create blocks templates
         $this->_oHelper->createBlock($sModulePath);
-
         // Process copied module files as Smarty templates to fill them with the real module data
         $this->_oRenderHelper->renderModuleFiles($aClassesToExtend, $aNewClasses);
-
         // Clone PHP Unit tests libraries if the option is checked and configured
         if ($this->getArrayValue($this->_aGenerationOptions, 'blFetchUnitTests')) {
             $this->_oHelper->fillTestsFolder(

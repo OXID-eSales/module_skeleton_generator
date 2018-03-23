@@ -31,10 +31,10 @@ use Oxps\ModuleGenerator\Core\Validator;
 use PHPUnit_Framework_MockObject_MockObject;
 
 /**
- * Class oxpsModuleGeneratorValidatorTest
- * UNIT tests for core class oxpsModuleGeneratorValidator.
+ * Class ValidatorTest
+ * UNIT tests for core class Validator.
  *
- * @see oxpsModuleGeneratorValidator
+ * @see Validator
  */
 class ValidatorTest extends UnitTestCase
 {

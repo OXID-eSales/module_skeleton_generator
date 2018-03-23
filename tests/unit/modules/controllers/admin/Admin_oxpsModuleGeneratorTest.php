@@ -26,8 +26,11 @@
     
 namespace Oxps\ModuleGenerator\Tests\Unit\Modules\Controllers\Admin;
 
+use OxidEsales\Eshop\Core\Config;
+use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use Oxps\ModuleGenerator\Application\Controller\Admin\Admin_oxpsModuleGenerator;
+use Oxps\ModuleGenerator\Core\OxModule;
 use Oxps\ModuleGenerator\Core\Render;
 use oxTestModules;
 
@@ -67,21 +70,21 @@ class Admin_oxpsModuleGeneratorTest extends UnitTestCase
         );
 
         // Mock config for module settings
-        $oConfig = \OxidEsales\Eshop\Core\Registry::getConfig();
+        $oConfig = Registry::getConfig();
         $oConfig->setConfigParam('oxpsModuleGeneratorVendorPrefix', 'test');
         $oConfig->setConfigParam('oxpsModuleGeneratorModuleAuthor', 'TEST');
         $oConfig->setConfigParam('oxpsModuleGeneratorAuthorLink', 'www.example.com');
         $oConfig->setConfigParam('oxpsModuleGeneratorAuthorMail', 'test@example.com');
         $oConfig->setConfigParam('oxpsModuleGeneratorCopyright', 'TEST ');
         $oConfig->setConfigParam('oxpsModuleGeneratorComment', '* This is automatically generated test output.');
-        \OxidEsales\Eshop\Core\Registry::set(\OxidEsales\Eshop\Core\Config::class, $oConfig);
+        Registry::set(Config::class, $oConfig);
 
         // Module instance mock for generation path only
-        $oModule = $this->getMock('oxpsModuleGeneratorOxModule', array('getVendorPath'));
+        $oModule = $this->getMock(OxModule::class, array('getVendorPath'));
         $oModule->expects($this->any())->method('getVendorPath')->will(
             $this->returnValue($this->_getTestPath('modules/test/'))
         );
-        oxTestModules::addModuleObject('oxpsModuleGeneratorOxModule', $oModule);
+        oxTestModules::addModuleObject(OxModule::class, $oModule);
 
         @mkdir($this->_getTestPath());
         @mkdir($this->_getTestPath('modules'));
@@ -145,9 +148,9 @@ class Admin_oxpsModuleGeneratorTest extends UnitTestCase
     public function testRender_noVendorDataConfigured_setError()
     {
         // Config mock
-        $oConfig = \OxidEsales\Eshop\Core\Registry::getConfig();
+        $oConfig = Registry::getConfig();
         $oConfig->setConfigParam('oxpsModuleGeneratorVendorPrefix', '');
-        \OxidEsales\Eshop\Core\Registry::set(\OxidEsales\Eshop\Core\Config::class, $oConfig);
+        Registry::set(Config::class, $oConfig);
 
         $this->SUT->expects($this->once())->method('_Admin_oxpsModuleGenerator_init_parent');
         $this->SUT->expects($this->once())->method('_Admin_oxpsModuleGenerator_render_parent')->will(
@@ -260,7 +263,7 @@ class Admin_oxpsModuleGeneratorTest extends UnitTestCase
         $this->SUT->expects($this->once())->method('_Admin_oxpsModuleGenerator_init_parent');
         $this->SUT->init();
 
-        $this->assertInstanceOf('oxpsModuleGeneratorOxModule', $this->SUT->getModule());
+        $this->assertInstanceOf(OxModule::class, $this->SUT->getModule());
     }
 
 
@@ -288,9 +291,9 @@ class Admin_oxpsModuleGeneratorTest extends UnitTestCase
     public function testGenerateModule_noVendorPrefixConfigured_setErrorMessage()
     {
         // Config mock
-        $oConfig = \OxidEsales\Eshop\Core\Registry::getConfig();
+        $oConfig = Registry::getConfig();
         $oConfig->setConfigParam('oxpsModuleGeneratorVendorPrefix', '');
-        \OxidEsales\Eshop\Core\Registry::set(\OxidEsales\Eshop\Core\Config::class, $oConfig);
+        Registry::set(Config::class, $oConfig);
 
         $this->SUT->init();
         $this->SUT->generateModule();
@@ -305,9 +308,9 @@ class Admin_oxpsModuleGeneratorTest extends UnitTestCase
     public function testGenerateModule_invalidVendorPrefixConfigured_setErrorMessage()
     {
         // Config mock
-        $oConfig = \OxidEsales\Eshop\Core\Registry::getConfig();
+        $oConfig = Registry::getConfig();
         $oConfig->setConfigParam('oxpsModuleGeneratorVendorPrefix', 'Test');
-        \OxidEsales\Eshop\Core\Registry::set(\OxidEsales\Eshop\Core\Config::class, $oConfig);
+        Registry::set(Config::class, $oConfig);
 
         $this->SUT->init();
         $this->SUT->generateModule();
@@ -1252,7 +1255,7 @@ class Admin_oxpsModuleGeneratorTest extends UnitTestCase
      */
     protected function _getTestPath($sPathSuffix = '')
     {
-        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('sCompileDir') . DIRECTORY_SEPARATOR .
+        return Registry::getConfig()->getConfigParam('sCompileDir') . DIRECTORY_SEPARATOR .
                'test' . DIRECTORY_SEPARATOR . (string) $sPathSuffix;
     }
 }

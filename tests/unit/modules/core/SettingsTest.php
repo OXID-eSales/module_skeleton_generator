@@ -30,8 +30,8 @@ use OxidEsales\TestingLibrary\UnitTestCase;
 use Oxps\ModuleGenerator\Core\Settings;
 
 /**
- * Class oxpsModuleGeneratorSettingsTest
- * UNIT tests for core class oxpsModuleGeneratorSettings.
+ * Class SettingsTest
+ * UNIT tests for core class Settings.
  *
  * @see settings
  */
@@ -53,12 +53,16 @@ class SettingsTest extends UnitTestCase
     {
         parent::setUp();
 
-        $this->SUT = $this->getMock('settings', array('__call'));
+        $this->SUT = $this->getMock(Settings::class, array('__call'));
     }
-
-
+    
+    
     /**
      * @dataProvider moduleSettingsDataProvider
+     *
+     * @param       $sCondition
+     * @param array $aRawSettings
+     * @param array $aParsedReturn
      */
     public function testGetModuleSettings($sCondition, array $aRawSettings, array $aParsedReturn)
     {

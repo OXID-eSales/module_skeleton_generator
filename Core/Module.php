@@ -27,6 +27,7 @@
 namespace Oxps\ModuleGenerator\Core;
 
 use OxidEsales\Eshop\Application\Model\Content;
+use OxidEsales\Eshop\Core\Model\MultiLanguageModel;
 use \OxidEsales\Eshop\Core\Module\Module as BaseModel;
 use \OxidEsales\Eshop\Core\Registry;
 
@@ -130,7 +131,7 @@ class Module extends BaseModel
     {
         $sValue = '';
 
-        /** @var Content|\OxidEsales\Eshop\Core\Model\MultiLanguageModel $oContent */
+        /** @var Content|MultiLanguageModel $oContent */
         $oContent = oxNew(Content::class);
         $oContent->loadByIdent(trim((string) $sIdentifier));
 

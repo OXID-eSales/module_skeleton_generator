@@ -26,15 +26,16 @@
 namespace Oxps\ModuleGenerator\Tests\Unit\Modules\Core;
 
 use org\bovigo\vfs\vfsStream;
+use OxidEsales\Eshop\Core\Module\Module;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use Oxps\ModuleGenerator\Core\Metadata;
 use PHPUnit_Framework_MockObject_MockObject;
 
 /**
- * Class oxpsModuleGeneratorMetadataTest
- * UNIT tests for core class oxpsModuleGeneratorMetadata.
+ * Class MetadataTest
+ * UNIT tests for core class Metadata.
  *
- * @see oxpsModuleGenratorMetadata
+ * @see Metadata
  */
 class MetadataTest extends UnitTestCase
 {
@@ -75,7 +76,7 @@ class MetadataTest extends UnitTestCase
     {
         parent::setUp();
 
-        $this->SUT = $this->getMock('oxpsModuleGeneratorMetadata', array('__call'));
+        $this->SUT = $this->getMock(Metadata::class, array('__call'));
     }
 
     public function testParseMetadata_parseEmptyMetadata()
@@ -121,7 +122,7 @@ class MetadataTest extends UnitTestCase
                 1                                           => 1,
                 'array'                                     => [],
                 // valid values
-                \OxidEsales\Eshop\Core\Module\Module::class => 'oxps/TestModule/Core/oxpsTestModuleOxModule',
+                Module::class => 'oxps/TestModule/Core/oxpsTestModuleOxModule',
 
             ],
         ];
@@ -464,9 +465,12 @@ class MetadataTest extends UnitTestCase
 
         $oModuleDir = vfsStream::setup($this->_sModuleName);
         vfsStream::create($aStructure, $oModuleDir);
-
-        $this->assertSame(
-            $aExpectedValue, $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName, $oModuleDir->url())
-        );
+    
+        try {
+            $this->assertSame(
+                $aExpectedValue, $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName, $oModuleDir->url())
+            );
+        } catch (\ReflectionException $e) {
+        }
     }
 }

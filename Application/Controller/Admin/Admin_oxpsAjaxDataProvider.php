@@ -24,7 +24,13 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
+namespace Oxps\ModuleGenerator\Application\Controller\Admin;
+
 use OxidEsales\Eshop\Application\Controller\Admin\AdminController;
+use OxidEsales\Eshop\Core\Registry;
+use Oxps\ModuleGenerator\Core\Module;
+use Oxps\ModuleGenerator\Core\OxModule;
+use Oxps\ModuleGenerator\Core\Validator;
 
 /**
  * Class Admin_oxpsAjaxDataProvider.
@@ -38,17 +44,17 @@ class Admin_oxpsAjaxDataProvider extends AdminController
     protected $_sVendorPrefix;
 
     /**
-     * @var oxpsModuleGeneratorOxModule
+     * @var OxModule
      */
     protected $_oOxModule;
 
     /**
-     * @var oxpsModuleGeneratorModule
+     * @var Module
      */
     protected $_oModule;
 
     /**
-     * @var oxpsModuleGeneratorValidator
+     * @var Validator
      */
     protected $_oValidator;
 
@@ -64,12 +70,12 @@ class Admin_oxpsAjaxDataProvider extends AdminController
     /**
      * Get oxModule instance to access generated module data.
      *
-     * @return oxpsModuleGeneratorOxModule
+     * @return OxModule
      */
     public function getOxModule()
     {
         if (null === $this->_oOxModule) {
-            $this->_oOxModule = oxNew('oxpsModuleGeneratorOxModule');
+            $this->_oOxModule = oxNew(OxModule::class);
         }
 
         return $this->_oOxModule;
@@ -78,24 +84,24 @@ class Admin_oxpsAjaxDataProvider extends AdminController
     /**
      * Get Generator module instance to access modules settings.
      *
-     * @return oxpsModuleGeneratorModule
+     * @return Module
      */
     public function getModule()
     {
         if (null === $this->_oModule) {
-            $this->_oModule = oxNew('oxpsModuleGeneratorModule');
+            $this->_oModule = oxNew(Module::class);
         }
 
         return $this->_oModule;
     }
 
     /**
-     * @return oxpsModuleGeneratorValidator
+     * @return Validator
      */
     public function getValidator()
     {
         if (null === $this->_oValidator) {
-            $this->_oValidator = oxNew('oxpsModuleGeneratorValidator');
+            $this->_oValidator = oxNew(Validator::class);
         }
 
         return $this->_oValidator;
@@ -115,9 +121,11 @@ class Admin_oxpsAjaxDataProvider extends AdminController
             $this->_returnJsonResponse([]);
         }
     }
-
+    
     /**
      * Validate extended classes names and return JSON with module's metadata.
+     *
+     * @throws \ReflectionException
      */
     public function validateExtendClassNames()
     {
@@ -152,7 +160,7 @@ class Admin_oxpsAjaxDataProvider extends AdminController
     protected function _returnJsonResponse(array $aExistingModuleSettings)
     {
         header('Content-Type: application/json');
-        OxidEsales\Eshop\Core\Registry::getUtils()->showMessageAndExit(
+        Registry::getUtils()->showMessageAndExit(
             json_encode($aExistingModuleSettings, JSON_FORCE_OBJECT)
         );
     }

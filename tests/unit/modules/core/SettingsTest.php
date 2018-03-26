@@ -23,20 +23,25 @@
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2014
  */
+ 
+namespace Oxps\ModuleGenerator\Tests\Unit\Modules\Core;
+
+use OxidEsales\TestingLibrary\UnitTestCase;
+use Oxps\ModuleGenerator\Core\Settings;
 
 /**
- * Class oxpsModuleGeneratorSettingsTest
- * UNIT tests for core class oxpsModuleGeneratorSettings.
+ * Class SettingsTest
+ * UNIT tests for core class Settings.
  *
- * @see oxpsModuleGeneratorSettings
+ * @see settings
  */
-class oxpsModuleGeneratorSettingsTest extends \OxidEsales\TestingLibrary\UnitTestCase
+class SettingsTest extends UnitTestCase
 {
 
     /**
      * Subject under the test.
      *
-     * @var oxpsModuleGeneratorSettings
+     * @var settings
      */
     protected $SUT;
 
@@ -48,12 +53,16 @@ class oxpsModuleGeneratorSettingsTest extends \OxidEsales\TestingLibrary\UnitTes
     {
         parent::setUp();
 
-        $this->SUT = $this->getMock('oxpsModuleGeneratorSettings', array('__call'));
+        $this->SUT = $this->getMock(Settings::class, array('__call'));
     }
-
-
+    
+    
     /**
      * @dataProvider moduleSettingsDataProvider
+     *
+     * @param       $sCondition
+     * @param array $aRawSettings
+     * @param array $aParsedReturn
      */
     public function testGetModuleSettings($sCondition, array $aRawSettings, array $aParsedReturn)
     {

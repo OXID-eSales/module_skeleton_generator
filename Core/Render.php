@@ -24,20 +24,24 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
+namespace Oxps\ModuleGenerator\Core;
+
 use \OxidEsales\Eshop\Core\Base;
 use \OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\UtilsView;
+use Smarty;
 
 /**
  * Class oxpsModuleGeneratorRender
  * Smarty templates (module files) rendering helper for new copied module files.
  */
-class oxpsModuleGeneratorRender extends Base
+class Render extends Base
 {
 
     /**
      * A module instance to generate stuff for.
      *
-     * @var null|oxpsModuleGeneratorOxModule
+     * @var null|OxModule
      */
     protected $_oModule = null;
 
@@ -45,7 +49,7 @@ class oxpsModuleGeneratorRender extends Base
     /**
      * Alias for `setModule`.
      *
-     * @param oxpsModuleGeneratorOxModule $oModule
+     * @param OxModule $oModule
      */
     public function init($oModule)
     {
@@ -55,7 +59,7 @@ class oxpsModuleGeneratorRender extends Base
     /**
      * Set module instance to generate stuff for.
      *
-     * @param oxpsModuleGeneratorOxModule $oModule
+     * @param OxModule $oModule
      */
     public function setModule($oModule)
     {
@@ -65,7 +69,7 @@ class oxpsModuleGeneratorRender extends Base
     /**
      * Get module instance to generate stuff for.
      *
-     * @return oxpsModuleGeneratorOxModule.
+     * @return OxModule.
      */
     public function getModule()
     {
@@ -104,16 +108,16 @@ class oxpsModuleGeneratorRender extends Base
         $oModule = $this->getModule();
         $sModulePath = $oModule->getFullPath();
 
-        /** @var oxpsModuleGeneratorValidator $oValidator */
-        $oValidator = Registry::get('oxpsModuleGeneratorValidator');
+        /** @var Validator $oValidator */
+        $oValidator = Registry::get(Validator::class);
 
-        /** @var oxpsModuleGeneratorFileSystem $oFileSystemHelper */
-        $oFileSystemHelper = Registry::get('oxpsModuleGeneratorFileSystem');
+        /** @var FileSystem $oFileSystemHelper */
+        $oFileSystemHelper = Registry::get(FileSystem::class);
 
         // Initialize Smarty and process template files
 
         /** @var Smarty $oSmarty */
-        $oSmarty = Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->getSmarty();
+        $oSmarty = Registry::get(UtilsView::class)->getSmarty();
         $oSmarty->assign('oModule', $oModule);
 
         foreach ($aClasses as $sFileName => $sFilePath) {
@@ -164,7 +168,7 @@ class oxpsModuleGeneratorRender extends Base
         $sCommentTemplate = $sBaseModulePath . 'ModuleGenerator/Core/module.tpl/oxpsComment.inc.php.tpl';
 
         /** @var Smarty $oSmarty */
-        $oSmarty = Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->getSmarty();
+        $oSmarty = Registry::get(UtilsView::class)->getSmarty();
         $oSmarty->assign('oModule', $this->getModule());
 
         if (!empty($sSubPackage)) {

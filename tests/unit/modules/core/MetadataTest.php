@@ -23,21 +23,27 @@
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2014
  */
+namespace Oxps\ModuleGenerator\Tests\Unit\Modules\Core;
 
 use org\bovigo\vfs\vfsStream;
+use OxidEsales\Eshop\Core\Module\Module;
+use OxidEsales\TestingLibrary\UnitTestCase;
+use Oxps\ModuleGenerator\Core\Metadata;
+use PHPUnit_Framework_MockObject_MockObject;
+
 /**
- * Class oxpsModuleGeneratorMetadataTest
- * UNIT tests for core class oxpsModuleGeneratorMetadata.
+ * Class MetadataTest
+ * UNIT tests for core class Metadata.
  *
- * @see oxpsModuleGenratorMetadata
+ * @see Metadata
  */
-class oxpsModuleGeneratorMetadataTest extends OxidEsales\TestingLibrary\UnitTestCase
+class MetadataTest extends UnitTestCase
 {
 
     /**
      * Subject under the test.
      *
-     * @var oxpsModuleGeneratorMetadata|PHPUnit_Framework_MockObject_MockObject
+     * @var Metadata|PHPUnit_Framework_MockObject_MockObject
      */
     protected $SUT;
 
@@ -70,7 +76,7 @@ class oxpsModuleGeneratorMetadataTest extends OxidEsales\TestingLibrary\UnitTest
     {
         parent::setUp();
 
-        $this->SUT = $this->getMock('oxpsModuleGeneratorMetadata', array('__call'));
+        $this->SUT = $this->getMock(Metadata::class, array('__call'));
     }
 
     public function testParseMetadata_parseEmptyMetadata()
@@ -116,7 +122,7 @@ class oxpsModuleGeneratorMetadataTest extends OxidEsales\TestingLibrary\UnitTest
                 1                                           => 1,
                 'array'                                     => [],
                 // valid values
-                \OxidEsales\Eshop\Core\Module\Module::class => 'oxps/TestModule/Core/oxpsTestModuleOxModule',
+                Module::class => 'oxps/TestModule/Core/oxpsTestModuleOxModule',
 
             ],
         ];
@@ -459,9 +465,12 @@ class oxpsModuleGeneratorMetadataTest extends OxidEsales\TestingLibrary\UnitTest
 
         $oModuleDir = vfsStream::setup($this->_sModuleName);
         vfsStream::create($aStructure, $oModuleDir);
-
-        $this->assertSame(
-            $aExpectedValue, $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName, $oModuleDir->url())
-        );
+    
+        try {
+            $this->assertSame(
+                $aExpectedValue, $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName, $oModuleDir->url())
+            );
+        } catch (\ReflectionException $e) {
+        }
     }
 }

@@ -23,12 +23,18 @@
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2017
  */
+namespace Oxps\ModuleGenerator\Application\Controller\Admin;
 
 use \OxidEsales\Eshop\Application\Controller\Admin\AdminController;
 use \OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\Request;
 use \OxidEsales\Eshop\Core\Str;
+use \Oxps\ModuleGenerator\Core\OxModule;
+use Oxps\ModuleGenerator\Core\Validator;
+use \Oxps\ModuleGenerator\Core\Module;
 
-/**
+
+    /**
  * Class Admin_oxpsModuleGenerator.
  * Module Generator GUI controller.
  */
@@ -44,14 +50,14 @@ class Admin_oxpsModuleGenerator extends AdminController
     /**
      * Module instance used as information container for new module generation.
      *
-     * @var oxpsModuleGeneratorOxModule
+     * @var OxModule
      */
     protected $_oModule;
 
     /**
      * Module Validator instance used for validating data required for new module generation.
      *
-     * @var oxpsModuleGeneratorValidator
+     * @var Validator
      */
     protected $_oValidator;
 
@@ -61,8 +67,8 @@ class Admin_oxpsModuleGenerator extends AdminController
      */
     public function init()
     {
-        /** @var oxpsModuleGeneratorOxModule $oModule */
-        $oModule = oxNew('oxpsModuleGeneratorOxModule');
+        /** @var OxModule $oModule */
+        $oModule = oxNew(OxModule::class);
         $oModule->setVendorPrefix($this->getVendorPrefix());
         $oModule->setAuthorData($this->getAuthorData());
 
@@ -71,12 +77,13 @@ class Admin_oxpsModuleGenerator extends AdminController
         // Parent call
         $this->_Admin_oxpsModuleGenerator_init_parent();
     }
-
+    
     /**
      * Overridden parent method.
      * Adds module instance to view data.
      *
      * @return string
+     * @throws \ReflectionException
      */
     public function render()
     {
@@ -98,13 +105,13 @@ class Admin_oxpsModuleGenerator extends AdminController
     /**
      * Get Validator instance or set it if not available.
      *
-     * @return oxpsModuleGeneratorValidator
+     * @return Validator
      */
     public function getValidator()
     {
         if (null === $this->_oValidator) {
-            /** @var oxpsModuleGeneratorValidator $oValidator */
-            $this->_oValidator = Registry::get('oxpsModuleGeneratorValidator');
+            /** @var Validator $oValidator */
+            $this->_oValidator = Registry::get(Validator::class);
         }
 
         return $this->_oValidator;
@@ -113,7 +120,7 @@ class Admin_oxpsModuleGenerator extends AdminController
     /**
      * Get module instance.
      *
-     * @return oxpsModuleGeneratorOxModule
+     * @return OxModule
      */
     public function getModule()
     {
@@ -127,7 +134,7 @@ class Admin_oxpsModuleGenerator extends AdminController
      */
     public function getVendorPrefix()
     {
-        return (string) Registry::get('oxpsModuleGeneratorModule')->getSetting('VendorPrefix');
+        return (string) Registry::get(Module::class)->getSetting('VendorPrefix');
     }
 
     /**
@@ -137,8 +144,8 @@ class Admin_oxpsModuleGenerator extends AdminController
      */
     public function getAuthorData()
     {
-        /** @var oxpsModuleGeneratorModule $oModuleGeneratorModule */
-        $oModuleGeneratorModule = Registry::get('oxpsModuleGeneratorModule');
+        /** @var Module $oModuleGeneratorModule */
+        $oModuleGeneratorModule = Registry::get(Module::class);
 
         return array(
             'name' => (string) $oModuleGeneratorModule->getSetting('ModuleAuthor'),
@@ -216,16 +223,17 @@ class Admin_oxpsModuleGenerator extends AdminController
             $this->setViewData(array_merge($this->getViewData(), $aViewData));
         }
     }
-
+    
     /**
      * Collect request data, parse it and compile to module generation options array.
      *
      * @return array
+     * @throws \ReflectionException
      */
     protected function _getGenerationOptions()
     {
-        /** @var \OxidEsales\Eshop\Core\Request $oRequest */
-        $oRequest = Registry::get(\OxidEsales\Eshop\Core\Request::class);
+        /** @var Request $oRequest */
+        $oRequest = Registry::get(Request::class);
 
         $aGenerationOptions = array(
             'aExtendClasses'   => $this->getValidator()->validateAndLinkClasses(
@@ -262,16 +270,17 @@ class Admin_oxpsModuleGenerator extends AdminController
 
         return $this->_filterListModels($aGenerationOptions);
     }
-
+    
     /**
      * Get initial form values for a case when the form was submitted.
      *
      * @return array
+     * @throws \ReflectionException
      */
     protected function _getFormValues()
     {
-        /** @var oxpsModuleGeneratorValidator $oValidator */
-        $oValidator = Registry::get('oxpsModuleGeneratorValidator');
+        /** @var Validator $oValidator */
+        $oValidator = Registry::get(Validator::class);
 
         $blFormSubmitted = !empty($_POST);
         $aOptions = (array) $this->_getGenerationOptions();
@@ -340,8 +349,8 @@ class Admin_oxpsModuleGenerator extends AdminController
      */
     protected function _getBlocksFieldValue(array $aRequestBlocks)
     {
-        /** @var oxpsModuleGeneratorValidator $oValidator */
-        $oValidator = Registry::get('oxpsModuleGeneratorValidator');
+        /** @var Validator $oValidator */
+        $oValidator = Registry::get(Validator::class);
 
         $aBlocks = array();
 
@@ -381,8 +390,8 @@ class Admin_oxpsModuleGenerator extends AdminController
      */
     protected function _getTextParam($sKey)
     {
-        /** @var \OxidEsales\Eshop\Core\Request $oRequest */
-        $oRequest = Registry::get(\OxidEsales\Eshop\Core\Request::class);
+        /** @var Request $oRequest */
+        $oRequest = Registry::get(Request::class);
 
         return trim((string) $oRequest->getRequestParameter($sKey));
     }
@@ -412,8 +421,8 @@ class Admin_oxpsModuleGenerator extends AdminController
      */
     protected function _filterListModels(array $aData)
     {
-        /** @var oxpsModuleGeneratorValidator $oValidator */
-        $oValidator = Registry::get('oxpsModuleGeneratorValidator');
+        /** @var Validator $oValidator */
+        $oValidator = Registry::get(Validator::class);
 
         $aLists = (array) $oValidator->getArrayValue($aData, 'aNewLists', 'array');
         $aModels = (array) $oValidator->getArrayValue($aData, 'aNewModels', 'array');

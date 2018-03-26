@@ -23,20 +23,29 @@
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2014
  */
+ 
+namespace Oxps\ModuleGenerator\Tests\Unit\Modules\Core;
+
+use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\TestingLibrary\UnitTestCase;
+use Oxps\ModuleGenerator\Core\FileSystem;
+use Oxps\ModuleGenerator\Core\Helper;
+use Oxps\ModuleGenerator\Core\OxModule;
+use Oxps\ModuleGenerator\Core\Render;
 
 /**
- * Class oxpsModuleGeneratorHelperTest
- * UNIT tests for core class oxpsModuleGeneratorHelper.
+ * Class HelperTest
+ * UNIT tests for core class Helper.
  *
- * @see oxpsModuleGeneratorHelper
+ * @see Helper
  */
-class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestCase
+class HelperTest extends UnitTestCase
 {
 
     /**
      * Subject under the test.
      *
-     * @var oxpsModuleGeneratorHelper
+     * @var Helper
      */
     protected $SUT;
 
@@ -48,14 +57,14 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
     {
         parent::setUp();
 
-        $this->SUT = $this->getMock('oxpsModuleGeneratorHelper', array('__call', '_shellExec'));
+        $this->SUT = $this->getMock(Helper::class, array('__call', '_shellExec'));
     }
 
 
     public function testInit()
     {
         // Module instance mock
-        $oModule = $this->getMock('oxpsModuleGeneratorOxModule', array('__construct', '__call'));
+        $oModule = $this->getMock(OxModule::class, array('__construct', '__call'));
 
         $this->SUT->init($oModule);
 
@@ -66,7 +75,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
     public function testGetModule()
     {
         // Module instance mock
-        $oModule = $this->getMock('oxpsModuleGeneratorOxModule', array('__construct', '__call'));
+        $oModule = $this->getMock(OxModule::class, array('__construct', '__call'));
 
         $this->SUT->setModule($oModule);
 
@@ -76,8 +85,8 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
 
     public function testGetFileSystemHelper()
     {
-        $oFileSystem = $this->getMock('oxpsModuleGeneratorFileSystem', array('__call'));
-        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        $oFileSystem = $this->getMock(FileSystem::class, array('__call'));
+        Registry::set(FileSystem::class, $oFileSystem);
 
         $this->assertSame($oFileSystem, $this->SUT->getFileSystemHelper());
     }
@@ -86,7 +95,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
     public function testCreateVendorMetadata()
     {
         // File system helper mock
-        $oFileSystem = $this->getMock('oxpsModuleGeneratorFileSystem', array('__call', 'createFolder', 'createFile'));
+        $oFileSystem = $this->getMock(FileSystem::class, array('__call', 'createFolder', 'createFile'));
         $oFileSystem->expects($this->once())->method('createFolder')->with('/path/to/modules/oxps');
         $oFileSystem->expects($this->once())->method('createFile')->with(
             '/path/to/modules/oxps/vendormetadata.php',
@@ -95,9 +104,9 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
             '/**' . PHP_EOL .
             ' * Metadata version' . PHP_EOL .
             ' */' . PHP_EOL .
-            '$sVendorMetadataVersion = \'1.0\';' . PHP_EOL
+            '$sVendorMetadataVersion = \'2.0\';' . PHP_EOL
         );
-        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        Registry::set(FileSystem::class, $oFileSystem);
 
         $this->SUT->createVendorMetadata('/path/to/modules/oxps');
     }
@@ -106,17 +115,17 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
     public function testCreateClassesToExtend_invalidTemplatePath_returnEmptyArray()
     {
         // File system helper mock
-        $oFileSystem = $this->getMock('oxpsModuleGeneratorFileSystem', array('__call', 'isFile', 'isDir', 'copyFile'));
+        $oFileSystem = $this->getMock(FileSystem::class, array('__call', 'isFile', 'isDir', 'copyFile'));
         $oFileSystem->expects($this->once())->method('isFile')->with('/path/to/template.tpl')->will(
             $this->returnValue(false)
         );
         $oFileSystem->expects($this->never())->method('isDir');
         $oFileSystem->expects($this->never())->method('copyFile');
-        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        Registry::set(FileSystem::class, $oFileSystem);
 
         // Module instance mock
         $oModule = $this->getMock(
-            'oxpsModuleGeneratorOxModule',
+            OxModule::class,
             array('__construct', '__call', 'getClassesToExtend', 'getFullPath', 'getModuleId')
         );
         $oModule->expects($this->once())->method('getClassesToExtend')->will(
@@ -139,7 +148,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
     public function testCreateClassesToExtend_moduleFolderDoesNotExist_returnEmptyArray()
     {
         // File system helper mock
-        $oFileSystem = $this->getMock('oxpsModuleGeneratorFileSystem', array('__call', 'isFile', 'isDir', 'copyFile'));
+        $oFileSystem = $this->getMock(FileSystem::class, array('__call', 'isFile', 'isDir', 'copyFile'));
         $oFileSystem->expects($this->once())->method('isFile')->with('/path/to/template.tpl')->will(
             $this->returnValue(true)
         );
@@ -147,11 +156,11 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
             $this->returnValue(false)
         );
         $oFileSystem->expects($this->never())->method('copyFile');
-        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
 
         // Module instance mock
         $oModule = $this->getMock(
-            'oxpsModuleGeneratorOxModule',
+            OxModule::class,
             array('__construct', '__call', 'getClassesToExtend', 'getFullPath', 'getModuleId')
         );
         $oModule->expects($this->once())->method('getClassesToExtend')->will(
@@ -182,11 +191,11 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
             $this->returnValue(true)
         );
         $oFileSystem->expects($this->never())->method('copyFile');
-        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        Registry::set(FileSystem::class, $oFileSystem);
 
         // Module instance mock
         $oModule = $this->getMock(
-            'oxpsModuleGeneratorOxModule',
+            OxModule::class,
             array('__construct', '__call', 'getClassesToExtend', 'getFullPath', 'getModuleId')
         );
         $oModule->expects($this->once())->method('getClassesToExtend')->will($this->returnValue(array()));
@@ -201,7 +210,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
     public function testCreateClassesToExtend_templateAndModuleDirAndClassesToExtendAreValid_returnCreatedClassesArray()
     {
         // File system helper mock
-        $oFileSystem = $this->getMock('oxpsModuleGeneratorFileSystem', array('__call', 'isFile', 'isDir', 'copyFile'));
+        $oFileSystem = $this->getMock(FileSystem::class, array('__call', 'isFile', 'isDir', 'copyFile'));
         $oFileSystem->expects($this->at(0))->method('isFile')->with('/path/to/template.tpl')->will(
             $this->returnValue(true)
         );
@@ -222,11 +231,11 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
             '/path/to/template.tpl',
             '/path/to/modules/oxps/mymodule/Core/ListModel.php'
         );
-        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
 
         // Module instance mock
         $oModule = $this->getMock(
-            'oxpsModuleGeneratorOxModule',
+            OxModule::class,
             array('__construct', '__call', 'getClassesToExtend', 'getFullPath', 'getModuleId')
         );
         $oModule->expects($this->once())->method('getClassesToExtend')->will(
@@ -271,7 +280,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
     {
         // Module instance mock
         $oModule = $this->getMock(
-            'oxpsModuleGeneratorOxModule',
+            OxModule::class,
             array('__construct', '__call', 'getClassesToCreate')
         );
         $oModule->expects($this->once())->method('getClassesToCreate')->will($this->returnValue(array()));
@@ -285,7 +294,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
     {
         // Module instance mock
         $oModule = $this->getMock(
-            'oxpsModuleGeneratorOxModule',
+            OxModule::class,
             array('__construct', '__call', 'getClassesToCreate')
         );
         $oModule->expects($this->once())->method('getClassesToCreate')->will(
@@ -326,7 +335,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
     {
         // File system helper mock
         $oFileSystem = $this->getMock(
-            'oxpsModuleGeneratorFileSystem',
+            FileSystem::class,
             array('__call', 'isFile', 'isDir', 'copyFile', 'createFile')
         );
         // For faulty items "Faulty Class"
@@ -403,7 +412,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
                 '/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsListModelClass.php.tpl',
                 '/path/to/modules/oxps/mymodule/models/ItemList.php'
             );
-        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        Registry::set(FileSystem::class, $oFileSystem);
 
         // Module instance mock
         $oModule = $this->getMock(
@@ -464,14 +473,14 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
     public function testCreateBlock_noBlocksDefined_noTemplatesCreated()
     {
         // File system helper mock
-        $oFileSystem = $this->getMock('oxpsModuleGeneratorFileSystem', array('__call', 'isDir', 'createFile'));
+        $oFileSystem = $this->getMock(FileSystem::class, array('__call', 'isDir', 'createFile'));
         $oFileSystem->expects($this->never())->method('isDir');
         $oFileSystem->expects($this->never())->method('createFile');
-        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        Registry::set(FileSystem::class, $oFileSystem);
 
         // Module instance mock
         $oModule = $this->getMock(
-            'oxpsModuleGeneratorOxModule',
+            OxModule::class,
             array('__construct', '__call', 'getBlocks', 'getModuleId', 'getFullPath', 'getModuleClassName')
         );
         $oModule->expects($this->once())->method('getBlocks')->will($this->returnValue(array()));
@@ -499,7 +508,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
             '/path/to/modules/oxps/mymodule/Application/views/blocks/oxpsmymodule_footer.tpl',
             $this->stringContains('footer')
         );
-        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
 
         // Module instance mock
         $oModule = $this->getMock(
@@ -537,7 +546,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
         // TODO #SVO: Will need to make changes after namespaces will be officially introduced in eShop Core.
         // Module instance mock
         $oModule = $this->getMock(
-            'oxpsModuleGeneratorOxModule',
+            OxModule::class,
             array('__construct', '__call', 'getFullPath')
         );
 
@@ -546,12 +555,12 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
             ->will($this->returnValue('/path/to/modules/oxps/mymodule/'));
 
         // Render helper mock
-        $oRenderHelper = $this->getMock('oxpsModuleGeneratorRender', array('__call', 'renderWithSmartyAndRename'));
+        $oRenderHelper = $this->getMock('render', array('__call', 'renderWithSmartyAndRename'));
         $oRenderHelper->expects($this->never())->method('renderWithSmartyAndRename');
 
         // File system helper mock
-        $oFileSystem = $this->getMock('oxpsModuleGeneratorFileSystem', array('__call', 'isFile', 'isDir', 'copyFile'));
-        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        $oFileSystem = $this->getMock(FileSystem::class, array('__call', 'isFile', 'isDir', 'copyFile'));
+        Registry::set(FileSystem::class, $oFileSystem);
 
         $this->SUT->init($oModule);
 
@@ -572,7 +581,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
         // TODO #SVO: Will need to make changes after namespaces will be officially introduced in eShop Core.
         // Module instance mock
         $oModule = $this->getMock(
-            'oxpsModuleGeneratorOxModule',
+            OxModule::class,
             array('__construct', '__call', 'getFullPath')
         );
 
@@ -581,17 +590,17 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
             ->will($this->returnValue('/path/to/modules/oxps/mymodule/'));
 
         // Render helper mock
-        $oRenderHelper = $this->getMock('oxpsModuleGeneratorRender', array('__call', 'renderWithSmartyAndRename'));
+        $oRenderHelper = $this->getMock(Render::class, array('__call', 'renderWithSmartyAndRename'));
         $oRenderHelper->expects($this->never())->method('renderWithSmartyAndRename');
 
         // File system helper mock
-        $oFileSystem = $this->getMock('oxpsModuleGeneratorFileSystem', array('__call', 'isFile', 'isDir', 'copyFile'));
+        $oFileSystem = $this->getMock(FileSystem::class, array('__call', 'isFile', 'isDir', 'copyFile'));
         $oFileSystem->expects($this->once())->method('isDir')
             ->with('/path/to/modules/oxps/mymodule/tests/Unit/')
             ->will($this->returnValue(false));
         $oFileSystem->expects($this->never())->method('isFile');
         $oFileSystem->expects($this->never())->method('copyFile');
-        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        Registry::set(FileSystem::class, $oFileSystem);
 
         $this->SUT->init($oModule);
 
@@ -610,7 +619,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
     {
         // Module instance mock
         $oModule = $this->getMock(
-            'oxpsModuleGeneratorOxModule',
+            OxModule::class,
             array('__construct', '__call', 'getFullPath')
         );
 
@@ -619,11 +628,11 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
             ->will($this->returnValue('/path/to/modules/oxps/mymodule/'));
 
         // Render helper mock
-        $oRenderHelper = $this->getMock('oxpsModuleGeneratorRender', array('__call', 'renderWithSmartyAndRename'));
+        $oRenderHelper = $this->getMock('render', array('__call', 'renderWithSmartyAndRename'));
         $oRenderHelper->expects($this->never())->method('renderWithSmartyAndRename');
 
         // File system helper mock
-        $oFileSystem = $this->getMock('oxpsModuleGeneratorFileSystem', array('__call', 'isFile', 'isDir', 'copyFile'));
+        $oFileSystem = $this->getMock(FileSystem::class, array('__call', 'isFile', 'isDir', 'copyFile'));
         $oFileSystem->expects($this->at(0))->method('isDir')
             ->with('/path/to/modules/oxps/mymodule/tests/Unit/')
             ->will($this->returnValue(true));
@@ -631,7 +640,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
             ->with('/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsTestClass.php.tpl')
             ->will($this->returnValue(true));
         $oFileSystem->expects($this->never())->method('copyFile');
-        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        Registry::set(FileSystem::class, $oFileSystem);
 
         $this->SUT->init($oModule);
 
@@ -648,7 +657,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
         // TODO #SVO: Will need to make changes after namespaces will be officially introduced in eShop Core.
         // Module instance mock
         $oModule = $this->getMock(
-            'oxpsModuleGeneratorOxModule',
+            OxModule::class,
             array('__construct', '__call', 'getFullPath')
         );
 
@@ -657,11 +666,11 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
             ->will($this->returnValue('/path/to/modules/oxps/mymodule/'));
 
         // Render helper mock
-        $oRenderHelper = $this->getMock('oxpsModuleGeneratorRender', array('__call', 'renderWithSmartyAndRename'));
+        $oRenderHelper = $this->getMock('render', array('__call', 'renderWithSmartyAndRename'));
         $oRenderHelper->expects($this->never())->method('renderWithSmartyAndRename');
 
         // File system helper mock
-        $oFileSystem = $this->getMock('oxpsModuleGeneratorFileSystem', array('__call', 'isFile', 'isDir', 'copyFile'));
+        $oFileSystem = $this->getMock(FileSystem::class, array('__call', 'isFile', 'isDir', 'copyFile'));
         $oFileSystem->expects($this->at(0))->method('isDir')
             ->with('/path/to/modules/oxps/mymodule/tests/Unit/')
             ->will($this->returnValue(true));
@@ -669,7 +678,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
             ->with('/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsTestClass.php.tpl')
             ->will($this->returnValue(false));
         $oFileSystem->expects($this->never())->method('copyFile');
-        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        Registry::set(FileSystem::class, $oFileSystem);
 
         $this->SUT->init($oModule);
 
@@ -689,7 +698,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
         // TODO #SVO: Will need to make changes after namespaces will be officially introduced in eShop Core.
         // Module instance mock
         $oModule = $this->getMock(
-            'oxpsModuleGeneratorOxModule',
+            OxModule::class,
             array('__construct', '__call', 'getFullPath')
         );
 
@@ -698,7 +707,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
             ->will($this->returnValue('/path/to/modules/oxps/mymodule/'));
 
         // Render helper mock
-        $oRenderHelper = $this->getMock('oxpsModuleGeneratorRender', array('__call', 'renderWithSmartyAndRename'));
+        $oRenderHelper = $this->getMock('render', array('__call', 'renderWithSmartyAndRename'));
         $oRenderHelper->expects($this->once())->method('renderWithSmartyAndRename')->with(
             array(
                 'tests/Unit/models/oxpsmymoduleoxarticleTest.php',
@@ -714,7 +723,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
 
         // File system helper mock
         $oFileSystem = $this->getMock(
-            'oxpsModuleGeneratorFileSystem',
+            FileSystem::class,
             array('__call', 'isFile', 'isDir', 'createFolder', 'copyFile', 'createFile', 'renameFile')
         );
         $oFileSystem->expects($this->at(0))->method('isDir')
@@ -750,7 +759,7 @@ class oxpsModuleGeneratorHelperTest extends \OxidEsales\TestingLibrary\UnitTestC
             '/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsTestClass.php.tpl',
             '/path/to/modules/oxps/mymodule/tests/Unit/models/oxpsmymoduleitemTest.php'
         );
-        \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
 
         $this->SUT->init($oModule);
 

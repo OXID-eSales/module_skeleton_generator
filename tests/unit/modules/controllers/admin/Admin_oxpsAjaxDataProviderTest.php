@@ -25,11 +25,21 @@
  * @copyright (C) OXID eSales AG 2003-2014
  */
 
+namespace Oxps\ModuleGenerator\Tests\Unit\Modules\Controllers\Admin;
+
+use OxidEsales\TestingLibrary\UnitTestCase;
+use Oxps\ModuleGenerator\Application\Controller\Admin\Admin_oxpsAjaxDataProvider;
+use Oxps\ModuleGenerator\Core\Module;
+use Oxps\ModuleGenerator\Core\OxModule;
+use Oxps\ModuleGenerator\Core\Validator;
+use oxTestModules;
+use PHPUnit_Framework_MockObject_MockObject;
+
 if (!class_exists('Smarty')) {
     include dirname(__FILE__) . '../../../../../../../../../vendor/smarty/smarty/libs/Smarty.class.php';
 }
 
-class Admin_oxpsAjaxDataProviderTest extends OxidEsales\TestingLibrary\UnitTestCase
+class Admin_oxpsAjaxDataProviderTest extends UnitTestCase
 {
 
     /**
@@ -48,7 +58,7 @@ class Admin_oxpsAjaxDataProviderTest extends OxidEsales\TestingLibrary\UnitTestC
         parent::setUp();
 
         $this->SUT = $this->getMock(
-            'Admin_oxpsAjaxDataProvider',
+            Admin_oxpsAjaxDataProvider::class,
             [
                 'Admin_oxpsAjaxDataProvider_init_parent',
                 '_returnJsonResponse',
@@ -69,17 +79,17 @@ class Admin_oxpsAjaxDataProviderTest extends OxidEsales\TestingLibrary\UnitTestC
 
     public function testGetOxModule()
     {
-        $this->assertInstanceOf('oxpsModuleGeneratorOxModule', $this->SUT->getOxModule());
+        $this->assertInstanceOf(OxModule::class, $this->SUT->getOxModule());
     }
 
     public function testGetModule()
     {
-        $this->assertInstanceOf('oxpsModuleGeneratorModule', $this->SUT->getModule());
+        $this->assertInstanceOf(Module::class, $this->SUT->getModule());
     }
 
     public function testGetValidator()
     {
-        $this->assertInstanceOf('oxpsModuleGeneratorValidator', $this->SUT->getValidator());
+        $this->assertInstanceOf(Validator::class, $this->SUT->getValidator());
     }
 
     public function testGetModuleData_moduleNameEmpty_returnEmptyJsonResponse()
@@ -87,7 +97,7 @@ class Admin_oxpsAjaxDataProviderTest extends OxidEsales\TestingLibrary\UnitTestC
         $this->setRequestParameter('moduleName', '');
         $this->setConfigParam('oxpsModuleGeneratorVendorPrefix', 'test');
         $oOxModule = $this->getMock(
-            'oxpsModuleGeneratorOxModule',
+            OxModule::class,
             [
                 '__construct',
                 '__call',
@@ -101,7 +111,7 @@ class Admin_oxpsAjaxDataProviderTest extends OxidEsales\TestingLibrary\UnitTestC
 
         // TODO: Deprecaded solution. Need to use the way below:
         // TODO: \OxidEsales\Eshop\Core\Registry::set('oxpsModuleGeneratorOxModule', $oOxModule);
-        oxTestModules::addModuleObject('oxpsModuleGeneratorOxModule', $oOxModule);
+        oxTestModules::addModuleObject(OxModule::class, $oOxModule);
         $this->SUT->expects($this->once())->method('_returnJsonResponse')->with([]);
 
         $this->SUT->getModuleData();
@@ -112,7 +122,7 @@ class Admin_oxpsAjaxDataProviderTest extends OxidEsales\TestingLibrary\UnitTestC
         $this->setRequestParameter('moduleName', 'NotExistingModuleName');
         $this->setConfigParam('oxpsModuleGeneratorVendorPrefix', 'test');
         $oOxModule = $this->getMock(
-            'oxpsModuleGeneratorOxModule',
+            OxModule::class,
             [
                 '__construct',
                 '__call',
@@ -124,10 +134,10 @@ class Admin_oxpsAjaxDataProviderTest extends OxidEsales\TestingLibrary\UnitTestC
         $oOxModule->expects($this->once())->method('init')->with('NotExistingModuleName', [], 'test');
         $oOxModule->expects($this->never())->method('readGenerationOptions');
 
-        oxTestModules::addModuleObject('oxpsModuleGeneratorOxModule', $oOxModule);
+        oxTestModules::addModuleObject(OxModule::class, $oOxModule);
 
         $oValidator = $this->getMock(
-            'oxpsModuleGeneratorValidator',
+            Validator::class,
             [
                 '__construct',
                 '__call',
@@ -138,7 +148,7 @@ class Admin_oxpsAjaxDataProviderTest extends OxidEsales\TestingLibrary\UnitTestC
             ->with('NotExistingModuleName')
             ->will($this->returnValue(false));
 
-        oxTestModules::addModuleObject('oxpsModuleGeneratorValidator', $oValidator);
+        oxTestModules::addModuleObject(Validator::class, $oValidator);
 
         $this->SUT->expects($this->once())->method('_returnJsonResponse')->with([]);
 
@@ -150,7 +160,7 @@ class Admin_oxpsAjaxDataProviderTest extends OxidEsales\TestingLibrary\UnitTestC
         $this->setRequestParameter('moduleName', 'existingModuleName');
         $this->setConfigParam('oxpsModuleGeneratorVendorPrefix', 'test');
         $oOxModule = $this->getMock(
-            'oxpsModuleGeneratorOxModule',
+            OxModule::class,
             [
                 '__construct',
                 '__call',
@@ -170,10 +180,10 @@ class Admin_oxpsAjaxDataProviderTest extends OxidEsales\TestingLibrary\UnitTestC
                 )
             );
 
-        oxTestModules::addModuleObject('oxpsModuleGeneratorOxModule', $oOxModule);
+        oxTestModules::addModuleObject(OxModule::class, $oOxModule);
 
         $oValidator = $this->getMock(
-            'oxpsModuleGeneratorValidator',
+            Validator::class,
             [
                 '__construct',
                 '__call',
@@ -184,7 +194,7 @@ class Admin_oxpsAjaxDataProviderTest extends OxidEsales\TestingLibrary\UnitTestC
             ->with('existingModuleName')
             ->will($this->returnValue(true));
 
-        oxTestModules::addModuleObject('oxpsModuleGeneratorValidator', $oValidator);
+        oxTestModules::addModuleObject(Validator::class, $oValidator);
 
         $this->SUT->expects($this->once())->method('_returnJsonResponse')->with(
             [
@@ -199,7 +209,7 @@ class Admin_oxpsAjaxDataProviderTest extends OxidEsales\TestingLibrary\UnitTestC
     {
         $this->setRequestParameter('extendClasses', 'existingClass');
         $oValidator = $this->getMock(
-            'oxpsModuleGeneratorValidator',
+            Validator::class,
             [
                 '__construct',
                 '__call',
@@ -217,7 +227,7 @@ class Admin_oxpsAjaxDataProviderTest extends OxidEsales\TestingLibrary\UnitTestC
                 )
             );
 
-        oxTestModules::addModuleObject('oxpsModuleGeneratorValidator', $oValidator);
+        oxTestModules::addModuleObject(Validator::class, $oValidator);
 
         $this->SUT->expects($this->once())->method('_returnJsonResponse')->with(
             [

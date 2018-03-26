@@ -24,14 +24,18 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
-use \OxidEsales\Eshop\Core\Module\Module;
+namespace Oxps\ModuleGenerator\Core;
+
+use OxidEsales\Eshop\Application\Model\Content;
+use OxidEsales\Eshop\Core\Model\MultiLanguageModel;
+use \OxidEsales\Eshop\Core\Module\Module as BaseModule;
 use \OxidEsales\Eshop\Core\Registry;
 
 /**
  * Class oxpsModuleGeneratorModule.
  * Handles module setup, provides additional tools and module related helpers.
  */
-class oxpsModuleGeneratorModule extends Module
+class Module extends BaseModule
 {
 
     /**
@@ -52,7 +56,7 @@ class oxpsModuleGeneratorModule extends Module
 
         $this->load($sModuleId);
 
-        Registry::set('oxpsModuleGeneratorModule', $this);
+        Registry::set(Module::class, $this);
     }
 
 
@@ -127,8 +131,8 @@ class oxpsModuleGeneratorModule extends Module
     {
         $sValue = '';
 
-        /** @var \OxidEsales\Eshop\Application\Model\Content|\OxidEsales\Eshop\Core\Model\MultiLanguageModel $oContent */
-        $oContent = oxNew(\OxidEsales\Eshop\Application\Model\Content::class);
+        /** @var Content|MultiLanguageModel $oContent */
+        $oContent = oxNew(Content::class);
         $oContent->loadByIdent(trim((string) $sIdentifier));
 
         if (!empty($oContent->oxcontents__oxcontent)) {

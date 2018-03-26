@@ -24,14 +24,17 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
+namespace Oxps\ModuleGenerator\Core;
+
 use OxidEsales\Eshop\Core\Base;
+use OxidEsales\Eshop\Core\Registry;
 
 /**
  * Class oxpsModuleGeneratorMetaData is used for Module Generator's
  * Edit Mode as a parser getting info from existing metadata.php file and
  * converting it to Generation Options data structure to show module components.
  */
-class oxpsModuleGeneratorMetadata extends Base
+class Metadata extends Base
 {
 
     /**
@@ -101,24 +104,24 @@ class oxpsModuleGeneratorMetadata extends Base
     /**
      * Keep instance of Admin_oxpsModuleGenerator controller
      *
-     * @var null|oxpsModuleGeneratorValidator
+     * @var null|Validator
      */
     protected $_oValidator;
 
     /**
      *
-     * @return oxpsModuleGeneratorValidator
+     * @return Validator
      */
     protected function _getValidator()
     {
         if (null === $this->_oValidator) {
-            /** @var oxpsModuleGeneratorValidator oValidator */
-            $this->_oValidator = oxNew('oxpsModuleGeneratorValidator');
+            /** @var Validator oValidator */
+            $this->_oValidator = oxNew(Validator::class);
         }
 
         return $this->_oValidator;
     }
-
+    
     /**
      * Parse existing metadata to Generation Options array
      *
@@ -128,6 +131,7 @@ class oxpsModuleGeneratorMetadata extends Base
      * @param string $sModulePath
      *
      * @return array
+     * @throws \ReflectionException
      */
     public function parseMetadata(array $aMetadata, $sVendorPrefix, $sModuleName, $sModulePath)
     {
@@ -145,13 +149,14 @@ class oxpsModuleGeneratorMetadata extends Base
 
         return $aGenerationOptions;
     }
-
+    
     /**
      * Parse extended classes from existing metadata
      *
      * @param string $sMetadataArrayKey
      *
      * @return array
+     * @throws \ReflectionException
      */
     protected function _parseMetadataExtendClasses($sMetadataArrayKey)
     {
@@ -219,7 +224,7 @@ class oxpsModuleGeneratorMetadata extends Base
      */
     protected function _parseFilesFromDir($sSubDirPath, $blRemoveFileExt = true)
     {
-        $oFilesystemHelper = \OxidEsales\Eshop\Core\Registry::get('oxpsModuleGeneratorFileSystem');
+        $oFilesystemHelper = Registry::get(FileSystem::class);
         return $oFilesystemHelper->scanDirForFiles($this->_sModulePath . $sSubDirPath, $blRemoveFileExt);
     }
 

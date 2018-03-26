@@ -24,13 +24,15 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
+namespace Oxps\ModuleGenerator\Core;
+
 use \OxidEsales\Eshop\Core\Base;
 
 /**
  * Class oxpsModuleGeneratorFileSystem.
  * A helper class for files and folders verification, creation and management methods.
  */
-class oxpsModuleGeneratorFileSystem extends Base
+class FileSystem extends Base
 {
 
     /**

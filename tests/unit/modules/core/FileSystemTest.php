@@ -23,20 +23,26 @@
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2014
  */
+ 
+namespace Oxps\ModuleGenerator\Tests\Unit\Modules\Core;
+
+use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\TestingLibrary\UnitTestCase;
+use Oxps\ModuleGenerator\Core\FileSystem;
 
 /**
- * Class oxpsModuleGeneratorFileSystemTest
- * INTEGRATION tests for core class oxpsModuleGeneratorFileSystem.
+ * Class FileSystemTest
+ * INTEGRATION tests for core class FileSystem.
  *
- * @see oxpsModuleGeneratorFileSystem
+ * @see FileSystem
  */
-class oxpsModuleGeneratorFileSystemTest extends \OxidEsales\TestingLibrary\UnitTestCase
+class FileSystemTest extends UnitTestCase
 {
 
     /**
      * Subject under the test.
      *
-     * @var oxpsModuleGeneratorFileSystem
+     * @var FileSystem
      */
     protected $SUT;
 
@@ -49,7 +55,7 @@ class oxpsModuleGeneratorFileSystemTest extends \OxidEsales\TestingLibrary\UnitT
     {
         parent::setUp();
 
-        $this->SUT = new oxpsModuleGeneratorFileSystem();
+        $this->SUT = new FileSystem();
 
         @mkdir($this->_getTestPath());
         @mkdir($this->_getTestPath('folder'));
@@ -289,7 +295,7 @@ class oxpsModuleGeneratorFileSystemTest extends \OxidEsales\TestingLibrary\UnitT
      */
     protected function _getTestPath($sPathSuffix = '')
     {
-        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('sCompileDir') . DIRECTORY_SEPARATOR .
+        return Registry::getConfig()->getConfigParam('sCompileDir') . DIRECTORY_SEPARATOR .
                'test' . DIRECTORY_SEPARATOR . (string) $sPathSuffix;
     }
 }

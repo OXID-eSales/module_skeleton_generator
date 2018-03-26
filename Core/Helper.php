@@ -24,27 +24,30 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
+namespace Oxps\ModuleGenerator\Core;
+
 use \OxidEsales\Eshop\Core\Base;
 use \OxidEsales\Eshop\Core\Registry;
+use ReflectionClass;
 
 /**
  * Class oxpsModuleGeneratorHelper.
  * Implement helpers and additional methods for module generation.
  */
-class oxpsModuleGeneratorHelper extends Base
+class Helper extends Base
 {
 
     /**
      * A module instance to generate stuff for.
      *
-     * @var null|oxpsModuleGeneratorOxModule
+     * @var null|OxModule
      */
     protected $_oModule = null;
 
     /**
      * File system helper instance.
      *
-     * @var null|oxpsModuleGeneratorFileSystem
+     * @var null|FileSystem
      */
     protected $_oFileSystemHelper = null;
 
@@ -52,9 +55,9 @@ class oxpsModuleGeneratorHelper extends Base
     /**
      * Alias for `setModule`.
      *
-     * @param oxModule|oxpsModuleGeneratorOxModule $oModule
+     * @param oxModule|OxModule $oModule
      */
-    public function init(oxpsModuleGeneratorOxModule $oModule)
+    public function init(OxModule $oModule)
     {
         $this->setModule($oModule);
     }
@@ -62,9 +65,9 @@ class oxpsModuleGeneratorHelper extends Base
     /**
      * Set module instance to generate stuff for.
      *
-     * @param oxpsModuleGeneratorOxModule $oModule
+     * @param OxModule $oModule
      */
-    public function setModule(oxpsModuleGeneratorOxModule $oModule)
+    public function setModule(OxModule $oModule)
     {
         $this->_oModule = $oModule;
     }
@@ -72,7 +75,7 @@ class oxpsModuleGeneratorHelper extends Base
     /**
      * Get module instance to generate stuff for.
      *
-     * @return oxpsModuleGeneratorOxModule.
+     * @return OxModule.
      */
     public function getModule()
     {
@@ -82,12 +85,12 @@ class oxpsModuleGeneratorHelper extends Base
     /**
      * Get file system management helper instance.
      *
-     * @return oxpsModuleGeneratorFileSystem
+     * @return FileSystem
      */
     public function getFileSystemHelper()
     {
         if (is_null($this->_oFileSystemHelper)) {
-            $this->_oFileSystemHelper = Registry::get('oxpsModuleGeneratorFileSystem');
+            $this->_oFileSystemHelper = Registry::get(FileSystem::class);
         }
 
         return $this->_oFileSystemHelper;
@@ -161,8 +164,8 @@ class oxpsModuleGeneratorHelper extends Base
      */
     public function createNewClassesAndTemplates($sModuleGeneratorPath)
     {
-        /** @var oxpsModuleGeneratorValidator $oValidator */
-        $oValidator = Registry::get('oxpsModuleGeneratorValidator');
+        /** @var Validator $oValidator */
+        $oValidator = Registry::get(Validator::class);
 
         $aClassesToCreate = (array) $this->getModule()->getClassesToCreate();
         $aCreatedClasses = array();
@@ -204,13 +207,13 @@ class oxpsModuleGeneratorHelper extends Base
     /**
      * Create pre-configured unit test class for each generated module class.
      *
-     * @param oxpsModuleGeneratorRender $oRenderHelper
+     * @param Render $oRenderHelper
      * @param string                    $sModuleGeneratorPath
      * @param array                     $aClassesToExtend
      * @param array                     $aNewClasses
      */
     public function fillTestsFolder(
-        oxpsModuleGeneratorRender $oRenderHelper,
+        Render $oRenderHelper,
         $sModuleGeneratorPath,
         array $aClassesToExtend,
         array $aNewClasses
@@ -420,13 +423,14 @@ class oxpsModuleGeneratorHelper extends Base
 
         return true;
     }
-
+    
     /**
      * Get real class name of existing core class (for class that are being extended).
      *
      * @param string $sClassName
      *
      * @return string
+     * @throws \ReflectionException
      */
     protected function _getCoreClassName($sClassName)
     {

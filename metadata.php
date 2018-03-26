@@ -27,7 +27,7 @@
 /**
  * Metadata version
  */
-$sMetadataVersion = '1.1';
+$sMetadataVersion = '2.0';
 
 /**
  * Module information
@@ -45,18 +45,11 @@ $aModule = array(
     'url'         => 'http://www.oxid-esales.com',
     'email'       => 'info@oxid-esales.com',
     'extend'      => array(
-        \OxidEsales\Eshop\Core\Module\Module::class => 'oxps/ModuleGenerator/Core/oxpsModuleGeneratorOxModule',
+        \OxidEsales\Eshop\Core\Module\Module::class => \Oxps\ModuleGenerator\Core\OxModule::class,
     ),
-    'files'       => array(
-        'Admin_oxpsModuleGenerator'     => 'oxps/ModuleGenerator/Application/Controller/Admin/Admin_oxpsModuleGenerator.php',
-        'Admin_oxpsAjaxDataProvider'    => 'oxps/ModuleGenerator/Application/Controller/Admin/Admin_oxpsAjaxDataProvider.php',
-        'oxpsModuleGeneratorFileSystem' => 'oxps/ModuleGenerator/Core/oxpsModuleGeneratorFileSystem.php',
-        'oxpsModuleGeneratorHelper'     => 'oxps/ModuleGenerator/Core/oxpsModuleGeneratorHelper.php',
-        'oxpsModuleGeneratorMetadata'   => 'oxps/ModuleGenerator/Core/oxpsModuleGeneratorMetadata.php',
-        'oxpsModuleGeneratorModule'     => 'oxps/ModuleGenerator/Core/oxpsModuleGeneratorModule.php',
-        'oxpsModuleGeneratorRender'     => 'oxps/ModuleGenerator/Core/oxpsModuleGeneratorRender.php',
-        'oxpsModuleGeneratorSettings'   => 'oxps/ModuleGenerator/Core/oxpsModuleGeneratorSettings.php',
-        'oxpsModuleGeneratorValidator'  => 'oxps/ModuleGenerator/Core/oxpsModuleGeneratorValidator.php',
+    'controllers' => array(
+        'Admin_oxpsModuleGenerator'     => \Oxps\ModuleGenerator\Application\Controller\Admin\Admin_oxpsModuleGenerator::class,
+        'Admin_oxpsAjaxDataProvider'    => \Oxps\ModuleGenerator\Application\Controller\Admin\Admin_oxpsAjaxDataProvider::class,
     ),
     'templates'   => array(
         'Admin_oxpsModuleGenerator.tpl' => 'oxps/ModuleGenerator/Application/views/admin/Admin_oxpsModuleGenerator.tpl',

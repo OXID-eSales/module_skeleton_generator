@@ -28,14 +28,14 @@ namespace Oxps\ModuleGenerator\Core;
 
 use OxidEsales\Eshop\Application\Model\Content;
 use OxidEsales\Eshop\Core\Model\MultiLanguageModel;
-use \OxidEsales\Eshop\Core\Module\Module as BaseModel;
+use \OxidEsales\Eshop\Core\Module\Module as BaseModule;
 use \OxidEsales\Eshop\Core\Registry;
 
 /**
  * Class oxpsModuleGeneratorModule.
  * Handles module setup, provides additional tools and module related helpers.
  */
-class Module extends BaseModel
+class Module extends BaseModule
 {
 
     /**

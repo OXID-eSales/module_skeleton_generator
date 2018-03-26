@@ -34,9 +34,12 @@ jQuery.widget(
 
             notificationSuccessText: '',
             notificationErrorText: '',
+            notificationErrorTextNotOverloadable: '',
+            notificationBlockErrorText: '',
             notificationErrorExcludedModuleText: '',
             notificationWarningText: '',
             notificationValidClassesText: '',
+            notificationErrorTextOfRepeating: '',
 
             notificationExistingClasses: '',
             notificationExistingControllers: '',
@@ -59,7 +62,67 @@ jQuery.widget(
         _excludedModuleNames: [
             'ModuleGenerator'
         ],
-
+        _errorMessageExamples:[
+            {
+                element: 'modulegenerator_module_name',
+                example: document.querySelector('.notification-error-examples').dataset.moduleName
+            },
+            {
+                element: 'modulegenerator_controllers',
+                example: document.querySelector('.notification-error-examples').dataset.controllerName
+            },
+            {
+                element: 'modulegenerator_models',
+                example: document.querySelector('.notification-error-examples').dataset.modelName
+            },
+            {
+                element: 'modulegenerator_lists',
+                example: document.querySelector('.notification-error-examples').dataset.listName
+            },
+            {
+                element: 'modulegenerator_widgets',
+                example: document.querySelector('.notification-error-examples').dataset.widgetName
+            },
+            {
+                element: 'modulegenerator_blocks',
+                example: document.querySelector('.notification-error-examples').dataset.blockName
+            },
+            {
+                element: 'modulegenerator_settings',
+                example: document.querySelector('.notification-error-examples').dataset.settingName
+            }
+        ],
+        _disabledSubmitButton: [
+            {
+                elementName:'modulegenerator_module_name',
+                disabled: false
+            },
+            {
+                elementName: 'modulegenerator_extend_classes',
+                disabled: false
+            },
+            {
+                elementName: 'modulegenerator_controllers',
+                disabled: false
+            },
+            {
+                elementName: 'modulegenerator_models',
+                disabled: false
+            },
+            {
+                elementName: 'modulegenerator_lists',
+                disabled: false
+            },
+            {
+                elementName: 'modulegenerator_blocks',
+                disabled: false
+            },
+            {
+                elementName: 'modulegenerator_settings',
+                disabled: false
+            }
+        ],
+        _inputValue: '',
         _moduleNameSelector: "input[name='modulegenerator_module_name']",
         _moduleClassesSelector: "textarea[name='modulegenerator_extend_classes']",
         _moduleControllersSelector: "textarea[name='modulegenerator_controllers']",
@@ -69,6 +132,7 @@ jQuery.widget(
         _moduleBlocksSelector: "textarea[name='modulegenerator_blocks']",
         _moduleSettingsNameSelector: "input[name^='modulegenerator_settings']",
         _moduleSettingsAllInputSelector: "[name^='modulegenerator_settings[']",
+        _moduleSubmitButton: "input[name^='modulegenerator_submit']",
 
         _moduleClassesSelectorNoticeDiv: ".component-existing-classes",
         _moduleControllersSelectorNoticeDiv: ".component-existing-controllers",
@@ -85,6 +149,20 @@ jQuery.widget(
         _cssSettingsLineClass: ".settingsLine",
         _cssSettingsLineId: "settingsLine",
         _cssRemoveSettingsLineButtonClass: ".removeLineButton",
+        _settingsRowNumber: 0,
+
+        //Link to all listed not overloadable classes: https://oxidforge.org/en/list-of-not-overloadable-classes.html
+        _notOverloadableClasses: [
+            'oxAdminDetails', 'oxAdminList', 'oxAdminView', 'dyn_interface', 'Dynscreen', 'DynExportBase',
+            'Article_List', 'GenImport_Main', 'Efire', 'Object_Seo', 'Order_List', 'Shop_Config', 'User_List',
+
+            'oxView', 'oxStart', 'oxUBase', 'Account', 'GuestBook', 'User',
+
+            'oxBase', 'oxDb', 'oxLegacyDb', 'oxConfig', 'oxConnectionException', 'oxDynImgGenerator', 'oxErpBase', 'oxErpCsv', 'oxErpGenImport',
+            'oxExceptionToDisplay', 'oxField', 'oxI18n', 'oxLdap', 'oxList', 'oxOpenIdDb', 'oxOpenIdHTTPFetcher', 'oxSeoEncoder',
+            'oxSession', 'oxSuperCfg', 'oxStdClass', 'oxSystemComponentException', 'oxSysRequirements', 'oxUtils', 'oxUtilsFile', 'oxUtilsObject',
+            'oxUtilsServer', 'oxConfigFile', 'oxRegistry', 'oxShopControl'
+        ],
 
         /**
          * Widget Constructor
@@ -109,24 +187,34 @@ jQuery.widget(
         },
 
         /**
+         * this._errorText gets error message which should be render if user value is invalid.
+         * This message combines from two strings: translatable error message text and example by field which one is invalid
+         *
          * Check if entered module exists and show appropriate notifications
          *
          * @param oElement
          */
         _validateEnteredModuleName: function (oElement) {
             if (this._isEmptyField(oElement)) {
+                this._checkSubmitButton(jQuery(oElement).attr('name'), false);
                 this._hideNotification(oElement);
                 this._hideExistingComponentNotification();
             } else if (this._validateCamelCaseName(oElement)) {
                 // Check if entered module name is in excluded array
                 if (this._isExcludedName(oElement)) {
+                    this._checkSubmitButton(jQuery(oElement).attr('name'), false);
                     this._showNotification(oElement, 'notice', this.options.notificationErrorExcludedModuleText);
                     this._hideExistingComponentNotification();
                 } else {
                     this._requestModuleNameJsonResponse(oElement);
                 }
             } else {
-                this._showNotification(oElement, 'error', this.options.notificationErrorText);
+                //combines two strings: translatable error text and camelCase examples by field
+                var errorText = this.options.notificationErrorText + ' ' + this._errorMessageExamples.find(function(variable) {
+                    return variable.element === jQuery(oElement).attr('name');
+                }).example;
+                this._checkSubmitButton(jQuery(oElement).attr('name'), true);
+                this._showNotification(oElement, 'error', errorText);
                 this._hideExistingComponentNotification();
             }
         },
@@ -146,7 +234,6 @@ jQuery.widget(
 
                 // Adding +1 to last ID for new line
                 iCleanId++;
-
                 // Clone, replace unique id, append below and clear existing values from last line.
                 jQuery(self._cssSettingsLineClass + ':last')
                     .clone()
@@ -158,8 +245,17 @@ jQuery.widget(
                     .find(self._cssRemoveSettingsLineButtonClass).remove().end()
                     .appendTo(self._cssSettingsBodyId)
                     .append('<input type="button" value="REMOVE" class="removeLineButton" id="' + iCleanId + '">')
-                    .find("input[type='text'], textarea").val('').removeClass()
+                    .find("input[type='text'], textarea").val('')
                 ;
+
+                //Using to hide error messages.
+                var notice = document.querySelectorAll('.js-notice-block');
+                jQuery(notice[iCleanId])
+                    .removeClass()
+                    .addClass('notice notice-hidden js-notice-block')
+                    .text('')
+                ;
+                notice[iCleanId].style.display = "none";
             });
 
             jQuery(self._cssRemoveSettingsLineButtonClass).live('click', function () {
@@ -168,40 +264,231 @@ jQuery.widget(
         },
 
         /**
-         * Validate entered various components' names.
-         * (Module name, extended class, controller, model, list, widget and block)
+         * Method takes object and returns array
+         *
+         * @param obj
+         * @returns {Array}
+         * @private
          */
-        _validateComponentName: function () {
+        _getArrayFromObject: function(obj){
+            var array = [];
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    array.push(obj[key]);
+                }
+            }
+
+            return array;
+        },
+
+        /**
+         * Method loops through all array and checks or given value exist in it
+         *
+         * @param array
+         * @param inputValue
+         * @private
+         */
+        _findValInArray: function(array, inputValue){
+            return array.find(function(variable) {
+                return (variable === inputValue)
+            });
+        },
+
+        /**
+         * Because settings have specific structure of object this method helps
+         * to get data from setting and push them to array
+         *
+         * @param {object} obj
+         * @returns {Array}
+         * @privatedd
+         */
+        _getAllSettingsNames: function(obj){
+            var array = [];
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    array.push(obj[key].name);
+                }
+            }
+
+            return array;
+        },
+
+        /**
+         * Because blocks have specific structure of object this method helps
+         * to get data from it and push them to array.
+         *
+         * @param {object} obj
+         * @returns {Array}
+         * @private
+         */
+        _getAllBlockNames: function(obj){
+            var array = [];
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    array.push(obj[key].block +"@"+ obj[key].template);
+                }
+            }
+
+            return array;
+        },
+
+        /**
+         * Validate each input on edit mode if written value is not implemented in metadata.
+         * If user type implemented name then method show error notification, make input red and disabled submit button.
+         *
+         * @param {object} oData
+         * @param {object} oElement
+         * @param {boolean} orSettings
+         * @param {boolean} orBlock
+         * @private
+         */
+        _validateEnteredValueFromRepeat: function(oData, oElement, orSettings, orBlock){
+            var namesArray = [];
+
+            if(orSettings){
+                namesArray = this._getAllSettingsNames(oData);
+            } else if(orBlock){
+                namesArray = this._getAllBlockNames(oData);
+            }
+            else{
+                namesArray = this._getArrayFromObject(oData);
+            }
+
+            this._showNotificationForRepeatableNames(oElement, namesArray);
+
+        },
+
+        /**
+         * Method gets names array which one can't be repeated
+         * If name is repeated then shows error notification
+         * make input border color ant text color red. Otherwise makes them default.
+         *
+         * @param {object} oElement
+         * @param {array} namesArray
+         * @private
+         */
+        _showNotificationForRepeatableNames: function(oElement, namesArray){
+            var addNewSettingButton = document.querySelector(this._cssAddSettingsLineButtonId);
+            var notice = document.querySelectorAll('.js-notice-block');
+
+            if ( typeof this._findValInArray(namesArray, jQuery(oElement).val().trim()) !== 'undefined') {
+                this._checkSubmitButton(jQuery(oElement).attr('name'), true);
+                this._changeFieldColor(oElement, 'red', 'red');
+                this._showNotification(oElement, 'error', this.options.notificationErrorTextOfRepeating);
+
+                if (jQuery(oElement).hasClass('js-setting-element')) {
+                    addNewSettingButton.disabled = true;
+                    this._checkSubmitButton(jQuery(oElement).attr('name'), true);
+                    this._showSettingNotification(notice[this._getIndexFromString(oElement.getAttribute("name"))], 'error', this.options.notificationErrorTextOfRepeating);
+                }
+            } else {
+                addNewSettingButton.disabled = false;
+                this._changeFieldColor(oElement, '#808080', 'black');
+            }
+        },
+
+
+        /**
+         * @param oElement
+         * @param noticeType
+         * @param noticeText
+         * @param borderColor
+         * @param textColor
+         * @private
+         */
+        _showNotificationHelper: function(oElement, noticeType, noticeText, borderColor, textColor){
+            this._showNotification(oElement, noticeType, noticeText);
+            this._changeFieldColor(oElement, borderColor, textColor);
+        },
+
+        /**
+         * Method change given element border color and text color by given parameters
+         *
+         * @param {object} oElement
+         * @param {string} borderColor
+         * @param {string} textColor
+         * @private
+         */
+        _changeFieldColor: function(oElement, borderColor, textColor){
+            jQuery(oElement)
+                .css('border-color', borderColor)
+                .css('color', textColor)
+            ;
+        },
+        temp: function(oElement){
+            this._validateEnteredModuleName(oElement);
+        },
+
+        /**
+         * Validate entered various components' names.
+         * (Module name, extended class, controller, model, list, widget and block)at
+         */
+        _validateComponentName: function(oData) {
             var self = this;
-
+            var timeout = 1000;
+            var moduleGeneratorForm = jQuery('#modulegenerator_form');
             // From jQuery 1.7+ live() is deprecated and should be changed to on() method after jQuery version update.
-            jQuery(this._moduleNameSelector).live('keyup change', function () {
-                self._validateEnteredModuleName(this);
+            moduleGeneratorForm.delegate(this._moduleNameSelector, 'keyup change', function () {
+                var element = this;
+                setTimeout(function() {self._validateEnteredModuleName(element);}, timeout);
             });
 
-            jQuery(this._moduleClassesSelector).live('keyup', function () {
-                self._requestExtendClassesJsonResponse(this);
+
+            moduleGeneratorForm.delegate(this._moduleClassesSelector, 'keyup', function () {
+                var element = this;
+                setTimeout(function() {self._requestExtendClassesJsonResponse(element);}, 100);
+                if (typeof oData !== 'undefined') {
+                    self._validateEnteredValueFromRepeat(oData['aExtendClasses'], this, false, false);
+                }
             });
 
-            jQuery(this._moduleControllersSelector).live('keyup', function () {
-                self._validateCamelCaseName(this);
+            moduleGeneratorForm.delegate(this._moduleControllersSelector, 'keyup', function () {
+                var element = this;
+                setTimeout(function() {self._validateCamelCaseName(element);}, timeout);
+                if (typeof oData !== 'undefined') {
+                    setTimeout(function() {self._validateEnteredValueFromRepeat(oData['aNewControllers'], element, false, false);}, timeout);
+                }
             });
 
-            jQuery(this._moduleModelsSelector).live('keyup', function () {
-                self._validateCamelCaseName(this);
+            moduleGeneratorForm.delegate(this._moduleModelsSelector,'keyup', function () {
+                var element = this;
+                setTimeout(function() {self._validateCamelCaseName(element);}, timeout);
+                if (typeof oData !== 'undefined') {
+                    setTimeout(function() {self._validateEnteredValueFromRepeat(oData['aNewModels'], element, false, false);}, timeout);
+                }
             });
 
-            jQuery(this._moduleListsSelector).live('keyup', function () {
-                self._validateCamelCaseName(this);
+            moduleGeneratorForm.delegate(this._moduleListsSelector, 'keyup', function () {
+                var element = this;
+                setTimeout(function() {self._validateCamelCaseName(element);}, timeout);
+                if (typeof oData !== 'undefined') {
+                    setTimeout(function() {self._validateEnteredValueFromRepeat(oData['aNewLists'], element, false, false);}, timeout);
+                }
             });
 
-            jQuery(this._moduleWidgetsSelector).live('keyup', function () {
-                self._validateCamelCaseName(this);
+            moduleGeneratorForm.delegate(this._moduleWidgetsSelector, 'keyup', function () {
+                var element = this;
+                setTimeout(function() {self._validateCamelCaseName(element);}, timeout);
+                if (typeof oData !== 'undefined') {
+                    setTimeout(function() {self._validateEnteredValueFromRepeat(oData['aNewWidgets'], element, false, false);}, timeout);
+                }
             });
 
-            jQuery(this._moduleBlocksSelector).live('keyup', function () {
-                self._validateBlocksFieldEntry(this);
+            moduleGeneratorForm.delegate(this._moduleBlocksSelector, 'keyup', function () {
+                var element = this;
+                setTimeout(function() {self._validateBlocksFieldEntry(element);}, timeout);
+                if (typeof oData !== 'undefined') {
+                    setTimeout(function() {self._validateEnteredValueFromRepeat(oData['aNewBlocks'], element, false, true);}, timeout);
+                }
             });
+            moduleGeneratorForm.delegate(this._moduleSettingsNameSelector, 'keyup', function () {
+                var element = this;
+                setTimeout(function() {self._validateCamelCaseName(element);}, timeout);
+                if (typeof oData !== 'undefined') {
+                    setTimeout(function() {self._validateEnteredValueFromRepeat(oData['aModuleSettings'], element, true, false);}, timeout);
+                }
+            });
+
         },
 
         /**
@@ -212,12 +499,12 @@ jQuery.widget(
 
             jQuery(this._moduleSettingsNameSelector).live('keyup', function () {
                 if (self._isEmptyField(this)) {
-                    jQuery(this).removeClass().addClass('default-settings-color');
+                    jQuery(this).removeClass().addClass('default-settings-color js-setting-element');
                 }
                 else if (self._camelCaseRegex(jQuery(this).val())) {
-                    jQuery(this).removeClass().addClass('correct-settings-color');
+                    jQuery(this).removeClass().addClass('correct-settings-color js-setting-element');
                 } else {
-                    jQuery(this).removeClass().addClass('invalid-settings-color');
+                    jQuery(this).removeClass().addClass('invalid-settings-color js-setting-element');
                 }
             });
         },
@@ -228,7 +515,6 @@ jQuery.widget(
          */
         _requestModuleNameJsonResponse: function (oElement) {
             var self = this;
-
             jQuery.ajax({
                 cache: false,
                 dataType: 'json',
@@ -255,7 +541,6 @@ jQuery.widget(
          */
         _showModuleNameHtmlResponse: function (oData) {
             var self = this;
-
             var sExtendClasses = self._buildHtmlResponse(oData['aExtendClasses'], true, '<br />');
             var sNewControllers = self._buildHtmlResponse(oData['aNewControllers'], false, '<br />');
             var sNewModels = self._buildHtmlResponse(oData['aNewModels'], false, '<br />');
@@ -307,7 +592,10 @@ jQuery.widget(
                     .html(self.options.notificationExistingSettings + '<hr>' + sNewSettings)
                     .slideDown(self.options.notificationSlideDownSpeed);
             }
+
+            self._validateComponentName(oData);
         },
+
 
         /**
          * Return JSON response with extendable classes if exist.
@@ -330,18 +618,75 @@ jQuery.widget(
                 }
             });
         },
+        /**
+         * Method which one make all array lower cased
+         *
+         * @param array
+         * @returns {Array}
+         * @private
+         */
+        _getLowerCaseArray: function(array){
+            var lowerCaseArray = [];
+            for (var i = 0; i < array.length; i++) {
+                lowerCaseArray.push(array[i].toLowerCase());
+            }
+
+            return lowerCaseArray;
+        },
 
         /**
+         *
+         * @param extendableClassesArray
+         * @param notOverloadableClasses
+         * @returns {Array}
+         * @private
+         */
+        _getNotOverloadableClasses: function(extendableClassesArray, notOverloadableClasses){
+            var self = this;
+            var notOverloadableLowerCasedClasses = this._getLowerCaseArray(self._notOverloadableClasses);
+            var extendableLowerCasedClassesArray = this._getLowerCaseArray(extendableClassesArray);
+
+            extendableLowerCasedClassesArray.forEach(function(element) {
+                if(typeof self._findValInArray(notOverloadableLowerCasedClasses, element) !== 'undefined') {
+                    notOverloadableClasses.push(element);
+                }
+            });
+
+            if(typeof self._findValInArray(extendableClassesArray, notOverloadableClasses[notOverloadableClasses.length-1]) === 'undefined') {
+                notOverloadableClasses.splice(notOverloadableClasses.length, 1);
+            }
+
+            return notOverloadableClasses;
+        },
+
+        /**
+         * Method checks in overloadable classes array for newly typed classes
+         * If class exist show error notification else info notification which classes
+         * was recognized
+         *
          * @param {object} oElement
          * @param {object} oData
          */
         _showExtendClassesHtmlResponse: function (oElement, oData) {
+            var notOverloadableClasses = [];
+
             if (this._isEmptyField(oElement)) {
                 this._hideNotification(oElement);
             } else {
-                var response = this.options.notificationValidClassesText + this._buildHtmlResponse(oData, true, ', ');
+                var extendableClassesResponse = this._buildHtmlResponse(oData, true, ', ');
+                var extendableClassesArray = extendableClassesResponse.split(", ");
+                var response = this.options.notificationValidClassesText + extendableClassesResponse;
 
-                this._showNotification(oElement, 'info', response);
+                notOverloadableClasses = this._getNotOverloadableClasses(extendableClassesArray, notOverloadableClasses);
+
+                if(notOverloadableClasses.length > 0) {
+                    this._checkSubmitButton(jQuery(oElement).attr('name'), true);
+                    this._showNotificationHelper(oElement, 'error', this.options.notificationErrorTextNotOverloadable, 'red', 'red');
+                }
+                else {
+                    this._checkSubmitButton(jQuery(oElement).attr('name'), false);
+                    this._showNotificationHelper(oElement, 'info', response, '#808080', 'black');
+                }
             }
         },
 
@@ -368,6 +713,9 @@ jQuery.widget(
                 aFormattedValue.push(aObjectData[i]);
             }
 
+            if (aFormattedValue.length === 0)
+                aFormattedValue.push("none");
+
             return aFormattedValue.join(sSpaceType);
         },
 
@@ -382,7 +730,6 @@ jQuery.widget(
         _buildSelectiveHtmlResponse: function (oMetaObject, blBlock) {
             var sFormattedValue = '';
             var aObjectData = Object.keys(oMetaObject);
-
             if (blBlock) {
                 for (var b in aObjectData) {
                     sFormattedValue += oMetaObject[aObjectData[b]]['block']
@@ -407,7 +754,6 @@ jQuery.widget(
                     sFormattedValue += "</table>";
                 }
             }
-
             return sFormattedValue;
         },
 
@@ -428,43 +774,186 @@ jQuery.widget(
          * @returns {boolean}
          */
         _validateBlocksFieldEntry: function (oElement) {
-            return this._showCorrectNotification(oElement, '_blocksRegex');
+            return this._showCorrectNotification(oElement, '_blocksRegex','');
         },
 
         /**
-         * Show notification depending on various states of input field.
+         * Checks if triggered field is a block element
+         * And returns a certain error message
          *
-         * TODO: This logic could be refactored to smaller parts
-         *
-         * @param oElement
-         * @param sRegexFunction
-         *
-         * @returns {boolean}
+         * @param {object} oElement
+         * @param {object} self
+         * @returns {string}
          */
-        _showCorrectNotification: function (oElement, sRegexFunction) {
+        _getValidErrorMessage: function(oElement, self){
+            var blockElement = document.querySelector(self._moduleBlocksSelector);
+
+            return (oElement === blockElement)? self.options.notificationBlockErrorText: self.options.notificationErrorText;
+        },
+
+        /**
+         *  Using for slicing settings name input and returning index of it.
+         *  For example given name: modulegenerator_settings[0][name] => returns 0
+         *
+         * @param str
+         * @returns {string}
+         * @private
+         */
+        _getIndexFromString: function(str){
+            str = str.substring(str.indexOf("[") + 1);
+            return str.split(']')[0];
+        },
+
+        /**
+         * Using for slicing settings name input and returning first part of it.
+         * For example given name: modulegenerator_settings[0][name] => returns modulegenerator_settings
+         *
+         * @param {string} str
+         * @returns {string}
+         * @private
+         */
+        _getSettingName: function(str){
+            return str.split('[')[0];
+        },
+
+        /**
+         * Method checks or triggered field is setting field then
+         * shows or hides notification.
+         *
+         * @param {object} oElement
+         * @param {string} noticeType
+         * @param {string} noticeText
+         * @private
+         */
+        _changeSettingNotification: function(oElement, noticeType, noticeText){
             var self = this;
-            var sEnteredInput = jQuery(oElement).val();
+            var noticeObj = document.querySelectorAll('.js-notice-block');
 
-            if (self._isEmptyField(oElement)) {
-                self._hideNotification(oElement);
-            } else if ((self._countNewLines(sEnteredInput)) > 0) {
-                if (Object.values(self._splitNewLines(sEnteredInput, sRegexFunction)).indexOf(false) !== -1) {
-                    self._showNotification(oElement, 'error', self.options.notificationErrorText);
-                } else {
-                    self._showNotification(oElement, 'success', self.options.notificationSuccessText);
-
-                    return true;
-                }
-            } else if (self[sRegexFunction](sEnteredInput)) {
-                self._showNotification(oElement, 'success', self.options.notificationSuccessText);
-
-                return true;
-            } else {
-                self._showNotification(oElement, 'error', self.options.notificationErrorText);
+            if (jQuery(oElement).hasClass('js-setting-element')) {
+                self._showSettingNotification(noticeObj[self._getIndexFromString(oElement.getAttribute("name"))], noticeType, noticeText);
             }
         },
 
         /**
+         * Method returns error message which should be render if user value is invalid.
+         * This message combines from two strings: translatable error message text and example by field which one is invalid
+         *
+         * @param {object} oElement
+         * @returns {string}
+         * @private
+         */
+        _getNotificationErrorText: function(oElement){
+            var self = this;
+
+            return self._getValidErrorMessage(oElement, this) + ' ' + self._errorMessageExamples.find(function(variable) {
+                return variable.element === self._getSettingName(jQuery(oElement).attr('name'));
+            }).example;
+
+        },
+
+        /**
+         * if notificaitonType is true when it's error and submit button will be disabled
+         * else turn it on.
+         *
+         * @param {string} oElementName
+         * @param {boolean} notificationType
+         * @private
+         */
+        _checkSubmitButton: function(oElementName, notificationType){
+            var self = this;
+            self._disabledSubmitButton.find(function(variable) {
+                 if( variable.elementName === self._getSettingName(oElementName)){
+                    variable.disabled = notificationType;
+                 }
+            });
+            self._setSubmitButtonType();
+        },
+
+        /**
+         * Turns on or off submit button by _disabledSubmitButton object elements value.
+         *
+         * @private
+         */
+        _setSubmitButtonType: function(){
+            var self = this;
+            var submitButton = document.querySelector(this._moduleSubmitButton);
+            var counter = 0;
+            self._disabledSubmitButton.find(function(variable) {
+                if( variable.disabled === true){
+                    counter++;
+                }
+            });
+
+            submitButton.disabled = counter > 0;
+        },
+
+        /**
+         * Show notification depending on various states of input fields
+         *
+         * @param oElement
+         * @param sRegexFunction
+         * @returns {boolean}
+         */
+        _showCorrectNotification: function (oElement, sRegexFunction) {
+            var self = this;
+            var errorText = self._getNotificationErrorText(oElement);
+            var sEnteredInput = jQuery(oElement).val();
+
+            if (self._isEmptyField(oElement)) {
+                self._hideNotification(oElement);
+                this._checkSubmitButton(jQuery(oElement).attr('name'), false);
+                self._changeSettingNotification(oElement, 'hidden', '');
+            }
+            else if ((self._countNewLines(sEnteredInput)) > 0) {
+
+                if (Object.values(self._splitNewLines(sEnteredInput, sRegexFunction)).indexOf(false) !== -1){
+                    this._checkSubmitButton(jQuery(oElement).attr('name'), true);
+                    self._showNotification(oElement, 'error', self.options.notificationErrorText);
+                }
+                else {
+                    this._checkSubmitButton(jQuery(oElement).attr('name'), false);
+                    self._showNotification(oElement, 'success', self.options.notificationSuccessText);
+                    return true;
+                }
+
+            } else if (self[sRegexFunction](sEnteredInput)) {
+                //If setting field is written correctly hide it.
+                this._checkSubmitButton(jQuery(oElement).attr('name'), false);
+                self._changeSettingNotification(oElement, 'hidden', '');
+                self._showNotification(oElement, 'success', self.options.notificationSuccessText);
+
+                return true;
+            } else {
+                this._checkSubmitButton(jQuery(oElement).attr('name'), true);
+                self._changeSettingNotification(oElement, 'error', errorText);
+                self._showNotification(oElement, 'error', errorText);
+            }
+        },
+
+
+        /**
+         *
+         * Special for settings notification because they have other html structure.
+         *
+         * @param oElement
+         * @param sNoticeType
+         * @param sNoticeText
+         * @private
+         */
+        _showSettingNotification: function (oElement, sNoticeType, sNoticeText) {
+            jQuery(oElement)
+                .fadeIn(1000)
+                .attr('class', 'notice')
+                .addClass('notice notice-' + sNoticeType+ ' js-notice-block')
+                .text(sNoticeText)
+            ;
+
+            if ( sNoticeType === 'hidden')
+                oElement.style.display = "none";
+        },
+
+        /**
+         * Validate if input field or textarea is empty
          * Validate if input field or textarea is empty
          *
          * @param oElement
@@ -476,6 +965,7 @@ jQuery.widget(
         },
 
         /**
+         *
          * @param oElement
          *
          * @returns {boolean}
@@ -498,11 +988,10 @@ jQuery.widget(
          */
         _showNotification: function (oElement, sNoticeType, sNoticeText) {
             jQuery(oElement).siblings(this._cssNoticeSelectorClass)
-                .fadeIn(1000)
+                .fadeIn(1200)
                 .attr('class', 'notice')
                 .addClass('notice-' + sNoticeType)
-                .text(sNoticeText)
-            ;
+                .text(sNoticeText);
         },
 
         /**
@@ -616,7 +1105,6 @@ jQuery.widget(
             if (jQuery('.messagebox').length) {
                 jQuery(':input', '#modulegenerator_form')
                     .not(":button, :submit, :reset, [name='modulegenerator_module_name']")
-                    // .removeAttr('checked')
                     .removeAttr('selected')
                     .val('');
             }

@@ -42,11 +42,14 @@ Folders structure, empty classes and metadata generation for new OXID eShop modu
     - Creation of hints and to do tasks inside generated files to help proceed with development
     - Sample source code generation to give a hint what each class could/should contain
  - Generated module is immediately working
-    - Activate it and events, settings, blocks, controllers, etc. will already be in action! 
-
+    - Activate it and events, settings, blocks, controllers, etc. will already be in action!
+ - Possibility to edit existing modules, generate/add extra files
+ - Nice looking generation form with JS/AJAX events to validate and help enter proper values (shows notification messages)
+ 
 ## Installation
  - Copy the content of `copy_this/` folder to OXID eShop root folder
  - Make sure the Module Generator directory in module dir follows Pascal case naming pattern - `modules/oxps/ModuleGenerator`
+ - Run `composer require oxid-esales/module-generator:v6.x-dev -d /var/www/oxideshop`
  - Activate the module in administration area
  - Set eShop `modules/` folder writable while generating new modules
 
@@ -61,12 +64,17 @@ Folders structure, empty classes and metadata generation for new OXID eShop modu
  - The module skeleton source is now available in Your vendor sub-folder
  - Update composer.json and run 'composer dump-autoload' (refer to the notification that appears after module generation for more detailed info)
  - And the module could be activated already in _Extensions -> Modules_
+## Screenshots
+ 
+ - Module generator
+ ![module generator](out/pictures/module_generator_zoom.png)
+ 
+ - Edit mode
+ ![edit mode](out/pictures/edit_mode.png)
 
 ## To do and nice to have features for future releases
  - Refactor longer classes to move some methods elsewhere
  - Extend blocks definition validation and blocks templates naming
- - EDIT mode feature: for existing modules, generate/add extra stuff
- - Create nice looking generation form with JS/AJAX events to validate and help enter proper values (auto-complete)
  - Admin interface presets generation, also with menu.xml
  - Generate picture with PNG text overlay with real module name
  - PHPStorm style schemes (or some code beautifier) integration - after generation do code formatting

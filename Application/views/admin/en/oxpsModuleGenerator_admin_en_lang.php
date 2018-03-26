@@ -95,10 +95,21 @@ $aLang = array(
 
     // Module generation form JavaScript notifications
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_SUCCESS'                           => 'SUCCESS: Entered value is valid',
-    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_ERROR'                             => 'ERROR: Entered value is invalid',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_ERROR_REPEAT'                      => 'ERROR: This name repeats with the previous one!',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_ERROR_OVERLOADABLE'                => 'ERROR: In your list there are not overloadable classes',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_ERROR'                             => 'ERROR: Entered value is invalid you should use upper camel case name, e.g.',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_ERROR_BLOCK'                       => 'ERROR: Entered block name and template path should be separated by "@", e.g.',
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXCLUDED_MODULE_ERROR'             => 'NOTICE: Existing module is excluded from Edit Mode',
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_WARNING'                           => 'WARNING: Entered value is invalid',
-    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_VALID_CLASSES'                     => 'INFO: Valid classes: ',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_VALID_CLASSES'                     => 'INFO: Successfully recognized classes: ',
+
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_MODULE_NAME'               => 'MyModule',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_CONTROLLER_NAME'           => 'MyController',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_MODEL_NAME'                => 'MyModel',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_LIST_NAME'                 => 'MyList',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_WIDGET_NAME'               => 'MyWidget',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_BLOCK_NAME'                => 'my_block_name@page/details/inc/myblockname.tpl',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_SETTING_NAME'              => 'MySetting',
 
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXISTING_CLASSES'     => 'EXTENDED CLASSES:',
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXISTING_CONTROLLERS' => 'CONTROLLERS:',

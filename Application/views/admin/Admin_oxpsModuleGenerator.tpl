@@ -8,6 +8,9 @@
 
 [{assign var="sNotificationSuccessText" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_SUCCESS"|oxmultilangassign}]
 [{assign var="sNotificationErrorText" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_ERROR"|oxmultilangassign}]
+[{assign var="sNotificationErrorTextOfOverloadable" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_ERROR_OVERLOADABLE"|oxmultilangassign}]
+[{assign var="sNotificationErrorTextOfRepeating" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_ERROR_REPEAT"|oxmultilangassign}]
+[{assign var="sNotificationBlockErrorText" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_ERROR_BLOCK"|oxmultilangassign}]
 [{assign var="sNotificationErrorExcludedModuleText" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXCLUDED_MODULE_ERROR"|oxmultilangassign}]
 [{assign var="sNotificationWarningText" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_WARNING"|oxmultilangassign}]
 [{assign var="sNotificationValidClassesText" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_VALID_CLASSES"|oxmultilangassign}]
@@ -24,16 +27,26 @@
 [{assign var="sNotificationExistingSettingsType" value="OXPS_MODULEGENERATOR_ADMIN_MODULE_SETTING_TYPE"|oxmultilangassign}]
 [{assign var="sNotificationExistingSettingsValue" value="OXPS_MODULEGENERATOR_ADMIN_MODULE_SETTING_VALUE"|oxmultilangassign}]
 
+[{assign var="sNotificationExampleModuleName" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_MODULE_NAME"|oxmultilangassign}]
+[{assign var="sNotificationExampleControllerName" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_CONTROLLER_NAME"|oxmultilangassign}]
+[{assign var="sNotificationExampleModelName" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_MODEL_NAME"|oxmultilangassign}]
+[{assign var="sNotificationExampleListName" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_LIST_NAME"|oxmultilangassign}]
+[{assign var="sNotificationExampleWidgetName" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_WIDGET_NAME"|oxmultilangassign}]
+[{assign var="sNotificationExampleBlockName" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_BLOCK_NAME"|oxmultilangassign}]
+[{assign var="sNotificationExampleSettingName" value="OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_SETTING_NAME"|oxmultilangassign}]
 
 [{oxscript add="
             jQuery(document).ready(function () {
                 jQuery('#oxpsmodulegenerator').wizard({
-                     moduleNameValidationUrl: '`$sModuleNameValidationUrl`',
-                     extendClassesValidationUrl: '`$sExtendClassesNamesValidationUrl`',
+                    moduleNameValidationUrl: '`$sModuleNameValidationUrl`',
+                    extendClassesValidationUrl: '`$sExtendClassesNamesValidationUrl`',
 
                     notificationSuccessText: '`$sNotificationSuccessText`',
+                    notificationBlockErrorText: '`$sNotificationBlockErrorText`',
                     notificationErrorText: '`$sNotificationErrorText`',
+                    notificationErrorTextNotOverloadable: '`$sNotificationErrorTextOfOverloadable`',
                     notificationErrorExcludedModuleText: '`$sNotificationErrorExcludedModuleText`',
+                    notificationErrorTextOfRepeating: '$sNotificationErrorTextOfRepeating',
                     notificationWarningText: '`$sNotificationWarningText`',
                     notificationValidClassesText: '`$sNotificationValidClassesText`',
 
@@ -51,6 +64,15 @@
                 });
             });"
            priority=10}]
+<div class = "notification-error-examples"
+     data-module-name = "[{$sNotificationExampleModuleName}]"
+     data-controller-name = "[{$sNotificationExampleControllerName}]"
+     data-model-name = "[{$sNotificationExampleModelName}]"
+     data-list-name = "[{$sNotificationExampleListName}]"
+     data-widget-name = "[{$sNotificationExampleWidgetName}]"
+     data-block-name = "[{$sNotificationExampleBlockName}]"
+     data-setting-name = "[{$sNotificationExampleSettingName}]"
+></div>
 <script type="application/javascript">
     /**
      * Themes list disabling/enabling event depending on "no themes" checkbox status.
@@ -220,7 +242,7 @@
                                         [{/if}]
                                         <tr class="settingsLine" id="settingsLine[{$i}]">
                                             <td>
-                                                <input type="text" name="modulegenerator_settings[[{$i}]][name]"
+                                                <input type="text" name="modulegenerator_settings[[{$i}]][name]" class = "js-setting-element"
                                                        value="[{$aSetting.name}]" maxlength="12"/>
                                             </td>
                                             <td>
@@ -244,6 +266,9 @@
                                                 <textarea name="modulegenerator_settings[[{$i}]][value]" cols="10"
                                                           rows="1">[{$aSetting.value}]</textarea>
                                             </td>
+                                            <td>
+                                                <span class="notice notice-hidden js-notice-block"></span>
+                                            </td>
                                         </tr>
                                         [{/section}]
                                     </tbody>
@@ -251,7 +276,6 @@
                                 <input type="button" name="modulegenerator_addNewSettingsLine" id="addNewSettingsLine"
                                        value="[{oxmultilang ident="OXPS_MODULEGENERATOR_ADMIN_MODULE_ADD_SETTINGS_LINE"}]"/>
                                 [{oxinputhelp ident="OXPS_MODULEGENERATOR_ADMIN_CREATE_SETTINGS_HINT"}]
-                                <span class="notice notice-hidden"></span>
                             </td>
                             <tr>
                                 <td colspan="2">&nbsp;</td>

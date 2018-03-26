@@ -99,11 +99,22 @@ $aLang = array(
 
     // Module generation form JavaScript notifications
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_SUCCESS'                           => '[TR - SUCCESS: Entered value is valid]',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_ERROR_BLOCK'                       => '[TR - ERROR: Entered block name and template path should be separated by "@", e.g.]',
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_ERROR'                             => '[TR - ERROR: Entered value is invalid]',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_ERROR_OVERLOADABLE'                => '[TR - ERROR: In your list there are not overloadable classes]',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_ERROR_REPEAT'                      => '[TR - ERROR: This name repeats with the previous one!]',
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXCLUDED_MODULE_ERROR'             => '[TR - NOTICE: Existing module is excluded from Edit Mode]',
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_WARNING'                           => '[TR - WARNING: Entered value is invalid]',
-    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_VALID_CLASSES'                     => '[TR - INFO: Valid classes: ]',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_VALID_CLASSES'                     => '[TR - INFO: Successful recognized classes: ]',
 
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_MODULE_NAME'               => '[TR - MyModule]',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_CONTROLLER_NAME'           => '[TR - MyController]',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_MODEL_NAME'                => '[TR - MyModel]',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_LIST_NAME'                 => '[TR - MyList]',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_WIDGET_NAME'               => '[TR - MyWidget]',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_BLOCK_NAME'                => '[TR - my_block_name@page/details/inc/myblockname.tpl]',
+    'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXAMPLE_SETTING_NAME'              => '[TR - MySetting]',
+    
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXISTING_CLASSES'     => '[TR - EXTENDED CLASSES:]',
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXISTING_CONTROLLERS' => '[TR - CONTROLLERS:]',
     'OXPS_MODULEGENERATOR_JS_NOTIFICATION_EXISTING_MODELS'      => '[TR - MODELS:]',

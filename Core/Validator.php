@@ -200,7 +200,7 @@ class Validator extends Base
             }
 
             $sClassData = (array) $this->_getClassPath($sClassName);
-
+            
             if ($oFileSystemHelper->isFile($sClassData['classPath'])) {
                 if (strpos(dirname($sClassData['classPath']), DIRECTORY_SEPARATOR . 'Core'. DIRECTORY_SEPARATOR)) {
                     $sClassData['classPath'] = 'Core' . DIRECTORY_SEPARATOR;
@@ -366,7 +366,6 @@ class Validator extends Base
         /** @var StrMb|StrRegular $oStr */
         $oStr = Str::getStr();
         $aResult = array();
-
         $oReflection = new ReflectionClass(new $sClassName());
         $aResult['classPath'] = (string) $oReflection->getFilename();
         if (false !== $oStr->strpos($aResult['classPath'], self::OXPS_BACKWARD_COMPATIBILITY_FOLDER)) {
@@ -374,6 +373,10 @@ class Validator extends Base
             $aResult['classPath'] = $sClassPath = (string) $oReflection->getFilename();
             $aResult['v6ClassName'] = $sNewClassName = (string) $oReflection->getShortName();
             $aResult['v6Namespace'] = (string) $this->_unifyNamespace($oReflection->getNamespaceName());
+            
+            //Making part of namespace (like /Application/Controller/Admin/...) for metadata.
+            $aResult['v6ModuleNamespace'] = substr($aResult['classPath'], strpos($aResult['classPath'], 'source/') + strlen('source/'), strlen($aResult['classPath']));
+            $aResult['v6ModuleNamespace'] = substr($aResult['v6ModuleNamespace'], 0, strrpos($aResult['v6ModuleNamespace'], '/') + strlen('/'));
         }
 
         return $aResult;

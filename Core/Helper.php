@@ -115,7 +115,7 @@ class Helper extends Base
             '/**' . PHP_EOL .
             ' * Metadata version' . PHP_EOL .
             ' */' . PHP_EOL .
-            '$sVendorMetadataVersion = \'1.0\';' . PHP_EOL,
+            '$sVendorMetadataVersion = \'2.0\';' . PHP_EOL,
             true
         );
     }
@@ -147,12 +147,10 @@ class Helper extends Base
             $sDestinationPath = $sModulePath . $sInModulePath;
             $sClassFileName = $aClassData['v6ClassName'] . '.php';
             $sClassFilePath = $sDestinationPath . $sClassFileName;
-
             $oFileSystemHelper->copyFile($sClassExtendTemplatePath, $sClassFilePath);
 
             $aExtendedClasses[$sInModulePath . $sClassFileName] = $aClassData;
         }
-
         return $aExtendedClasses;
     }
 
@@ -220,7 +218,6 @@ class Helper extends Base
         array $aClassesToExtend,
         array $aNewClasses
     ) {
-    
         $aAllFiles = array_merge($aClassesToExtend, $aNewClasses);
         $sTemplate = sprintf('%sCore/module.tpl/oxpsTestClass.php.tpl', $sModuleGeneratorPath);
         $aNewFiles = (array) $this->_copyNewClasses($aAllFiles, $sTemplate, 'tests/Unit/', true);
@@ -240,12 +237,14 @@ class Helper extends Base
      */
     protected function _getPathInsideModule($sModulePath, $mInnerPath)
     {
-        if (!empty($mInnerPath) and $this->getFileSystemHelper()->isDir($sModulePath . $mInnerPath)) {
-            $sPathInsideModule = $mInnerPath;
+        //cutting the parent class directory (for example /Application/Model/)
+        $sClassPath = substr($mInnerPath, strpos($mInnerPath, 'source/') + strlen('source/'), strlen($mInnerPath));
+        
+        if (!empty($sModulePath.$sClassPath) and $this->getFileSystemHelper()->isDir($sModulePath.$sClassPath)) {
+            $sPathInsideModule = $sClassPath;
         } else {
             $sPathInsideModule = 'Core/';
         }
-
         return $sPathInsideModule;
     }
 
@@ -262,7 +261,6 @@ class Helper extends Base
     protected function _createNewClasses(array $aClasses, $sClassTemplate, $sClassPath, $sModuleGeneratorPath)
     {
         $aNewFiles = array();
-
         if (!empty($sClassTemplate) and !empty($sClassPath)) {
             $sTemplatePath = sprintf('%sCore/module.tpl/%s', $sModuleGeneratorPath, $sClassTemplate);
             $aNewFiles = $this->_copyNewClasses($aClasses, $sTemplatePath, $sClassPath);

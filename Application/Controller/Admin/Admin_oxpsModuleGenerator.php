@@ -375,7 +375,7 @@ class Admin_oxpsModuleGenerator extends AdminController
         $sModuleVersion = trim((string) $sRequestVersion);
 
         if (empty($sModuleVersion)) {
-            $sModuleVersion = '2.0.0';
+            $sModuleVersion = '1.0.0';
         }
 
         return $sModuleVersion;

@@ -133,7 +133,6 @@ class oxpsModuleGeneratorMetadata extends Base
     {
         $this->_aMetadata = $aMetadata;
         $this->_sModulePath = $sModulePath;
-
         $aGenerationOptions = [
             'aExtendClasses'  => $this->_parseMetadataExtendClasses('extend'),
             'aNewControllers' => $this->_parseMetadataControllers('controllers'),

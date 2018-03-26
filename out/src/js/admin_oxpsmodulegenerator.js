@@ -228,10 +228,8 @@ jQuery.widget(
             jQuery(this._cssAddSettingsLineButtonId).live('click', function () {
                 // Get last settings line's ID
                 var sLastLineId = jQuery(self._cssSettingsLineClass + ':last').attr('id');
-
                 // Subtract text leaving only number
                 var iCleanId = parseInt(sLastLineId.replace(self._cssSettingsLineId, ''));
-
                 // Adding +1 to last ID for new line
                 iCleanId++;
                 // Clone, replace unique id, append below and clear existing values from last line.
@@ -255,11 +253,10 @@ jQuery.widget(
                     .addClass('notice notice-hidden js-notice-block')
                     .text('')
                 ;
-                notice[iCleanId].style.display = "none";
             });
 
             jQuery(self._cssRemoveSettingsLineButtonClass).live('click', function () {
-                jQuery(this).closest('tr').remove();
+                jQuery(this).closest('.settingsLine').remove();
             });
         },
 
@@ -383,7 +380,7 @@ jQuery.widget(
                 }
             } else {
                 addNewSettingButton.disabled = false;
-                this._changeFieldColor(oElement, '#808080', 'black');
+                this._changeFieldColor(oElement, '#bebebe', '#555');
             }
         },
 
@@ -685,7 +682,7 @@ jQuery.widget(
                 }
                 else {
                     this._checkSubmitButton(jQuery(oElement).attr('name'), false);
-                    this._showNotificationHelper(oElement, 'info', response, '#808080', 'black');
+                    this._showNotificationHelper(oElement, 'info', response, '#bebebe', '#555');
                 }
             }
         },
@@ -919,7 +916,7 @@ jQuery.widget(
             } else if (self[sRegexFunction](sEnteredInput)) {
                 //If setting field is written correctly hide it.
                 this._checkSubmitButton(jQuery(oElement).attr('name'), false);
-                self._changeSettingNotification(oElement, 'hidden', '');
+                self._changeSettingNotification(oElement, 'success', self.options.notificationSuccessText);
                 self._showNotification(oElement, 'success', self.options.notificationSuccessText);
 
                 return true;
@@ -944,12 +941,9 @@ jQuery.widget(
             jQuery(oElement)
                 .fadeIn(1000)
                 .attr('class', 'notice')
-                .addClass('notice notice-' + sNoticeType+ ' js-notice-block')
+                .addClass('js-notice-block notice notice-' + sNoticeType)
                 .text(sNoticeText)
             ;
-
-            if ( sNoticeType === 'hidden')
-                oElement.style.display = "none";
         },
 
         /**
@@ -987,11 +981,13 @@ jQuery.widget(
          * @param {string} sNoticeText
          */
         _showNotification: function (oElement, sNoticeType, sNoticeText) {
-            jQuery(oElement).siblings(this._cssNoticeSelectorClass)
-                .fadeIn(1200)
-                .attr('class', 'notice')
-                .addClass('notice-' + sNoticeType)
-                .text(sNoticeText);
+            if (!jQuery(oElement).hasClass('js-setting-element')){
+                jQuery(oElement).siblings(this._cssNoticeSelectorClass)
+                    .fadeIn(1200)
+                    .attr('class', 'notice')
+                    .addClass('notice-' + sNoticeType)
+                    .text(sNoticeText);
+            }
         },
 
         /**

@@ -250,7 +250,7 @@ class ValidatorTest extends UnitTestCase
 
     public function validateAndLinkClassesDataProvider()
     {
-        $path = $str = substr(CORE_AUTOLOADER_PATH,0,strpos(CORE_AUTOLOADER_PATH, 'Core/Autoload'));
+        $path = substr(CORE_AUTOLOADER_PATH,0,strpos(CORE_AUTOLOADER_PATH, 'Core/Autoload'));
         
         return [
             // Invalid values
@@ -461,8 +461,6 @@ class ValidatorTest extends UnitTestCase
      */
     public function testModuleExists($sModuleName, $blExpectedValue)
     {
-//        var_dump("Dir");
-//        var_dump($this->SUT->moduleExists($sModuleName));
         $this->assertSame($blExpectedValue, $this->SUT->moduleExists($sModuleName));
     }
 

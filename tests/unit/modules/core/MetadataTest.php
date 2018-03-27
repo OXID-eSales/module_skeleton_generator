@@ -107,8 +107,6 @@ class MetadataTest extends UnitTestCase
         ];
 
         $oModuleDir = vfsStream::setup($this->_sModuleName);
-//        var_dump("Diras:");
-//        var_dump($oModuleDir);
         vfsStream::create($aStructure, $oModuleDir);
         
         $this->assertSame(

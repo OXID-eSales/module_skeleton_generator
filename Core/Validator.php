@@ -287,8 +287,6 @@ class Validator extends Base
 
         /** @var FileSystem $oFileSystemHelper */
         $oFileSystemHelper = Registry::get(FileSystem::class);
-//        var_dump("Papildomas");
-//        var_dump($this->getOxModule()->getVendorPath() . $sModuleName);
         
         return $oFileSystemHelper->isDir($this->getOxModule()->getVendorPath() . $sModuleName)
                && !empty($sModuleName);

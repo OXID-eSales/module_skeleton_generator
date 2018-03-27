@@ -67,6 +67,11 @@ class MetadataTest extends UnitTestCase
      * @var string
      */
     protected $_sModuleId = 'oxpstestmodule';
+    
+    /**
+     * Full path to module
+     * @var string
+     */
     protected $_sModulePath = '/var/www/oxideshop/source/modules/oxps/TestModule';
 
     /**
@@ -76,7 +81,7 @@ class MetadataTest extends UnitTestCase
     {
         parent::setUp();
 
-        $this->SUT = $this->getMock(Metadata::class);
+        $this->SUT = $this->getMock(Metadata::class, array('__call'));
     }
 
     public function testParseMetadata_parseEmptyMetadata()
@@ -102,8 +107,10 @@ class MetadataTest extends UnitTestCase
         ];
 
         $oModuleDir = vfsStream::setup($this->_sModuleName);
+//        var_dump("Diras:");
+//        var_dump($oModuleDir);
         vfsStream::create($aStructure, $oModuleDir);
-
+        
         $this->assertSame(
             $aExpectedValue, $this->SUT->parseMetadata($aMetadata, $this->_sVendorPrefix, $this->_sModuleName, $oModuleDir->url())
         );
@@ -132,7 +139,8 @@ class MetadataTest extends UnitTestCase
                 'OxidEsales\Eshop\Core\Module\Module' => [
                     'classPath' =>'Core/',
                     'v6ClassName' =>'Module',
-                    'v6Namespace' => 'OxidEsales\Eshop\Core\Module'
+                    'v6Namespace' => 'OxidEsales\Eshop\Core\Module',
+                    'v6ModuleNamespace' => 'Core/Module/'
                     ]
             ],
             'aNewControllers' => [],

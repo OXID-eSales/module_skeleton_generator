@@ -33,6 +33,7 @@ use Oxps\ModuleGenerator\Core\Helper;
 use Oxps\ModuleGenerator\Core\Module;
 use Oxps\ModuleGenerator\Core\OxModule;
 use Oxps\ModuleGenerator\Core\Render;
+use Oxps\ModuleGenerator\Core\Validator;
 
 /**
  * Class OxModuleTest
@@ -59,7 +60,7 @@ class OxModuleTest extends UnitTestCase
     {
         parent::setUp();
 
-        $this->SUT = $this->getMock(OxModule::class);
+        $this->SUT = $this->getMock(OxModule::class, array('__call'));
     }
 
 
@@ -115,7 +116,7 @@ class OxModuleTest extends UnitTestCase
 
     public function testGetValidator()
     {
-        $this->assertInstanceOf('oxpsModuleGeneratorValidator', $this->SUT->getValidator());
+        $this->assertInstanceOf(Validator::class, $this->SUT->getValidator());
     }
 
 

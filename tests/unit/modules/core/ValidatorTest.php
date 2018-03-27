@@ -40,7 +40,7 @@ use PHPUnit_Framework_MockObject_MockObject;
  */
 class ValidatorTest extends UnitTestCase
 {
-
+    
     /**
      * Subject under the test.
      *
@@ -56,7 +56,7 @@ class ValidatorTest extends UnitTestCase
     {
         parent::setUp();
 
-        $this->SUT = $this->getMock(Validator::class);
+        $this->SUT = $this->getMock(Validator::class, array('__call'));
     }
 
     public function testGetOxModule()
@@ -250,6 +250,8 @@ class ValidatorTest extends UnitTestCase
 
     public function validateAndLinkClassesDataProvider()
     {
+        $path = $str = substr(CORE_AUTOLOADER_PATH,0,strpos(CORE_AUTOLOADER_PATH, 'Core/Autoload'));
+        
         return [
             // Invalid values
             ['oxNull', []],
@@ -262,23 +264,26 @@ class ValidatorTest extends UnitTestCase
             // Valid values
             ['Article', ['Article' =>
                 [
-                    'classPath' => 'Application/Controller/Admin/',
+                    'classPath' => $path.'Application/Controller/Admin/',
                     'v6ClassName' => 'ArticleController',
-                    'v6Namespace' => 'OxidEsales\Eshop\Application\Controller\Admin'
+                    'v6Namespace' => 'OxidEsales\Eshop\Application\Controller\Admin',
+                    'v6ModuleNamespace' => 'Application/Controller/Admin/'
                 ]
             ]],
             ['oxarticle', ['oxarticle' =>
                 [
-                    'classPath' => 'Application/Model/',
+                    'classPath' => $path.'Application/Model/',
                     'v6ClassName' => 'Article',
-                    'v6Namespace' => 'OxidEsales\Eshop\Application\Model'
+                    'v6Namespace' => 'OxidEsales\Eshop\Application\Model',
+                    'v6ModuleNamespace' => 'Application/Model/'
                 ]
             ]],
             ['oxArticle', ['oxArticle' =>
                 [
-                    'classPath' => 'Application/Model/',
+                    'classPath' => $path.'Application/Model/',
                     'v6ClassName' => 'Article',
-                    'v6Namespace' => 'OxidEsales\Eshop\Application\Model'
+                    'v6Namespace' => 'OxidEsales\Eshop\Application\Model',
+                    'v6ModuleNamespace' => 'Application/Model/'
                 ]
             ]],
             ['oxList', ['oxList' =>
@@ -286,35 +291,40 @@ class ValidatorTest extends UnitTestCase
                     'classPath' => 'Core/',
                     'v6ClassName' => 'ListModel',
                     'v6Namespace' => 'OxidEsales\Eshop\Core\Model',
+                    'v6ModuleNamespace' => 'Core/Model/'
                 ]
             ]],
             ['oxBasket', ['oxBasket' =>
                 [
-                    'classPath' => 'Application/Model/',
+                    'classPath' => $path.'Application/Model/',
                     'v6ClassName' => 'Basket',
-                    'v6Namespace' => 'OxidEsales\Eshop\Application\Model'
+                    'v6Namespace' => 'OxidEsales\Eshop\Application\Model',
+                    'v6ModuleNamespace' => 'Application/Model/'
                 ]
             ]],
             ['Basket', ['Basket' =>
                 [
-                    'classPath' => 'Application/Controller/',
+                    'classPath' => $path.'Application/Controller/',
                     'v6ClassName' => 'BasketController',
-                    'v6Namespace' => 'OxidEsales\Eshop\Application\Controller'
+                    'v6Namespace' => 'OxidEsales\Eshop\Application\Controller',
+                    'v6ModuleNamespace' => 'Application/Controller/'
                 ]
             ]],
             ['oxArticle' . PHP_EOL . 'oxBasket',
              [
                  'oxArticle' =>
                  [
-                     'classPath' => 'Application/Model/',
+                     'classPath' => $path.'Application/Model/',
                      'v6ClassName' => 'Article',
-                     'v6Namespace' => 'OxidEsales\Eshop\Application\Model'
+                     'v6Namespace' => 'OxidEsales\Eshop\Application\Model',
+                     'v6ModuleNamespace' => 'Application/Model/'
                  ],
                  'oxBasket'  =>
                  [
-                     'classPath' => 'Application/Model/',
+                     'classPath' => $path.'Application/Model/',
                      'v6ClassName' => 'Basket',
-                     'v6Namespace' => 'OxidEsales\Eshop\Application\Model'
+                     'v6Namespace' => 'OxidEsales\Eshop\Application\Model',
+                     'v6ModuleNamespace' => 'Application/Model/'
                  ],
              ]
             ],
@@ -451,14 +461,16 @@ class ValidatorTest extends UnitTestCase
      */
     public function testModuleExists($sModuleName, $blExpectedValue)
     {
+//        var_dump("Dir");
+//        var_dump($this->SUT->moduleExists($sModuleName));
         $this->assertSame($blExpectedValue, $this->SUT->moduleExists($sModuleName));
     }
 
     public function moduleExistsDataProvider()
     {
         return [
-            ['oxps/ModuleGenerator', true],
-            ['oxps/modulegenerator', false],
+            ['ModuleGenerator', true],
+            ['modulegenerator', false],
             ['NotExistingModule', false],
             ['', false],
             [[], false],

@@ -57,7 +57,7 @@ class RenderTest extends UnitTestCase
     {
         parent::setUp();
 
-        $this->SUT = $this->getMock(Render::class);
+        $this->SUT = $this->getMock(Render::class, array('__call'));
     }
 
 

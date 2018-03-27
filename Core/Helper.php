@@ -238,7 +238,12 @@ class Helper extends Base
     protected function _getPathInsideModule($sModulePath, $mInnerPath)
     {
         //cutting the parent class directory (for example /Application/Model/)
-        $sClassPath = substr($mInnerPath, strpos($mInnerPath, 'source/') + strlen('source/'), strlen($mInnerPath));
+        if( strpos($mInnerPath, 'source/') == 0){
+            $sClassPath = $mInnerPath;
+        }
+        else {
+            $sClassPath = substr($mInnerPath, strpos($mInnerPath, 'source/') + strlen('source/'), strlen($mInnerPath));
+        }
         
         if (!empty($sModulePath.$sClassPath) and $this->getFileSystemHelper()->isDir($sModulePath.$sClassPath)) {
             $sPathInsideModule = $sClassPath;

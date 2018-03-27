@@ -27,6 +27,8 @@
 namespace Oxps\ModuleGenerator\Tests\Unit\Modules\Core;
 
 use OxidEsales\TestingLibrary\UnitTestCase;
+use Oxps\ModuleGenerator\Core\Module;
+use Oxps\ModuleGenerator\Core\OxModule;
 use Oxps\ModuleGenerator\Core\Validator;
 use PHPUnit_Framework_MockObject_MockObject;
 
@@ -54,17 +56,17 @@ class ValidatorTest extends UnitTestCase
     {
         parent::setUp();
 
-        $this->SUT = $this->getMock('oxpsModuleGeneratorValidator', array('__call'));
+        $this->SUT = $this->getMock(Validator::class);
     }
 
     public function testGetOxModule()
     {
-        $this->assertInstanceOf('oxpsModuleGeneratorOxModule', $this->SUT->getOxModule());
+        $this->assertInstanceOf(OxModule::class, $this->SUT->getOxModule());
     }
 
     public function testGetModule()
     {
-        $this->assertInstanceOf('oxpsModuleGeneratorModule', $this->SUT->getModule());
+        $this->assertInstanceOf(Module::class, $this->SUT->getModule());
     }
 
     /**

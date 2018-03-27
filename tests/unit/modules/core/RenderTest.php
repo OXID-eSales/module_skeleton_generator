@@ -57,14 +57,14 @@ class RenderTest extends UnitTestCase
     {
         parent::setUp();
 
-        $this->SUT = $this->getMock(Render::class, array('__call'));
+        $this->SUT = $this->getMock(Render::class);
     }
 
 
     public function testInit()
     {
         // Module instance mock
-        $oModule = $this->getMock(OxModule::class, array('__construct', '__call'));
+        $oModule = $this->getMock(OxModule::class, array('__construct'));
 
         $this->SUT->init($oModule);
 
@@ -75,7 +75,7 @@ class RenderTest extends UnitTestCase
     public function testGetModule()
     {
         // Module instance mock
-        $oModule = $this->getMock(OxModule::class, array('__construct', '__call'));
+        $oModule = $this->getMock(OxModule::class, array('__construct'));
 
         $this->SUT->setModule($oModule);
 
@@ -110,7 +110,7 @@ class RenderTest extends UnitTestCase
         // File system helper mock
         $oFileSystem = $this->getMock(
             FileSystem::class,
-            array('__call', 'createFile', 'renameFile', 'isFile')
+            array('createFile', 'renameFile', 'isFile')
         );
 
         $oFileSystem->expects($this->any())->method('isFile')->willReturn(true);
@@ -144,7 +144,7 @@ class RenderTest extends UnitTestCase
         // Module instance mock
         $oModule = $this->getMock(
             OxModule::class,
-            array('__construct', '__call', 'getModuleId', 'getFullPath')
+            array('__construct', 'getModuleId', 'getFullPath')
         );
         $oModule->expects($this->once())
             ->method('getModuleId')
@@ -188,7 +188,7 @@ class RenderTest extends UnitTestCase
             ->will($this->returnValue('_processed_item_content_'));
 
         // View utils mock
-        $oViewUtils = $this->getMock(UtilsView::class, array('__call', 'getSmarty'));
+        $oViewUtils = $this->getMock(UtilsView::class, array('getSmarty'));
         $oViewUtils->expects($this->once())->method('getSmarty')->will($this->returnValue($oSmarty));
         Registry::set(UtilsView::class, $oViewUtils, null);
 
@@ -209,7 +209,7 @@ class RenderTest extends UnitTestCase
     public function testRenderFileComment_emptyArgument_rendersCommentWithNoSubPackageInfo()
     {
         // Module instance mock
-        $oModule = $this->getMock(OxModule::class, array('__construct', '__call'));
+        $oModule = $this->getMock(OxModule::class, array('__construct'));
 
         // Smarty mock
         $oSmarty = $this->getMock('Smarty', array('assign', 'fetch'));
@@ -219,7 +219,7 @@ class RenderTest extends UnitTestCase
             ->will($this->returnValue('_processed_comment_content_'));
 
         // View utils mock
-        $oViewUtils = $this->getMock(UtilsView::class, array('__call', 'getSmarty'));
+        $oViewUtils = $this->getMock(UtilsView::class, array('getSmarty'));
         $oViewUtils->expects($this->once())->method('getSmarty')->will($this->returnValue($oSmarty));
         Registry::set(UtilsView::class, $oViewUtils, null);
 
@@ -231,7 +231,7 @@ class RenderTest extends UnitTestCase
     public function testRenderFileComment_argumentNotEmpty_rendersCommentWithSubPackageArgumentInfo()
     {
         // Module instance mock
-        $oModule = $this->getMock(OxModule::class, array('__construct', '__call'));
+        $oModule = $this->getMock(OxModule::class, array('__construct'));
 
         // Smarty mock
         $oSmarty = $this->getMock('Smarty', array('assign', 'fetch'));
@@ -242,7 +242,7 @@ class RenderTest extends UnitTestCase
             ->will($this->returnValue('_processed_comment_content_'));
 
         // View utils mock
-        $oViewUtils = $this->getMock(UtilsView::class, array('__call', 'getSmarty'));
+        $oViewUtils = $this->getMock(UtilsView::class, array('getSmarty'));
         $oViewUtils->expects($this->once())->method('getSmarty')->will($this->returnValue($oSmarty));
         Registry::set(UtilsView::class, $oViewUtils, null);
 

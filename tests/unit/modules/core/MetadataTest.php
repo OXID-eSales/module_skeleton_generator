@@ -76,7 +76,7 @@ class MetadataTest extends UnitTestCase
     {
         parent::setUp();
 
-        $this->SUT = $this->getMock(Metadata::class, array('__call'));
+        $this->SUT = $this->getMock(Metadata::class);
     }
 
     public function testParseMetadata_parseEmptyMetadata()

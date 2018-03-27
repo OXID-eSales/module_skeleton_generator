@@ -65,7 +65,7 @@ class Admin_oxpsModuleGeneratorTest extends UnitTestCase
         parent::setUp();
 
         $this->SUT = $this->getMock(
-            'Admin_oxpsModuleGenerator',
+            Admin_oxpsModuleGenerator::class,
             array('_Admin_oxpsModuleGenerator_init_parent', '_Admin_oxpsModuleGenerator_render_parent')
         );
 
@@ -112,7 +112,7 @@ class Admin_oxpsModuleGeneratorTest extends UnitTestCase
 
         $oModule = $this->SUT->getModule();
 
-        $this->assertInstanceOf('oxpsModuleGeneratorOxModule', $oModule);
+        $this->assertInstanceOf(OxModule::class, $oModule);
         $this->assertSame('test', $oModule->getVendorPrefix());
         $this->assertSame(
             array(
@@ -464,7 +464,7 @@ class Admin_oxpsModuleGeneratorTest extends UnitTestCase
     {
         // Config mock
         $this->setRequestParameter('modulegenerator_module_name', 'Extended');
-        $this->setRequestParameter('modulegenerator_extend_classes', 'oxArticle' . PHP_EOL . 'oxList');
+        $this->setRequestParameter('modulegenerator_extend_classes', 'oxArticle');
 
         $this->SUT->init();
         $this->SUT->generateModule();
@@ -480,7 +480,6 @@ class Admin_oxpsModuleGeneratorTest extends UnitTestCase
         $this->assertFileExists($this->_getTestPath('modules/test/Extended/Core/ExtendedModule.php'));
         $this->assertFileExists($this->_getTestPath('modules/test/Extended/Application/translations/de/testExtended_de_lang.php'));
         $this->assertFileExists($this->_getTestPath('modules/test/Extended/Application/Model/Article.php'));
-        $this->assertFileExists($this->_getTestPath('modules/test/Extended/Core/ListModel.php'));
 
         // Check metadata content
         include($this->_getTestPath('modules/test/Extended/metadata.php'));
@@ -490,21 +489,16 @@ class Admin_oxpsModuleGeneratorTest extends UnitTestCase
             $this->assertSame(
                 array(
                     'OxidEsales\Eshop\Application\Model\Article' => 'Test\Extended\Application\Model\Article',
-                    'OxidEsales\Eshop\Core\Model\ListModel'    => 'Test\Extended\Core\ListModel',
                 ),
                 $aModule['extend']
             );
         }
 
         // Get mock classes so generated classes has something to extend
-        $this->getMockBuilder(\Test\Extended\Core\ListModel_parent::class)->getMock();
         $this->getMockBuilder(\Test\Extended\Application\Model\Article_parent::class)->getMock();
         // Check extended class content
-        $this->assertFalse(class_exists('\Test\Extended\Core\ListModel'));
         $this->assertFalse(class_exists('\Test\Extended\Application\Model\Article'));
-        include($this->_getTestPath('modules/test/Extended/Core/ListModel.php'));
         include($this->_getTestPath('modules/test/Extended/Application/Model/Article.php'));
-        $this->assertTrue(class_exists('Test\Extended\Core\ListModel'));
         $this->assertTrue(class_exists('Test\Extended\Application\Model\Article'));
     }
 
@@ -576,11 +570,10 @@ class Admin_oxpsModuleGeneratorTest extends UnitTestCase
         }
 
         // Check controller class content
-        $this->assertFalse(class_exists('Test\Ctrl1\Application\Controller\Page'));
-        include($this->_getTestPath('modules/test/Ctrl1/Application/Controller/Page.php'));
+        require_once($this->_getTestPath('modules/test/Ctrl1/Application/Controller/Page.php'));
         $this->assertTrue(class_exists('Test\Ctrl1\Application\Controller\Page'));
-        $oClass = new Test\Ctrl1\Application\Controller\Page();
-        $this->assertTrue(method_exists($oClass, Render::class));
+        $oClass = new \Test\Ctrl1\Application\Controller\Page();
+        $this->assertTrue(method_exists($oClass, 'render'));
     }
 
     public function testGenerateModule_sameControllersSetMultipleTimes_generateModuleSkeletonWithUniqueControllersClasses()
@@ -685,11 +678,10 @@ class Admin_oxpsModuleGeneratorTest extends UnitTestCase
         // Check metadata content
         include($this->_getTestPath('modules/test/Special/metadata.php'));
         $this->assertTrue(isset($aModule));
-
+        
         // Check model class content
-        $this->assertFalse(class_exists('\Test\Special\Application\Model\Offer'));
-        include($this->_getTestPath('modules/test/Special/Application/Model/Offer.php'));
-        $this->assertTrue(class_exists('\Test\Special\Application\Model\Offer'));
+        require_once($this->_getTestPath('modules/test/Special/Application/Model/Offer.php'));
+        $this->assertTrue(class_exists('Test\Special\Application\Model\Offer'));
         $oClass = new \Test\Special\Application\Model\Offer();
         $this->assertTrue(method_exists($oClass, '__construct'));
     }
@@ -787,10 +779,9 @@ class Admin_oxpsModuleGeneratorTest extends UnitTestCase
         }
 
         // Check widget class content
-        $this->assertFalse(class_exists('test\Wi\Application\Component\Widget\Bar'));
-        include($this->_getTestPath('modules/test/Wi/Application/Component/Widget/Bar.php'));
+        require_once($this->_getTestPath('modules/test/Wi/Application/Component/Widget/Bar.php'));
         $this->assertTrue(class_exists('Test\Wi\Application\Component\Widget\Bar'));
-        $oClass = new Test\Wi\Application\Component\Widget\Bar();
+        $oClass = new \Test\Wi\Application\Component\Widget\Bar();
         $this->assertTrue(method_exists($oClass, 'isCacheable'));
     }
 
@@ -1193,7 +1184,7 @@ class Admin_oxpsModuleGeneratorTest extends UnitTestCase
                     'email'       => 'test@example.com',
                     'extend'      => array(
                         'OxidEsales\Eshop\Application\Model\Basket' => 'Test\AllThings\Application\Model\Basket',
-                        'OxidEsales\Eshop\Core\Model\ListModel'   => 'Test\AllThings\Core\ListModel',
+                        'OxidEsales\Eshop\Core\Model\ListModel'   => 'Test\AllThings\Core\Model\ListModel',
                     ),
                     'controllers'       => array(
                         'test_allthings_view'    => 'Test\AllThings\Application\Controller\View',
@@ -1255,7 +1246,7 @@ class Admin_oxpsModuleGeneratorTest extends UnitTestCase
      */
     protected function _getTestPath($sPathSuffix = '')
     {
-        return Registry::getConfig()->getConfigParam('sCompileDir') . DIRECTORY_SEPARATOR .
+        return Registry::getConfig()->getConfigParam('sCompileDir') .
                'test' . DIRECTORY_SEPARATOR . (string) $sPathSuffix;
     }
 }

@@ -33,6 +33,7 @@ use Oxps\ModuleGenerator\Core\Helper;
 use Oxps\ModuleGenerator\Core\Module;
 use Oxps\ModuleGenerator\Core\OxModule;
 use Oxps\ModuleGenerator\Core\Render;
+use Oxps\ModuleGenerator\Core\Validator;
 
 /**
  * Class OxModuleTest
@@ -115,7 +116,7 @@ class OxModuleTest extends UnitTestCase
 
     public function testGetValidator()
     {
-        $this->assertInstanceOf('oxpsModuleGeneratorValidator', $this->SUT->getValidator());
+        $this->assertInstanceOf(Validator::class, $this->SUT->getValidator());
     }
 
 
@@ -526,19 +527,19 @@ class OxModuleTest extends UnitTestCase
         Registry::set(Config::class, $oConfig);
 
         // The generator module main class mock
-        $oGeneratorModule = $this->getMock('oxpsModuleGeneratorModule', array('__construct', '__call', 'getPath'));
+        $oGeneratorModule = $this->getMock('oxpsModuleGeneratorModule', array('__construct', 'getPath'));
 
         Registry::set(Module::class, $oGeneratorModule);
 
         // File system helper mock
-        $oFileSystem = $this->getMock('oxpsModuleGeneratorFileSystem', array('__call', 'copyFolder'));
+        $oFileSystem = $this->getMock('oxpsModuleGeneratorFileSystem', array('copyFolder'));
         $oFileSystem->expects($this->once())->method('copyFolder')->with(
             '/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/module/',
             '/path/to/modules/oxps/MyModule/'
         );
 
         // Render helper mock
-        $oRenderHelper = $this->getMock(Render::class, array('__call', 'init', 'renderModuleFiles'));
+        $oRenderHelper = $this->getMock(Render::class, array('init', 'renderModuleFiles'));
         $oRenderHelper->expects($this->once())->method('init')->with($this->isInstanceOf(get_class($this->SUT)));
         $oRenderHelper->expects($this->once())->method('renderModuleFiles')->with(
             array('models/oxpsmymoduleoxarticle.php' => 'oxArticle'),
@@ -550,7 +551,6 @@ class OxModuleTest extends UnitTestCase
         $oHelper = $this->getMock(
             Helper::class,
             array(
-                '__call',
                 'init',
                 'createVendorMetadata',
                 'getFileSystemHelper',
@@ -645,7 +645,7 @@ class OxModuleTest extends UnitTestCase
      */
     public function testGetFileNameSuffix($sFilePath, $sExpectedSuffix)
     {
-        $SUT = $this->GetMock(OxModule::class, array('__call', 'getInfo'));
+        $SUT = $this->GetMock(OxModule::class, array('getInfo'));
         $SUT->expects($this->any())->method('getInfo')
             ->will($this->returnValue('oxpsmymodule'))
         ;
@@ -671,7 +671,7 @@ class OxModuleTest extends UnitTestCase
     public function testRenderFileComment()
     {
         // Render helper mock
-        $oHelper = $this->getMock(Render::class, array('__call', 'init', 'renderFileComment'));
+        $oHelper = $this->getMock(Render::class, array('init', 'renderFileComment'));
         $oHelper->expects($this->once())->method('init')->with($this->isInstanceOf(get_class($this->SUT)));
         $oHelper->expects($this->once())->method('renderFileComment')->with('');
         Registry::set(Render::class, $oHelper);

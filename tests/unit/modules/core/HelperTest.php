@@ -57,14 +57,14 @@ class HelperTest extends UnitTestCase
     {
         parent::setUp();
 
-        $this->SUT = $this->getMock(Helper::class, array('__call', '_shellExec'));
+        $this->SUT = $this->getMock(Helper::class, array('_shellExec'));
     }
 
 
     public function testInit()
     {
         // Module instance mock
-        $oModule = $this->getMock(OxModule::class, array('__construct', '__call'));
+        $oModule = $this->getMock(OxModule::class, array('__construct'));
 
         $this->SUT->init($oModule);
 
@@ -75,7 +75,7 @@ class HelperTest extends UnitTestCase
     public function testGetModule()
     {
         // Module instance mock
-        $oModule = $this->getMock(OxModule::class, array('__construct', '__call'));
+        $oModule = $this->getMock(OxModule::class, array('__construct'));
 
         $this->SUT->setModule($oModule);
 
@@ -85,7 +85,7 @@ class HelperTest extends UnitTestCase
 
     public function testGetFileSystemHelper()
     {
-        $oFileSystem = $this->getMock(FileSystem::class, array('__call'));
+        $oFileSystem = $this->getMock(FileSystem::class);
         Registry::set(FileSystem::class, $oFileSystem);
 
         $this->assertSame($oFileSystem, $this->SUT->getFileSystemHelper());
@@ -95,7 +95,7 @@ class HelperTest extends UnitTestCase
     public function testCreateVendorMetadata()
     {
         // File system helper mock
-        $oFileSystem = $this->getMock(FileSystem::class, array('__call', 'createFolder', 'createFile'));
+        $oFileSystem = $this->getMock(FileSystem::class, array('createFolder', 'createFile'));
         $oFileSystem->expects($this->once())->method('createFolder')->with('/path/to/modules/oxps');
         $oFileSystem->expects($this->once())->method('createFile')->with(
             '/path/to/modules/oxps/vendormetadata.php',
@@ -115,7 +115,7 @@ class HelperTest extends UnitTestCase
     public function testCreateClassesToExtend_invalidTemplatePath_returnEmptyArray()
     {
         // File system helper mock
-        $oFileSystem = $this->getMock(FileSystem::class, array('__call', 'isFile', 'isDir', 'copyFile'));
+        $oFileSystem = $this->getMock(FileSystem::class, array('isFile', 'isDir', 'copyFile'));
         $oFileSystem->expects($this->once())->method('isFile')->with('/path/to/template.tpl')->will(
             $this->returnValue(false)
         );
@@ -126,7 +126,7 @@ class HelperTest extends UnitTestCase
         // Module instance mock
         $oModule = $this->getMock(
             OxModule::class,
-            array('__construct', '__call', 'getClassesToExtend', 'getFullPath', 'getModuleId')
+            array('__construct', 'getClassesToExtend', 'getFullPath', 'getModuleId')
         );
         $oModule->expects($this->once())->method('getClassesToExtend')->will(
             $this->returnValue(
@@ -148,7 +148,7 @@ class HelperTest extends UnitTestCase
     public function testCreateClassesToExtend_moduleFolderDoesNotExist_returnEmptyArray()
     {
         // File system helper mock
-        $oFileSystem = $this->getMock(FileSystem::class, array('__call', 'isFile', 'isDir', 'copyFile'));
+        $oFileSystem = $this->getMock(FileSystem::class, array('isFile', 'isDir', 'copyFile'));
         $oFileSystem->expects($this->once())->method('isFile')->with('/path/to/template.tpl')->will(
             $this->returnValue(true)
         );
@@ -156,12 +156,12 @@ class HelperTest extends UnitTestCase
             $this->returnValue(false)
         );
         $oFileSystem->expects($this->never())->method('copyFile');
-        Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        Registry::set(FileSystem::class, $oFileSystem);
 
         // Module instance mock
         $oModule = $this->getMock(
             OxModule::class,
-            array('__construct', '__call', 'getClassesToExtend', 'getFullPath', 'getModuleId')
+            array('__construct', 'getClassesToExtend', 'getFullPath', 'getModuleId')
         );
         $oModule->expects($this->once())->method('getClassesToExtend')->will(
             $this->returnValue(
@@ -183,7 +183,7 @@ class HelperTest extends UnitTestCase
     public function testCreateClassesToExtend_noClassesToExtend_returnEmptyArray()
     {
         // File system helper mock
-        $oFileSystem = $this->getMock('oxpsModuleGeneratorFileSystem', array('__call', 'isFile', 'isDir', 'copyFile'));
+        $oFileSystem = $this->getMock('oxpsModuleGeneratorFileSystem', array('isFile', 'isDir', 'copyFile'));
         $oFileSystem->expects($this->once())->method('isFile')->with('/path/to/template.tpl')->will(
             $this->returnValue(true)
         );
@@ -196,7 +196,7 @@ class HelperTest extends UnitTestCase
         // Module instance mock
         $oModule = $this->getMock(
             OxModule::class,
-            array('__construct', '__call', 'getClassesToExtend', 'getFullPath', 'getModuleId')
+            array('__construct', 'getClassesToExtend', 'getFullPath', 'getModuleId')
         );
         $oModule->expects($this->once())->method('getClassesToExtend')->will($this->returnValue(array()));
         $oModule->expects($this->once())->method('getFullPath')->will($this->returnValue('/path/to/modules/oxps/mymodule/'));
@@ -210,7 +210,7 @@ class HelperTest extends UnitTestCase
     public function testCreateClassesToExtend_templateAndModuleDirAndClassesToExtendAreValid_returnCreatedClassesArray()
     {
         // File system helper mock
-        $oFileSystem = $this->getMock(FileSystem::class, array('__call', 'isFile', 'isDir', 'copyFile'));
+        $oFileSystem = $this->getMock(FileSystem::class, array('isFile', 'isDir', 'copyFile'));
         $oFileSystem->expects($this->at(0))->method('isFile')->with('/path/to/template.tpl')->will(
             $this->returnValue(true)
         );
@@ -231,17 +231,17 @@ class HelperTest extends UnitTestCase
             '/path/to/template.tpl',
             '/path/to/modules/oxps/mymodule/Core/ListModel.php'
         );
-        Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        Registry::set(FileSystem::class, $oFileSystem);
 
         // Module instance mock
         $oModule = $this->getMock(
             OxModule::class,
-            array('__construct', '__call', 'getClassesToExtend', 'getFullPath', 'getModuleId')
+            array('__construct', 'getClassesToExtend', 'getFullPath', 'getModuleId')
         );
         $oModule->expects($this->once())->method('getClassesToExtend')->will(
             $this->returnValue(
                 array(
-                    'oxarticle' => array(
+                    'oxArticle' => array(
                         'classPath' => 'Application/Model/',
                         'v6ClassName' => 'Article',
                         'v6Namespace' => 'OxidEsales\Eshop\Application\Model',
@@ -281,7 +281,7 @@ class HelperTest extends UnitTestCase
         // Module instance mock
         $oModule = $this->getMock(
             OxModule::class,
-            array('__construct', '__call', 'getClassesToCreate')
+            array('__construct', 'getClassesToCreate')
         );
         $oModule->expects($this->once())->method('getClassesToCreate')->will($this->returnValue(array()));
 
@@ -295,7 +295,7 @@ class HelperTest extends UnitTestCase
         // Module instance mock
         $oModule = $this->getMock(
             OxModule::class,
-            array('__construct', '__call', 'getClassesToCreate')
+            array('__construct', 'getClassesToCreate')
         );
         $oModule->expects($this->once())->method('getClassesToCreate')->will(
             $this->returnValue(
@@ -336,7 +336,7 @@ class HelperTest extends UnitTestCase
         // File system helper mock
         $oFileSystem = $this->getMock(
             FileSystem::class,
-            array('__call', 'isFile', 'isDir', 'copyFile', 'createFile')
+            array('isFile', 'isDir', 'copyFile', 'createFile')
         );
         // For faulty items "Faulty Class"
         $oFileSystem->expects($this->at(0))->method('isDir')
@@ -416,8 +416,8 @@ class HelperTest extends UnitTestCase
 
         // Module instance mock
         $oModule = $this->getMock(
-            'oxpsModuleGeneratorOxModule',
-            array('__construct', '__call', 'getClassesToCreate', 'getModuleId', 'getFullPath', 'getModuleClassName')
+            OxModule::class,
+            array('__construct', 'getClassesToCreate', 'getModuleId', 'getFullPath', 'getModuleClassName')
         );
         $oModule->expects($this->once())->method('getClassesToCreate')->will(
             $this->returnValue(
@@ -473,7 +473,7 @@ class HelperTest extends UnitTestCase
     public function testCreateBlock_noBlocksDefined_noTemplatesCreated()
     {
         // File system helper mock
-        $oFileSystem = $this->getMock(FileSystem::class, array('__call', 'isDir', 'createFile'));
+        $oFileSystem = $this->getMock(FileSystem::class, array('isDir', 'createFile'));
         $oFileSystem->expects($this->never())->method('isDir');
         $oFileSystem->expects($this->never())->method('createFile');
         Registry::set(FileSystem::class, $oFileSystem);
@@ -481,7 +481,7 @@ class HelperTest extends UnitTestCase
         // Module instance mock
         $oModule = $this->getMock(
             OxModule::class,
-            array('__construct', '__call', 'getBlocks', 'getModuleId', 'getFullPath', 'getModuleClassName')
+            array('__construct', 'getBlocks', 'getModuleId', 'getFullPath', 'getModuleClassName')
         );
         $oModule->expects($this->once())->method('getBlocks')->will($this->returnValue(array()));
         $oModule->expects($this->never())->method('getModuleId');
@@ -496,7 +496,7 @@ class HelperTest extends UnitTestCase
     public function testCreateBlock_blocksAreDefined_callBlockTemplatesCreation()
     {
         // File system helper mock
-        $oFileSystem = $this->getMock('oxpsModuleGeneratorFileSystem', array('__call', 'isDir', 'createFile'));
+        $oFileSystem = $this->getMock('oxpsModuleGeneratorFileSystem', array('isDir', 'createFile'));
         $oFileSystem->expects($this->at(0))->method('isDir')
             ->with('/path/to/modules/oxps/mymodule/Application/views/blocks/')
             ->will($this->returnValue(true));
@@ -508,12 +508,12 @@ class HelperTest extends UnitTestCase
             '/path/to/modules/oxps/mymodule/Application/views/blocks/oxpsmymodule_footer.tpl',
             $this->stringContains('footer')
         );
-        Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        Registry::set(FileSystem::class, $oFileSystem);
 
         // Module instance mock
         $oModule = $this->getMock(
-            'oxpsModuleGeneratorOxModule',
-            array('__construct', '__call', 'getBlocks', 'getModuleId', 'getFullPath', 'getModuleClassName')
+            OxModule::class,
+            array('__construct', 'getBlocks', 'getModuleId', 'getFullPath', 'getModuleClassName')
         );
         $oModule->expects($this->once())->method('getBlocks')->will(
             $this->returnValue(
@@ -547,7 +547,7 @@ class HelperTest extends UnitTestCase
         // Module instance mock
         $oModule = $this->getMock(
             OxModule::class,
-            array('__construct', '__call', 'getFullPath')
+            array('__construct', 'getFullPath')
         );
 
         $oModule->expects($this->any())
@@ -555,11 +555,11 @@ class HelperTest extends UnitTestCase
             ->will($this->returnValue('/path/to/modules/oxps/mymodule/'));
 
         // Render helper mock
-        $oRenderHelper = $this->getMock('render', array('__call', 'renderWithSmartyAndRename'));
+        $oRenderHelper = $this->getMock(Render::class, array('renderWithSmartyAndRename'));
         $oRenderHelper->expects($this->never())->method('renderWithSmartyAndRename');
 
         // File system helper mock
-        $oFileSystem = $this->getMock(FileSystem::class, array('__call', 'isFile', 'isDir', 'copyFile'));
+        $oFileSystem = $this->getMock(FileSystem::class, array('isFile', 'isDir', 'copyFile'));
         Registry::set(FileSystem::class, $oFileSystem);
 
         $this->SUT->init($oModule);
@@ -582,7 +582,7 @@ class HelperTest extends UnitTestCase
         // Module instance mock
         $oModule = $this->getMock(
             OxModule::class,
-            array('__construct', '__call', 'getFullPath')
+            array('__construct', 'getFullPath')
         );
 
         $oModule->expects($this->any())
@@ -590,11 +590,11 @@ class HelperTest extends UnitTestCase
             ->will($this->returnValue('/path/to/modules/oxps/mymodule/'));
 
         // Render helper mock
-        $oRenderHelper = $this->getMock(Render::class, array('__call', 'renderWithSmartyAndRename'));
+        $oRenderHelper = $this->getMock(Render::class, array('renderWithSmartyAndRename'));
         $oRenderHelper->expects($this->never())->method('renderWithSmartyAndRename');
 
         // File system helper mock
-        $oFileSystem = $this->getMock(FileSystem::class, array('__call', 'isFile', 'isDir', 'copyFile'));
+        $oFileSystem = $this->getMock(FileSystem::class, array('isFile', 'isDir', 'copyFile'));
         $oFileSystem->expects($this->once())->method('isDir')
             ->with('/path/to/modules/oxps/mymodule/tests/Unit/')
             ->will($this->returnValue(false));
@@ -620,7 +620,7 @@ class HelperTest extends UnitTestCase
         // Module instance mock
         $oModule = $this->getMock(
             OxModule::class,
-            array('__construct', '__call', 'getFullPath')
+            array('__construct', 'getFullPath')
         );
 
         $oModule->expects($this->any())
@@ -628,11 +628,11 @@ class HelperTest extends UnitTestCase
             ->will($this->returnValue('/path/to/modules/oxps/mymodule/'));
 
         // Render helper mock
-        $oRenderHelper = $this->getMock('render', array('__call', 'renderWithSmartyAndRename'));
+        $oRenderHelper = $this->getMock(Render::class, array('renderWithSmartyAndRename'));
         $oRenderHelper->expects($this->never())->method('renderWithSmartyAndRename');
 
         // File system helper mock
-        $oFileSystem = $this->getMock(FileSystem::class, array('__call', 'isFile', 'isDir', 'copyFile'));
+        $oFileSystem = $this->getMock(FileSystem::class, array('isFile', 'isDir', 'copyFile'));
         $oFileSystem->expects($this->at(0))->method('isDir')
             ->with('/path/to/modules/oxps/mymodule/tests/Unit/')
             ->will($this->returnValue(true));
@@ -658,7 +658,7 @@ class HelperTest extends UnitTestCase
         // Module instance mock
         $oModule = $this->getMock(
             OxModule::class,
-            array('__construct', '__call', 'getFullPath')
+            array('__construct', 'getFullPath')
         );
 
         $oModule->expects($this->any())
@@ -666,11 +666,11 @@ class HelperTest extends UnitTestCase
             ->will($this->returnValue('/path/to/modules/oxps/mymodule/'));
 
         // Render helper mock
-        $oRenderHelper = $this->getMock('render', array('__call', 'renderWithSmartyAndRename'));
+        $oRenderHelper = $this->getMock(Render::class, array('renderWithSmartyAndRename'));
         $oRenderHelper->expects($this->never())->method('renderWithSmartyAndRename');
 
         // File system helper mock
-        $oFileSystem = $this->getMock(FileSystem::class, array('__call', 'isFile', 'isDir', 'copyFile'));
+        $oFileSystem = $this->getMock(FileSystem::class, array('isFile', 'isDir', 'copyFile'));
         $oFileSystem->expects($this->at(0))->method('isDir')
             ->with('/path/to/modules/oxps/mymodule/tests/Unit/')
             ->will($this->returnValue(true));
@@ -699,7 +699,7 @@ class HelperTest extends UnitTestCase
         // Module instance mock
         $oModule = $this->getMock(
             OxModule::class,
-            array('__construct', '__call', 'getFullPath')
+            array('__construct', 'getFullPath')
         );
 
         $oModule->expects($this->any())
@@ -707,7 +707,7 @@ class HelperTest extends UnitTestCase
             ->will($this->returnValue('/path/to/modules/oxps/mymodule/'));
 
         // Render helper mock
-        $oRenderHelper = $this->getMock('render', array('__call', 'renderWithSmartyAndRename'));
+        $oRenderHelper = $this->getMock(Render::class, array('renderWithSmartyAndRename'));
         $oRenderHelper->expects($this->once())->method('renderWithSmartyAndRename')->with(
             array(
                 'tests/Unit/models/oxpsmymoduleoxarticleTest.php',
@@ -724,7 +724,7 @@ class HelperTest extends UnitTestCase
         // File system helper mock
         $oFileSystem = $this->getMock(
             FileSystem::class,
-            array('__call', 'isFile', 'isDir', 'createFolder', 'copyFile', 'createFile', 'renameFile')
+            array('isFile', 'isDir', 'createFolder', 'copyFile', 'createFile', 'renameFile')
         );
         $oFileSystem->expects($this->at(0))->method('isDir')
             ->with('/path/to/modules/oxps/mymodule/tests/Unit/')
@@ -759,7 +759,7 @@ class HelperTest extends UnitTestCase
             '/path/to/modules/oxps/ModuleGenerator/Core/module.tpl/oxpsTestClass.php.tpl',
             '/path/to/modules/oxps/mymodule/tests/Unit/models/oxpsmymoduleitemTest.php'
         );
-        Registry::set('oxpsModuleGeneratorFileSystem', $oFileSystem);
+        Registry::set(FileSystem::class, $oFileSystem);
 
         $this->SUT->init($oModule);
 

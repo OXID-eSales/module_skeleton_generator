@@ -154,7 +154,7 @@ class [{$sModuleClassName}] extends oxModule
         try {
             $oDb  = oxDb::getDb();
             $sSql = file_get_contents(dirname(__FILE__) . '/../docs/' . (string) $sSqlFile);
-            $aSql = (array) explode(';', $sSql);
+            $aSql = (array) preg_split("/;\s*\R/", $sSql);
 
             foreach ($aSql as $sQuery) {
                 if (!empty($sQuery)) {
